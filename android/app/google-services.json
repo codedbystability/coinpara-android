@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "948242208985",
+    "project_id": "coinpara-necen",
+    "storage_bucket": "coinpara-necen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948242208985:android:b6352da2a152ab88dcc6c8",
+        "android_client_info": {
+          "package_name": "com.necen.coinpara.react"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948242208985-h59373qc2djnfglkd3ee1st83p0ldnbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0Q0i7l5gT-iXwD4JNQNUlr2fP_v9R5o0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948242208985-h59373qc2djnfglkd3ee1st83p0ldnbf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "948242208985-dis3ovj7kls7o3hag2fa4gedug22p906.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.necen.coinpara-react"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
