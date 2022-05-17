@@ -27,7 +27,7 @@ const EmptyContainer = ({ text = "", style = null, icon = "empty-coins" }) => {
         fontFamily: "CircularStd-Book",
         fontSize: TITLE_FONTSIZE + 2,
         textAlign: "center",
-        color: activeTheme.appWhite,
+        color: activeTheme.secondaryText,
         marginTop: 24,
         paddingHorizontal: PADDING_BH,
       }}>

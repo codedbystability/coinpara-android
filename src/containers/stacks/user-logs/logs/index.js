@@ -36,6 +36,7 @@ const UserLogList = (props) => {
         paddingHorizontal: PADDING_H,
         paddingVertical: PADDING_BV,
       }}
+      showsVerticalScrollIndicator={false}
       data={logs}
       renderItem={(item) => <UserLogItem
         activeTheme={activeTheme}

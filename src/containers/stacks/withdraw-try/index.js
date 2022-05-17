@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import InfoCard from "../../../components/info-card";
 import FeeTotal from "../../../components/fee-total";
 import FormInput from "../../../components/form-input";
@@ -21,10 +21,12 @@ import {
   NORMAL_FONTSIZE,
   PADDING_H,
 } from "../../../../utils/dimensions";
-import { handleIbanRegex, replaceAll } from "../../../helpers/string-helper";
+import {  replaceAll } from "../../../helpers/string-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
-import InputAccessory from "../../../components/input-accessory";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import HapticProvider from "../../../providers/HapticProvider";
+import Loading from "../../../components/loading";
+import userServices from "../../../services/user-services";
 
 const percentages = [
   { id: 1, value: "10" },
@@ -46,6 +48,15 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
   const [showValidation, setShowValidation] = useState(false);
   const [verifyType, setVerifyType] = useState(null);
   const [transferInstance, setTransferInstance] = useState({});
+  const [isAdminApproved, setIsAdminApproved] = useState(false);
+
+  useEffect(() => {
+    userServices.getApproval().then((response) => {
+      if (response.IsSuccess) {
+        setIsAdminApproved(response.Data.AdminApproval === true);
+      }
+    });
+  }, [wallet]);
 
   useEffect(() => {
     if (refresh) {
@@ -63,7 +74,6 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
     }
   }, [activePercentage]);
 
-  const handleIbanSet = (val) => setIban(val ? handleIbanRegex(val) : "");
 
   const handleSetPercentage = (tab) => setActivePercentage(tab.value);
 
@@ -72,14 +82,19 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
     ModalProvider.hide();
   };
 
-  const showBankModal = () => ModalProvider.show(() => <BankSelect
-    type={"withdraw"}
-    handleClose={() => ModalProvider.hide()}
-    handleItemSelect={handleBankSelect} />);
+  const showBankModal = () => {
+    HapticProvider.trigger();
+    ModalProvider.show(() => <BankSelect
+      type={"withdraw"}
+      handleClose={() => ModalProvider.hide()}
+      handleItemSelect={handleBankSelect} />);
+  };
 
   const handleValidationNav = () => navigationRef.current.navigate("AccountApprove");
 
   const handleContinue = () => {
+    HapticProvider.trigger();
+
     const avAmount = wallet.wb;
 
 
@@ -93,6 +108,9 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
     }
     const formattedAmount = parseFloat(amount.replace(/\./g, "").replace(/,/g, "."));
 
+    const dailyRemainingField = isAdminApproved ? wallet.lk : wallet.li;
+    const monthlyRemainingField = isAdminApproved ? wallet.lm : wallet.lj;
+
     if (!formattedAmount || parseInt(formattedAmount) <= 0) {
       return DropdownAlert.show("info", getLang(language, "INFORMATION"), getLang(language, "PLEASE_ENTER_A_VALID_AMOUNT"));
     } else if (Object.keys(selectedBank).length <= 0) {
@@ -105,9 +123,9 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MINIMUM_AMOUNT_TO_WITHDRAW"), "MINIMUM_AMOUNT", formattedNumber(wallet.ld, wallet.dp) + " " + wallet.cd));
     } else if (parseFloat(amount) > wallet.lc) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MAXIMUM_AMOUNT_TO_WITHDRAW"), "MAXIMUM_AMOUNT", formattedNumber(wallet.lc, wallet.dp) + " " + wallet.cd));
-    } else if (parseFloat(amount) > wallet.li) {
+    } else if (parseFloat(amount) > dailyRemainingField) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "DAILY_REMAINING_WITHDRAW_AMOUNT"), "REMAINING_DAILY", formattedNumber(wallet.li, wallet.dp) + " " + wallet.cd));
-    } else if (parseFloat(amount) > wallet.lj) {
+    } else if (parseFloat(amount) > monthlyRemainingField) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MONTHLY_REMAINING_WITHDRAW_AMOUNT"), "REMAINING_MONTHLY", formattedNumber(wallet.lj, wallet.dp) + " " + wallet.cd));
     }
 
@@ -150,13 +168,13 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
   return (
     <>
 
-      <KeyboardAwareScrollView
-        extraScrollHeight={200}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles(activeTheme).scroll}>
 
-        {
-          validUser !== null ? <>
+      {
+        validUser !== null ? <KeyboardAwareScrollView
+            extraScrollHeight={200}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles(activeTheme).scroll}>
+
             <InfoCard wallet={wallet} onPress={showModal} />
 
             <SelectBankInput
@@ -170,12 +188,18 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
             <FormInput autoComplete={"off"}
                        placeholder={"IBAN_NO"}
                        value={iban}
+                       isMasked={true}
+                       mask={"[0000] [0000] [0000] [0000] [0000] [0000]"}
                        isAddition={"TR"}
                        keyboardType={"numeric"}
-                       onChange={handleIbanSet}
+                       onChange={setIban}
                        returnKey={"done"}
                        leftAddition={iban ? "TR" : null}
             />
+
+
+
+
 
             <FormInput returnKey={"done"} autoComplete={"off"}
                        placeholder={"AMOUNT"}
@@ -188,7 +212,7 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
               wallet.wb > 0 && <PercentageSelect
                 percentages={percentages}
                 handlePress={(item) => handleSetPercentage(item)}
-                activePercentage={activePercentage}/>
+                activePercentage={activePercentage} />
             }
 
             <FeeTotal fee={formatMoney(amount ? wallet.wf : 0, 2) + " TRY"}
@@ -196,13 +220,12 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
 
             <BankHistory handleSelect={handleBankHistorySelected} />
 
-          </> : <View style={styles(activeTheme).cls}>
-            <ActivityIndicator />
-          </View>
-        }
 
+          </KeyboardAwareScrollView>
+          :
+          <Loading />
+      }
 
-      </KeyboardAwareScrollView>
 
       {
         validUser !== null && <>
@@ -240,12 +263,6 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
                   onResult={onResult}
       />
 
-      <InputAccessory
-        handleStep={null}
-        stepAble={false}
-        mailProviders={[]}
-        onPress={null}
-      />
     </>
 
   );

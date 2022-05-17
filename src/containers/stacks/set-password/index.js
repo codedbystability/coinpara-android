@@ -11,7 +11,6 @@ import { navigationRef } from "../../../providers/RootNavigation";
 import FormPhoneInput from "../../../components/phone-input";
 import { normalizeInput } from "../../../helpers/math-helper";
 import { phoneInputRegex } from "../../../helpers/string-helper";
-import InputAccessory from "../../../components/input-accessory";
 
 
 const SetPasswords = (props) => {
@@ -113,6 +112,7 @@ const SetPasswords = (props) => {
       "Phone": hasPhone ? "" : validPhone,
     };
 
+    console.log(instance);
     userServices.setPassword(instance).then((response) => {
       if (response.IsSuccess) {
         DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "YOUR_PASSWORD_CHANGED"));
@@ -169,13 +169,6 @@ const SetPasswords = (props) => {
       <CustomButton text={getLang(language, "CONTINUE")}
                     filled={true}
                     onPress={handlePress} />
-      <InputAccessory
-        handleStep={null}
-        onPress={null}
-        stepAble={false}
-        mailProviders={[]}
-      />
-
 
     </>
   );

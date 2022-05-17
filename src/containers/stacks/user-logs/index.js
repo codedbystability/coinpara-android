@@ -10,6 +10,7 @@ import UserTransferList from "./transfers";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import AnimatedTab from "../../../components/animated-tab";
+import FloatingAction from "../../../components/floating-action";
 
 const headers = [
   { id: 1, key: "user", title: "USER_ACTIVITIES" },
@@ -56,6 +57,9 @@ const UserLogs = (props) => {
         }
 
       </View>
+
+
+      <FloatingAction />
     </>
 
   );

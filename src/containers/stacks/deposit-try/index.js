@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {   StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import InfoCard from "../../../components/info-card";
-import CustomButton from "../../../components/button";
-import FormInput from "../../../components/form-input";
 import BankSelect from "../bank-select";
-import FeeTotal from "../../../components/fee-total";
 import SelectBankInput from "../../../components/select-bank-input";
 import TransactionDescriptions from "../transaction-descriptions";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import DropdownAlert from "../../../providers/DropdownAlert";
@@ -18,14 +14,15 @@ import {
   NORMAL_FONTSIZE,
   PADDING_H,
 } from "../../../../utils/dimensions";
-import InputAccessory from "../../../components/input-accessory";
 import Clipboard from "@react-native-community/clipboard";
 import QrCreateModalize from "../deposit-btc/read-qr";
 import { replaceAll } from "../../../helpers/string-helper";
+import HapticProvider from "../../../providers/HapticProvider";
+import { ScrollView } from "react-native-gesture-handler";
 
-const descriptions = [
-  { id: 1, text: "CURRENCY_DEPOSIT_INFO" },
-];
+// const descriptions = [
+//   { id: 1, text: "CURRENCY_DEPOSIT_INFO" },
+// ];
 
 const DepositTryScreen = (props) => {
 
@@ -33,6 +30,7 @@ const DepositTryScreen = (props) => {
   const { language } = useSelector(state => state.globalReducer);
   const [selectedBank, setSelectedBank] = useState({});
   const [amount, setAmount] = useState("");
+  const [descriptions, setDescriptions] = useState([]);
 
   useEffect(() => {
     if (refresh) {
@@ -45,17 +43,31 @@ const DepositTryScreen = (props) => {
       setAmount(oldAmount);
   }, [oldAmount]);
 
+  useEffect(() => {
+    const desc = [];
+    Object.keys(language).map(function(key, index) {
+      if (key.includes("TRY_DEPOSIT_DESC_")) {
+        desc.push({ id: key, text: key });
+      }
+    });
+    setDescriptions(desc);
+  }, [language]);
+
   const handleBankSelect = (bank) => {
     setSelectedBank(bank);
+    HapticProvider.trigger();
     ModalProvider.hide();
   };
 
-  const showBankModal = () => ModalProvider.show(() => <BankSelect
-    type={"deposit"}
-    handleClose={() => ModalProvider.hide()}
-    selectedBank={selectedBank}
-    handleItemSelect={handleBankSelect} />,
-  );
+  const showBankModal = () => {
+    HapticProvider.trigger();
+    ModalProvider.show(() => <BankSelect
+      type={"deposit"}
+      handleClose={() => ModalProvider.hide()}
+      selectedBank={selectedBank}
+      handleItemSelect={handleBankSelect} />,
+    );
+  };
 
   const handleBankInputAction = (action) => {
     switch (action) {
@@ -74,6 +86,7 @@ const DepositTryScreen = (props) => {
   };
 
   const handleContinue = () => {
+    HapticProvider.trigger();
 
     //lb -> DEPOSIT-MIN-LIMIT
     //la -> DEPOSIT-MAX-LIMIT
@@ -107,56 +120,40 @@ const DepositTryScreen = (props) => {
 
     <>
 
-      <KeyboardAwareScrollView
-        // extraScrollHeight={100}
-        // extraHeight={100}
-        extraScrollHeight={100}
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles(activeTheme).scroll}>
-
-        <InfoCard wallet={wallet} onPress={showModal} />
-
-        <SelectBankInput
-          onAction={handleBankInputAction}
-          showName={true}
-          showIban={true}
-          selectedBank={selectedBank}
-          handlePress={showBankModal} />
+        <View style={{
+          marginBottom: 20,
+        }}>
 
 
-        <FormInput
-          placeholder={"AMOUNT"}
-          inputKey={"amount"}
-          value={amount.toString()}
-          keyboardType={"numeric"}
-          autoComplete={"off"}
-          returnKey={"done"}
-          autoFocus={false}
-          type={"text"}
-          onChange={(value) => setAmount(value)}
-        />
+          <InfoCard wallet={wallet} onPress={showModal} />
 
-        <FeeTotal fee={"FREE"} amount={amount && amount !== "" ? formattedNumber(amount, "TRY") : 0} />
+          <SelectBankInput
+            onAction={handleBankInputAction}
+            showName={true}
+            selectedBank={{}}
+            handlePress={showBankModal} />
+
+
+          {
+            Object.keys(selectedBank).length >= 1 && <SelectBankInput
+              onAction={handleBankInputAction}
+              showName={true}
+              showIban={true}
+              selectedBank={selectedBank}
+              handlePress={showBankModal} />
+          }
+
+
+        </View>
+
+
         <TransactionDescriptions descriptions={descriptions} />
 
-        {/*</View>*/}
-      </KeyboardAwareScrollView>
 
-
-      <View style={styles(activeTheme).buttonWrapper}>
-
-        <CustomButton text={getLang(language, "CONTINUE")}
-                      filled={true}
-                      style={{ backgroundColor: activeTheme.actionColor }}
-                      onPress={handleContinue} />
-        <InputAccessory
-          handleStep={null}
-          stepAble={false}
-          mailProviders={[]}
-          onPress={null}
-        />
-      </View>
-
+      </ScrollView>
 
 
     </>
@@ -170,9 +167,7 @@ const styles = props => StyleSheet.create({
 
   scroll: {
     paddingHorizontal: PADDING_H,
-    // paddingBottom: 60,
-    // flex: 1,
-    paddingBottom: 100,
+    paddingBottom: 60,
 
   },
   buttonWrapper: {

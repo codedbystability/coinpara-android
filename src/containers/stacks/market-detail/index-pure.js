@@ -32,6 +32,8 @@ import LocalStorage from "../../../providers/LocalStorage";
 import IdleTimerManager from "react-native-idle-timer";
 import ModalProvider from "../../../providers/ModalProvider";
 import MarketSelectDetail from "../../../components/market-select-detail";
+import HapticProvider from "../../../providers/HapticProvider";
+import * as Animatable from "react-native-animatable";
 
 
 class MarketDetailPure extends React.PureComponent {
@@ -39,6 +41,8 @@ class MarketDetailPure extends React.PureComponent {
 
   constructor(props) {
     super(props);
+    this.contentRef = React.createRef();
+
     this.handleDetail = this.handleDetail.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
     this.handleHeaderAction = this.handleHeaderAction.bind(this);
@@ -52,7 +56,7 @@ class MarketDetailPure extends React.PureComponent {
     // this.handleCoinSelected = this.handleCoinSelected.bind(this);
     this.state = {
       activeTab: "market",
-      activeInterval: "240",
+      activeInterval: "60",
       activeChart: "candle",
       market: {},
       selectedOrder: {},
@@ -60,6 +64,7 @@ class MarketDetailPure extends React.PureComponent {
       selectedType: "",
       fullscreen: false,
       hidden: true,
+      showOrderForm: false,
     };
   }
 
@@ -67,20 +72,26 @@ class MarketDetailPure extends React.PureComponent {
     this._isMounted = true;
     const { route, dispatch, marketsWithKey } = this.props;
 
+    const storedInterval = LocalStorage.getItem("storedInterval");
+    if (storedInterval && storedInterval !== this.state.activeInterval) {
+      this.setState({ activeInterval: storedInterval });
+    }
+
+    setTimeout(() => {
+      this.setState({ showOrderForm: true });
+    }, 2000);
+
     if (route.params && route.params && route.params.parity) {
       const parity = route.params.parity;
       const from = parity.split("-")[0];
       const to = parity.split("-")[1];
       const marketKey = Object.keys(marketsWithKey).find(key => marketsWithKey[key].fs === from && marketsWithKey[key].to === to);
       const market = marketsWithKey[marketKey];
-
       if (market) {
         dispatch(setSelectedMarketGuid(market.gd));
         this.setState({ market });
         this.setMarketInformation(market);
       }
-
-
     } else {
       dispatch(setSelectedMarketGuid(route.params.gd));
       this.setState({ market: this.props.route.params });
@@ -221,14 +232,17 @@ class MarketDetailPure extends React.PureComponent {
   }
 
   handleShowMarketList() {
-    ModalProvider.show(() => <MarketSelectDetail handleSelect={(item) => this.handleCoinSelected(item)} />, false);
+    HapticProvider.trigger();
+    ModalProvider.show(() => <MarketSelectDetail handleSelect={(item) => this.handleCoinSelected(item)} />, true);
   }
+
 
   render() {
     const {
       market, activeTab, marketInfo,
       fullscreen, activeChart, activeInterval,
       selectedOrder, selectedType, hidden,
+      showOrderForm,
     } = this.state;
 
     const { activeTheme } = this.props;
@@ -315,26 +329,35 @@ class MarketDetailPure extends React.PureComponent {
             }} />
           </View>
 
-          <MarketDetailTabsIndex {...{
-            activeTab,
-            market,
-            gd: market.gd,
-            handleDetail,
-          }} />
+          <MarketDetailTabsIndex
+            // ref={node => this.contentRef = node}
+            // ref={this.contentRef}
+            {...{
+              ref: this.contentRef,
+              activeTab,
+              market,
+              gd: market.gd,
+              handleDetail,
+            }} />
 
-          <KeyboardAvoidingView
-            keyboardVerticalOffset={40}
-            behavior={"padding"}>
-            <AnimatedSheet
-              {...{
-                market,
-                commissionRate: parseFloat(marketInfo.CommissionRate / 100).toFixed(4),
-                marketInfo,
-                selectedOrder,
-                selectedType,
-              }}
-            />
-          </KeyboardAvoidingView>
+          {
+            showOrderForm &&
+            <KeyboardAvoidingView
+              keyboardVerticalOffset={40}
+              behavior={"padding"}>
+              <Animatable.View easing={"ease"} animation={"fadeInUp"}>
+                <AnimatedSheet
+                  {...{
+                    market,
+                    marketInfo,
+                    selectedOrder,
+                    selectedType,
+                    getLastTickerParent: () => this.contentRef.current?.getLatestTicker(),
+                  }}
+                />
+              </Animatable.View>
+            </KeyboardAvoidingView>
+          }
 
 
         </LinearBackground>

@@ -1,21 +1,24 @@
 import * as React from "react";
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MarketsScreen from "../containers/tabs/markets";
 import TradeScreen from "../containers/tabs/trade";
-import WalletScreen from "../containers/tabs/wallet";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import SettingsScreen from "../containers/tabs/settings";
-import HomepageScreen from "../containers/tabs/homepage";
 import { useSelector } from "react-redux";
 import { NORMAL_FONTSIZE } from "../../utils/dimensions";
 import { getLang } from "../helpers/array-helper";
 import { isIphoneX } from "../../utils/devices";
-import HapticProvider from "../providers/HapticProvider";
 import TinyImage from "../tiny-image";
+import {
+  HomeStackNavigatorItems,
+  stackItems,
+} from "./stack-items";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomepageScreen from "../containers/tabs/homepage";
+import MarketsScreen from "../containers/tabs/markets";
+import WalletScreen from "../containers/tabs/wallet";
 
 
 const Tab = createBottomTabNavigator();
-
+const Stack = createStackNavigator();
 
 const CustomTabBar = (props) => {
   const { activeTheme } = props;
@@ -52,54 +55,52 @@ const TabButton = (props) => {
     </TouchableOpacity>
   );
 };
+const tabItems = [
+  {
+    id: 1,
+    name: "HomeStack",
+    labelKey: "HOME",
+    component: HomepageScreen,
+    icon: "homepage",
+  },
+  {
+    id: 1,
+    name: "MarketsStack",
+    labelKey: "MARKETS",
+    component: MarketsScreen,
+    icon: "markets",
+
+  },
+  {
+    id: 3,
+    name: "TradeStack",
+    labelKey: "TRADE",
+    component: TradeScreen,
+    icon: "trade",
+
+  },
+  {
+    id: 4,
+    name: "WalletStack",
+    labelKey: "WALLET",
+    component: WalletScreen,
+    icon: "wallet",
+
+  },
+  // {
+  //   id: 5,
+  //   name: "Settings",
+  //   labelKey: "SETTINGS",
+  //   component: SettingsScreen,
+  //   icon: "settings",
+  //
+  // },
+];
 
 const NestedTabNavigator = () => {
   const { activeTheme, language } = useSelector(state => state.globalReducer);
-  const tabItems = [
-    {
-      id: 1,
-      name: "Homepage",
-      labelKey: "HOME",
-      component: HomepageScreen,
-      icon: "homepage",
-    },
-    {
-      id: 1,
-      name: "Markets",
-      labelKey: "MARKETS",
-      component: MarketsScreen,
-      icon: "markets",
-
-    },
-    {
-      id: 3,
-      name: "Trade",
-      labelKey: "TRADE",
-      component: TradeScreen,
-      icon: "trade",
-
-    },
-    {
-      id: 4,
-      name: "Wallet",
-      labelKey: "WALLET",
-      component: WalletScreen,
-      icon: "wallet",
-
-    },
-    {
-      id: 5,
-      name: "Settings",
-      labelKey: "SETTINGS",
-      component: SettingsScreen,
-      icon: "settings",
-
-    },
-  ];
-
   return (
     <Tab.Navigator
-
       tabBar={(props) => <CustomTabBar {...props} activeTheme={activeTheme} />}
       screenOptions={{
         tabBarStyle: styles(activeTheme).tabStyle,
@@ -107,11 +108,6 @@ const NestedTabNavigator = () => {
     >
       {
         tabItems.length >= 1 && tabItems.map(tabItem => <Tab.Screen
-          //TODO ANDROID REMOVE!!!
-          listeners={({ navigation, route }) => ({
-            tabPress: e => HapticProvider.trigger(),
-          })}
-
           options={{
             // tabBarHideOnKeyboard: true
             headerShown: false,
@@ -127,7 +123,35 @@ const NestedTabNavigator = () => {
   );
 };
 
-export default NestedTabNavigator;
+function StackTabNav({ walkThroughSeen }) {
+  return (
+    <Stack.Navigator
+      initialRouteName={"WalkThrough"}
+      screenOptions={{
+        headerShown: false,
+      }}>
+
+      <Stack.Screen name="Tab" component={NestedTabNavigator} />
+      {
+        stackItems.map(item => <Stack.Screen
+          key={item.id}
+          options={item.options}
+          name={item.name}
+          component={item.component} />)
+      }
+
+      {
+        HomeStackNavigatorItems.map(item => <Stack.Screen key={item.id} name={item.name}
+                                                          component={item.component}
+                                                          options={item.options}
+        />)
+      }
+
+    </Stack.Navigator>
+  );
+}
+
+export default StackTabNav;
 
 const styles = (props, focused) => StyleSheet.create({
   text: {
@@ -148,7 +172,7 @@ const styles = (props, focused) => StyleSheet.create({
     // zIndex: 9999998,
     alignItems: "center",
     justifyContent: "center",
-    height: isIphoneX ? 70 : 60,
+    height: isIphoneX ? 80 : 60,
 
   },
   button: { flex: 1, alignItems: "center", justifyContent: "center" },

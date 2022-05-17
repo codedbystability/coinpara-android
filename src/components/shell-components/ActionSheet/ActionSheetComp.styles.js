@@ -13,7 +13,8 @@ const styles = (props) => StyleSheet.create({
     zIndex: 9999,
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
-
+    borderTopWidth: 4,
+    borderColor: props.actionColor,
   },
   modalTitle: {
     fontSize: 22,
@@ -36,13 +37,14 @@ const styles = (props) => StyleSheet.create({
     alignItems: "center",
     borderColor: "#bdbdbd",
     backgroundColor: props.darkBackground,
-
-
+    flexDirection: "row",
+    justifyContent: "center",
   },
   text: {
     fontFamily: "CircularStd-Bold",
     fontSize: TITLE_FONTSIZE,
     color: props.appWhite,
+    textAlign: "left",
   },
   cancel: {
     fontFamily: "CircularStd-Bold",
@@ -59,6 +61,12 @@ const styles = (props) => StyleSheet.create({
     width: "100%",
     justifyContent: "flex-end",
     zIndex: 99999999,
+  },
+
+  image: {
+    width: 28,
+    height: 28,
+    marginRight: 8,
   },
 });
 export default styles;

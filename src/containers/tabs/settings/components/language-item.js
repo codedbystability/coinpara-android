@@ -45,12 +45,12 @@ const styles = (props, fontSizes) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: PADDING_V,
+    paddingVertical: PADDING_V / 1.4,
     paddingHorizontal: PADDING_H,
     borderRadius: 8,
-    backgroundColor: props.darkBackground,
-    borderWidth: 1,
-    borderColor: props.borderGray,
+    // backgroundColor: props.darkBackground,
+    // borderWidth: 1,
+    // borderColor: props.borderGray,
   },
   leftWrapper: {
     alignItems: "center",
@@ -66,7 +66,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontSize: fontSizes?.TITLE_FONTSIZE,
     color: props.appWhite,
   },
 
@@ -76,8 +76,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     justifyContent: "space-between",
   },
   icon: {
-    width: 22,
-    height: 22,
+    width: 18,
+    height: 18,
   },
 
 });

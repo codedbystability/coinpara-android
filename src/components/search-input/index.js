@@ -15,7 +15,7 @@ const SearchInput = ({ text, onChange, onFocus = null, onBlur = null, style = nu
 
   const { activeTheme } = useSelector(state => state.globalReducer);
 
-  const debouncedChangeHandler = (val) => onChange(val);
+  const debouncedChangeHandler = (val) => onChange(val.toUpperCase() || "");
 
 
   const handleDismiss = () => {
@@ -43,21 +43,18 @@ const SearchInput = ({ text, onChange, onFocus = null, onBlur = null, style = nu
         }
         <TextInput
           keyboardAppearance={"dark"}
-
           autoCorrect={false}
           autoCapitalize={"characters"}
-          keyboardType={"email-address"}
+          keyboardType={"default"}
           onFocus={onFocus}
           onBlur={onBlur}
           style={[styles(activeTheme).input, { borderBottomWidth: showTypes ? 1 : 4 }]}
           placeholder=""
-          // onChangeText={(text) => onChange(text)}
           onChangeText={debouncedChangeHandler}
           value={text}
           underlineColorAndroid="transparent"
-          hideKeyboardAccessoryView={true}
-
         />
+
       </View>
     </>
 

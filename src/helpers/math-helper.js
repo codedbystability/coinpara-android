@@ -25,12 +25,14 @@ export function unFormatMoney(num, fixed) {
 export function formatMoney(num, fixed) {
   if (!num || parseFloat(num) <= 0) {
     return "0.00";
+  } else if (num.toString().includes("e-")) {
+    return num;
   }
   // if (num % 1 === 0) {
   //   return num.toFixed(fixed);
   // }
 
-  const number = num.toString().match(new RegExp("^-?\\d+(?:\.\\d{0," + (fixed) + "})?"))[0]
+  const number = num.toString().match(new RegExp("^-?\\d+(?:\.\\d{0," + (fixed) + "})?"))[0];
   return Accounting.formatNumber(number, fixed, ".", ",");
 
   // const re = new RegExp("^-?\\d+(?:\.\\d{0," + (fixed || -1) + "})?");

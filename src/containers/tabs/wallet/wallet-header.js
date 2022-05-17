@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
@@ -10,16 +10,21 @@ const WalletHeader = ({ props, authenticated, language }) => {
   const { activeTheme } = useSelector(state => state.globalReducer);
 
   return (
-    <TabNavigationHeader{...props} backAble={false}
+    <TabNavigationHeader{...props}
+                        backAble={true}
+                        isBack={false}
                         options={{ title: getLang(language, "WALLET") }}
                         headerRight={
                           authenticated &&
                           <TouchableOpacity
                             onPress={() => navigationRef.current.navigate("WalletHistory")}
                             activeOpacity={1}
-                            style={[styles.headerRightWrapper, { borderColor: activeTheme.borderGray }]}>
+                            style={[styles.headerRightWrapper, {
+                              backgroundColor: activeTheme.actionColor,
+                              borderColor: activeTheme.appWhite,
+                            }]}>
 
-                            <Text style={[styles.historyText, { color: activeTheme.appWhite }]}>
+                            <Text style={[styles.historyText]}>
                               {getLang(language, "HISTORY")}
                             </Text>
                           </TouchableOpacity>
@@ -45,9 +50,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: PADDING_H ,
     paddingVertical: 4,
-    width:80
+    // width: 80,
   },
 
 

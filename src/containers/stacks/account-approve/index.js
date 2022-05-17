@@ -24,10 +24,13 @@ import { items, options, optionsVideo } from "./constants";
 import { isIphoneX } from "../../../../utils/devices";
 import ActionSheetComp from "../../../components/shell-components/ActionSheet/ActionSheetComp";
 import TinyImage from "../../../tiny-image";
+import { navigationRef } from "../../../providers/RootNavigation";
+import NImage from "../../../components/image/index.tsx";
+import FloatingAction from "../../../components/floating-action";
 
 const AccountApprove = (props) => {
 
-  const { activeTheme, language } = useSelector(state => state.globalReducer);
+  const { activeTheme, activeThemeKey, language } = useSelector(state => state.globalReducer);
 
   const [userApproval, setUserApproval] = useState({});
   const [isAdminApproved, setIsAdminApproved] = useState(true);
@@ -227,10 +230,7 @@ const AccountApprove = (props) => {
     //     onRecordVideo={onRecordVideo} />);
     // }
     launchCamera(type === "selfie-video" ? optionsVideo : options, response => {
-      if (response.didCancel) {
-      } else if (response.error) {
-      } else if (response.customButton) {
-      } else {
+      if (!response.didCancel && !response.error && !response.customButton) {
         if (response && response.assets.length >= 1) {
 
           const asset = response.assets[0];
@@ -293,6 +293,7 @@ const AccountApprove = (props) => {
     }
   };
 
+
   const approvedField = item => {
     return (
       <View
@@ -308,7 +309,7 @@ const AccountApprove = (props) => {
           width: "10%",
           alignItems: "center",
         }}>
-          <TinyImage parent={'rest/'} name={'success'} style={styles(activeTheme).icon2}/>
+          <TinyImage parent={"rest/"} name={"success"} style={styles(activeTheme).icon2} />
         </View>
       </View>
     );
@@ -327,7 +328,7 @@ const AccountApprove = (props) => {
         </View>
 
 
-        <TinyImage parent={'rest/'} name={item.icon} style={styles(activeTheme).icon3}/>
+        <TinyImage parent={"rest/"} name={item.icon} style={styles(activeTheme).icon3} />
       </View>
     );
   };
@@ -356,7 +357,7 @@ const AccountApprove = (props) => {
           }
         </View>
 
-        <TinyImage parent={'rest/'} name={item.icon} style={styles(activeTheme).icon3}/>
+        <TinyImage parent={"rest/"} name={item.icon} style={styles(activeTheme).icon3} />
 
       </Pressable>
     );
@@ -387,48 +388,63 @@ const AccountApprove = (props) => {
     <>
       <Fragment>
 
+        <TabNavigationHeader{...props} backAble={true}
+                            options={{ title: getLang(language, "ACCOUNT_VERIFICATION") }}
+        />
+
         {
-          <TabNavigationHeader{...props} backAble={true}
-                              options={{ title: getLang(language, "ACCOUNT_VERIFICATION") }}
-          />
+          isAdminApproved ? <View
+            style={styles(activeTheme).active}>
+
+            <NImage
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: "100%",
+                height: "100%",
+              }}
+              source={{
+                uri: "https://images.coinpara.com/files/mobile-assets/" + activeThemeKey + "/rest/approved-bg.png",
+              }} useFastImage={true} resizeMode={"cover"} />
+
+            <View style={{
+              flex: 1, alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <Text style={[styles(activeTheme).title, { marginTop: 50 }]}>
+                {getLang(language, "YOUR_ACCOUNT_IS_APPROVED")}
+              </Text>
+
+
+              <Text style={[styles(activeTheme).desc, { marginTop: 50 }]}>
+                {getLang(language, "YOUR_ACCOUNT_IS_APPROVED_DESC")}
+              </Text>
+            </View>
+
+          </View> : <ScrollView contentContainerStyle={styles(activeTheme).wrapper}>
+
+            <View style={styles(activeTheme).contentWrapper}>
+
+              <>
+
+                <Text style={[styles(activeTheme).desc]}>
+                  {getLang(language, "COMPLETE_FOLLOWINGS_FOR_WITHDRAW")}
+                </Text>
+                <ScrollView
+                  contentContainerStyle={styles(activeTheme).scrollView}
+                  showsVerticalScrollIndicator={false}>
+                  {
+                    items.map(item => userApproval[item.approveField] === true ? approvedField(item) : userApproval[item.approveField] === false && userApproval[item.isUploaded] === true ? adminWaiting(item) : waitingField(item))
+                  }
+                </ScrollView>
+              </>
+
+            </View>
+
+          </ScrollView>
         }
 
-        <ScrollView contentContainerStyle={styles(activeTheme).wrapper}>
-
-
-          <View style={styles(activeTheme).contentWrapper}>
-
-            {
-              isAdminApproved ? <View style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}>
-                  <TinyImage parent={"settings/"} name={"account-verificated"} style={styles(activeTheme).icon} />
-
-                  <Text style={[styles(activeTheme).desc, { marginTop: 50 }]}>
-                    {getLang(language, "YOUR_ACCOUNT_IS_APPROVED")}
-                  </Text>
-                </View> :
-                <>
-
-                  <Text style={[styles(activeTheme).desc]}>
-                    {getLang(language, "COMPLETE_FOLLOWINGS_FOR_WITHDRAW")}
-                  </Text>
-                  <ScrollView
-                    contentContainerStyle={styles(activeTheme).scrollView}
-                    showsVerticalScrollIndicator={false}>
-                    {
-                      items.map(item => userApproval[item.approveField] === true ? approvedField(item) : userApproval[item.approveField] === false && userApproval[item.isUploaded] === true ? adminWaiting(item) : waitingField(item))
-                    }
-                  </ScrollView>
-                </>
-            }
-
-          </View>
-
-
-        </ScrollView>
 
         {
           !isAdminApproved && <CustomButton text={getLang(language, "START")}
@@ -447,6 +463,7 @@ const AccountApprove = (props) => {
 
 
       <Modal
+        statusBarTranslucent
         hideModalContentWhileAnimating={true}
         useNativeDriver={true}
         animationType={"slide"}
@@ -454,6 +471,7 @@ const AccountApprove = (props) => {
         transparent={false}
         visible={approveModalVisible}
         onRequestClose={setApproveModalVisible}
+
       >
 
         <View style={{ flex: 1 }}>
@@ -476,6 +494,7 @@ const AccountApprove = (props) => {
 
       </Modal>
 
+      <FloatingAction />
 
     </>
   );
@@ -497,9 +516,17 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "space-between",
     // backgroundColor: "red",
   },
+  active: {
+    flex: 1,
+
+    // marginTop:100,
+    width: "100%",
+    height: "100%",
+    // flex: 1
+  },
   desc: {
     fontSize: TITLE_FONTSIZE,
-    color: props.changeGreen,
+    color: props.appWhite,
     textAlign: "center",
     fontFamily: "CircularStd-Book",
     marginTop: 8,
@@ -572,12 +599,12 @@ const styles = (props) => StyleSheet.create({
     width: 28,
     height: 28,
   },
-  icon2:{
-    width:18,
-    height:18,
+  icon2: {
+    width: 18,
+    height: 18,
   },
-  icon3:{
-    width:28,
-    height:24,
-  }
+  icon3: {
+    width: 28,
+    height: 24,
+  },
 });

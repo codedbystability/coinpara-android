@@ -38,7 +38,7 @@ const TradeSelect = (props) => {
       type={"MARKETS"}
       setActiveType={setCoinType}
       handleSelect={handleItemSelect}
-    />, false);
+    />, true);
   };
 
 
@@ -89,14 +89,14 @@ const styles = (props) => StyleSheet.create({
     width: SCREEN_WIDTH / 3,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: props.borderGray,
+    borderColor: props.actionColor,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
   text: {
     color: props.appWhite,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   img: {
     height: 20,

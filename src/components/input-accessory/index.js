@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { PADDING_H, SCREEN_WIDTH } from "../../../utils/dimensions";
 import TinyImage from "../../tiny-image";
+import { isIphoneX } from "../../../utils/devices";
 
 const InputAccessory = (props) => {
   const {
@@ -48,7 +49,7 @@ const InputAccessory = (props) => {
 
   const _keyboardWillShow = (e) => {
     setKeyboardShowing(true);
-    setBottom(tabBarShown ? e.endCoordinates.height - 70 : e.endCoordinates.height);
+    setBottom(tabBarShown && isIphoneX ? e.endCoordinates.height - 80 : tabBarShown && !isIphoneX ? e.endCoordinates.height - 60 : e.endCoordinates.height);
   };
 
   const _keyboardWillHide = (e) => {
@@ -93,20 +94,20 @@ const InputAccessory = (props) => {
             alignItems: "center",
             justifyContent: "center",
           }}>
-            <TinyImage parent={'rest/'} name={'c-up'} style={{
-              width:22,
-              height:22,
-            }}/>
+            <TinyImage parent={"rest/"} name={"c-up"} style={{
+              width: 22,
+              height: 22,
+            }} />
           </Pressable>
           <Pressable style={{
             width: "50%",
             alignItems: "center",
             justifyContent: "center",
           }} onPress={handleNext}>
-            <TinyImage parent={'rest/'} name={'c-down'} style={{
-              width:22,
-              height:22,
-            }}/>
+            <TinyImage parent={"rest/"} name={"c-down"} style={{
+              width: 22,
+              height: 22,
+            }} />
           </Pressable>
         </View>
       }
@@ -166,10 +167,10 @@ const InputAccessory = (props) => {
             }}
             onPress={onDelete}>
 
-            <TinyImage parent={'rest/'} name={'cancel'} style={{
-              width:22,
-              height:22,
-            }}/>
+            <TinyImage parent={"rest/"} name={"cancel"} style={{
+              width: 22,
+              height: 22,
+            }} />
           </Pressable>
         }
 
@@ -182,10 +183,10 @@ const InputAccessory = (props) => {
             justifyContent: "center",
           }}
           onPress={handleDismiss}>
-          <TinyImage parent={'rest/'} name={'keyboard-close'} style={{
-            width:22,
-            height:22,
-          }}/>
+          <TinyImage parent={"rest/"} name={"keyboard-close"} style={{
+            width: 22,
+            height: 22,
+          }} />
         </Pressable>
       </View>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import MarketContent from "./market-content";
 import NeedAuthentication from "../../../../components/need-authentication";
 import { isIphoneX } from "../../../../../utils/devices";
@@ -6,16 +6,17 @@ import HistoryContentIndex from "./history";
 import WalletContent from "./wallet-content";
 import InfoContent from "./info-content";
 import marketServices from "../../../../services/market-services";
-import OrdersPure from "../../orders/index-pure";
+import OrdersPure from "../../orders";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState, View } from "react-native";
 import { orderBy } from "lodash";
 import { setLatestTicker } from "../../../../actions/market-actions";
 import { useIsFocused } from "@react-navigation/native";
-// import { setupSignalRConnection, stopConnection } from "../../../../providers/CoreHubProvider";
+import { View } from "react-native";
 
 
-const MarketDetailTabsIndex = (props) => {
+// const FancyButton = React.forwardRef((props, ref) => (
+
+const MarketDetailTabsIndex = forwardRef((props, ref) => {
 
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -26,7 +27,18 @@ const MarketDetailTabsIndex = (props) => {
   const [asks, setAsks] = useState([]);
   const [bids, setBids] = useState([]);
   const [historyArr, setHistoryArr] = useState([]);
-  // const appState = useRef(AppState.currentState);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getLatestTicker() {
+        return {
+          "ask": asks.length >= 1 ? asks[0].ov : null,
+          "bid": bids.length >= 1 ? bids[0].ov : null,
+        };
+      },
+    }),
+  );
 
 
   useEffect(() => {
@@ -35,18 +47,6 @@ const MarketDetailTabsIndex = (props) => {
         connectMarket();
       }
       getContent();
-
-      // const subscription = AppState.addEventListener("change", nextAppState => {
-      //   if (nextAppState === "active") {
-      //     if (!user.UserGuid && !userToken) {
-      //       // setupSignalRConnection(null, null);
-      //     } else if (user.UserGuid && user) {
-      //       // setupSignalRConnection(user.UserGuid, userToken);
-      //     }
-      //   } else {
-      //     connection.stop();
-      //   }
-      // });
 
       return function cleanup() {
         if (connection) {
@@ -64,6 +64,7 @@ const MarketDetailTabsIndex = (props) => {
       .then(() => console.log("LeaveOrderHubLiteGroupAsync - ", market.gd))
       .catch(err => console.log("COULD NOT LeaveOrderHubLiteGroupAsync - ", "=> ", market.gd, err));
   };
+
   const connectMarket = () => {
 
     connection.invoke("JoinOrderHubLiteGroupAsync", market.gd)
@@ -105,8 +106,8 @@ const MarketDetailTabsIndex = (props) => {
         return <MarketContent
           asks1={asks}
           bids1={bids}
-          fromPrecision={market.spp}
-          toPrecision={market.svp}
+          fromPrecision={market.spp || 6}
+          toPrecision={market.svp || 6}
           handleDetail={handleDetail}
           market={market}
         />;
@@ -126,8 +127,8 @@ const MarketDetailTabsIndex = (props) => {
       case "history":
 
         return <HistoryContentIndex
-          tdp={market.tdp}
-          fdp={market.fdp}
+          tdp={market.tdp || 6}
+          fdp={market.fdp || 6}
           history={historyArr}
         />;
 
@@ -161,13 +162,13 @@ const MarketDetailTabsIndex = (props) => {
 
 
   return (
-    <View style={{ flex: 1 }}>
+    <View ref={ref} style={{ flex: 1 }}>
       {
         getDynamicContent()
       }
     </View>
   );
-};
+});
 
 
 export default React.memo(MarketDetailTabsIndex);

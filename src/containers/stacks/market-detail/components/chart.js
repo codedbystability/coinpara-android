@@ -10,6 +10,7 @@ import { rgbaToHex } from "../../../../helpers/color-helper";
 import { useSelector } from "react-redux";
 
 const BASE_CHART_URL = "https://fullchart.coinpara.com/";
+// const BASE_CHART_URL = "http://localhost:3000/";
 const MarketDetailChart = ({
                              type = "candle",
                              market = {},
@@ -30,8 +31,8 @@ const MarketDetailChart = ({
   useEffect(() => {
     if (activeUserColors && Object.keys(activeUserColors).length >= 1) {
       setColors({
-        green: activeUserColors.colors.green,
-        red: activeUserColors.colors.red,
+        green: activeUserColors.bidText,
+        red: activeUserColors.askText,
       });
     } else {
       setColors({
@@ -43,7 +44,8 @@ const MarketDetailChart = ({
 
 
   useEffect(() => {
-    setUrl(BASE_CHART_URL + "?type=" + type
+    setUrl(BASE_CHART_URL
+      + "?type=" + type
       + "&mg=" + market.gd
       + "&from=" + market.fs
       + "&to=" + market.to
@@ -58,8 +60,11 @@ const MarketDetailChart = ({
       + "&hLineColor=" + lineColor
       + "&priceBorderColor=" + lineColor
       + "&timeBorderColor=" + lineColor
-      + "&areaFillTopColor=000"
-      + "&areaFillBottomColor=2195fa",
+      + "&areaFillTopColor=2195fa"
+      + "&areaFillBottomColor=" + lineColor
+      // + "&areaLineColor=" + rgbaToHex(activeTheme.borderGray)
+      // + "&priceBorderColor=" + rgbaToHex(activeTheme.appWhite)
+      + "&priceColor=" + lineColor,
     );
   }, [type, market, interval, colors]);
 
@@ -99,9 +104,9 @@ export default React.memo(MarketDetailChart, (props, nextProps) => {
   if (
     props.type === nextProps.type &&
     props.interval === nextProps.interval &&
-    props.market.gd === nextProps.market.gd &&
-    props.market.from === nextProps.market.from &&
-    props.market.to === nextProps.market.to
+    props.market.gd === nextProps.market.gd
+    // props.market.from === nextProps.market.from &&
+    // props.market.to === nextProps.market.to
   ) {
     return true;
   }

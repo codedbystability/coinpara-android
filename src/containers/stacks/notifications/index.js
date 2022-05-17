@@ -13,6 +13,7 @@ import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
 import AnimatedTab from "../../../components/animated-tab";
 import SwipeAbleItem from "../../../components/swipe-list/components/item";
 import Loading from "../../../components/loading";
+import FloatingAction from "../../../components/floating-action";
 
 const refRow = [];
 let prevOpenedRow;
@@ -186,6 +187,7 @@ const Notifications = (props) => {
 
 
       </View>
+      <FloatingAction />
 
     </>
 

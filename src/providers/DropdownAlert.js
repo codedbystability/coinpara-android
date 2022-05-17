@@ -5,7 +5,7 @@ export const setDropdownAlert = (ref) => {
 };
 
 const show = (type, title, message, { data, duration } = {}) => {
-  dropdownAlertRef.show({ type, title, message, data, duration });
+  dropdownAlertRef?.show({ type, title, message, data, duration });
 };
 
 export default {

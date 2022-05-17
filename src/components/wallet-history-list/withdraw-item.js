@@ -1,17 +1,17 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { LIST_ITEM_HEIGHT } from "../../../utils/dimensions";
+import { LIST_ITEM_HEIGHT, PADDING_H } from "../../../utils/dimensions";
 import { navigationRef } from "../../providers/RootNavigation";
 import { formatMoney } from "../../helpers/math-helper";
 import TinyImage from "../../tiny-image";
 
 const RenderTransferWithdrawItem = (props) => {
 
-  const { item } = props;
-  const isWaiting = item.st === 1;
-  const isApproved = item.st === 2;
+  const { item, index } = props;
+  const isWaiting = item.Status === 1;
+  const isApproved = item.Status === 2;
   const { activeTheme } = useSelector(state => state.globalReducer);
 
   const color = isWaiting || isApproved ? activeTheme.appWhite : activeTheme.secondaryText;
@@ -19,15 +19,18 @@ const RenderTransferWithdrawItem = (props) => {
   const handleNavigation = (transfer) => navigationRef.current.navigate("TransactionDetail", { transfer });
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={.6}
       onPress={() => handleNavigation(item)}
-      style={styles(activeTheme).itemContainer}>
+      style={[styles(activeTheme).itemContainer, index % 2 === 1 && {
+        backgroundColor: activeTheme.darkBackground,
+      }]}>
       <View style={[styles(activeTheme).titleText, {}]}>
         <Text style={[styles(activeTheme).itemText, { color: color, fontSize: 14 }]}>
-          {formatMoney(item.am, item.cd === "TRY" ? 2 : 8)}
+          {formatMoney(item.Amount, item.CoinCode === "TRY" ? 2 : 8)}
         </Text>
         <Text style={[styles(activeTheme).itemText, { color: color }]}>
-          {item.cd}
+          {item.CoinCode}
         </Text>
       </View>
 
@@ -36,10 +39,10 @@ const RenderTransferWithdrawItem = (props) => {
         color: color,
       }]}>
         <Text style={[styles(activeTheme).itemText, { color: color }]}>{
-          moment.utc(item.ts).format("YYYY-MM-DD")
+          moment.utc(item.Timestamp).format("YYYY-MM-DD")
         }</Text>
         <Text style={[styles(activeTheme).itemText, { color: color }]}>{
-          moment.utc(item.ts).format("HH:mm")
+          moment.utc(item.Timestamp).format("HH:mm")
         }</Text>
       </View>
 
@@ -49,12 +52,12 @@ const RenderTransferWithdrawItem = (props) => {
         <TinyImage parent={"rest/"} name={isWaiting ? "waiting" : isApproved ? "success" : "cancel"}
                    style={styles(activeTheme).icon} />
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
 
-export default RenderTransferWithdrawItem;
+export default React.memo(RenderTransferWithdrawItem);
 
 
 const styles = (props) => StyleSheet.create({
@@ -62,10 +65,8 @@ const styles = (props) => StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: props.borderGray,
-    paddingBottom: 20,
+
+
   },
   titleText: {
     width: "33%",
@@ -97,6 +98,8 @@ const styles = (props) => StyleSheet.create({
     borderBottomWidth: .5,
     borderBottomColor: props.borderGray,
     height: LIST_ITEM_HEIGHT,
+    paddingHorizontal: PADDING_H,
+
   },
 
   icon: {

@@ -8,10 +8,9 @@ import {
   TITLE_FONTSIZE,
 } from "../../../utils/dimensions";
 
-const styles = (props,fontSizes) => StyleSheet.create({
+const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
-    // height: 140,
-    marginBottom: 0,
+    marginTop: PADDING_H,
   },
   headerContainer: {
     width: "100%",
@@ -25,10 +24,11 @@ const styles = (props,fontSizes) => StyleSheet.create({
     fontFamily: "CircularStd-Bold",
     fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
+
   },
   infoTab: {
     width: "100%",
-    height: 60,
+    height: 66,
     // paddingVertical: PADDING_V,
     paddingHorizontal: PADDING_H,
   },
@@ -40,26 +40,35 @@ const styles = (props,fontSizes) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: props.activeListBg,
+    // backgroundColor: props.actionColor,
+    backgroundColor: "#0B3EB2",
+    // borderWidth: 1,
+    // borderColor: props.borderGray,
     borderRadius: 8,
     paddingHorizontal: PADDING_H,
   },
   amount: {
     fontFamily: "CircularStd-Bold",
     fontSize: fontSizes?.BIG_TITLE_FONTSIZE + 2,
-    color: props.appWhite,
-    marginRight: 16,
-    lineHeight: 30,
+    color: "#fff",
 
   },
   smallText: {
     fontFamily: "CircularStd-Book",
     fontSize: fontSizes?.TITLE_FONTSIZE,
     color: props.appWhite,
-    lineHeight: 30,
-
   },
 
+  smallText2: {
+    fontFamily: "CircularStd-Book",
+    fontSize: fontSizes?.NORMAL_FONTSIZE,
+    color: props.appWhite,
+  },
+  smallTextUSDT: {
+    fontFamily: "CircularStd-Book",
+    fontSize: fontSizes?.TITLE_FONTSIZE,
+    color: "#0B3EB2",
+  },
 
   // SHORTCUTS
   container: {
@@ -175,24 +184,26 @@ const styles = (props,fontSizes) => StyleSheet.create({
   tl: {
     width: 80,
     borderRadius: 12,
-    backgroundColor: props.actionColor,
-    marginRight: 8,
+    backgroundColor: "#0B3EB2",
+    // marginRight: 8,
     paddingVertical: 2,
     borderWidth: 1,
     borderColor: props.secondaryText,
   },
   tlText: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.TITLE_FONTSIZE,
+    fontSize: fontSizes?.TITLE_FONTSIZE - 2,
     textAlign: "center",
-    color: props.appWhite,
+    color: "#fff",
   },
   usd: {
     width: 80,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: props.appWhite,
+    borderColor: "#fff",
     paddingVertical: 2,
+    marginTop: 8,
+    backgroundColor: props.actionColor,
 
   },
 
@@ -229,13 +240,18 @@ const styles = (props,fontSizes) => StyleSheet.create({
   },
   arr: { flexDirection: "row", padding: 10 },
   bttns: {
-    flexDirection: "row",
+    // flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
-  ind: { alignSelf: "flex-start", marginTop: 12 },
+  ind: {},
   eye: {
-    width: 20,
+    width: 16,
     height: 16,
+  },
+  eye2: {
+    width: 12,
+    height: 12,
   },
   icn: {
     width: 22,

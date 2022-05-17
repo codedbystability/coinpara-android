@@ -17,14 +17,14 @@ const actions = [
     id: 1,
     key: "price-deposit",
     title: "DEPOSIT_TL",
-    image: "tl",
+    image: "tl-deposit",
     icon: "arrow-down",
   },
   {
     id: 2,
     key: "price-withdraw",
     title: "WITHDRAW_TL",
-    image: "tl",
+    image: "tl-withdraw",
     icon: "arrow-up",
 
   },
@@ -32,14 +32,14 @@ const actions = [
     id: 5,
     key: "instant-trade",
     title: "INSTANT_TRADE",
-    image: "instant-trade",
+    image: "instant-trade-2",
 
   },
   {
     id: 3,
     key: "crypto-deposit",
     title: "DEPOSIT_CRYPTO",
-    image: "crypto",
+    image: "crypto-deposit",
     icon: "arrow-down",
 
   },
@@ -47,7 +47,7 @@ const actions = [
     id: 4,
     key: "crypto-withdraw",
     title: "WITHDRAW_CRYPTO",
-    image: "crypto",
+    image: "crypto-withdraw",
     icon: "arrow-up",
 
   },
@@ -64,7 +64,7 @@ const WalletActionTab = (props) => {
                  style={({ pressed }) => [
                    styles(activeTheme).item,
                    {
-                     backgroundColor: pressed ? activeTheme.inActiveListBg : activeTheme.darkBackground,
+                     // backgroundColor: pressed ? activeTheme.inActiveListBg : activeTheme.darkBackground,
                    },
                  ]}>
         <TinyImage parent={"shortcuts/"} name={item.image}
@@ -113,7 +113,7 @@ export default WalletActionTab;
 const styles = (props) => StyleSheet.create({
   wrapper: {
     paddingHorizontal: PADDING_H,
-    marginVertical: MARGIN_T,
+    marginTop: MARGIN_T,
   },
   innerWrapper: {
     width: "100%",
@@ -140,8 +140,8 @@ const styles = (props) => StyleSheet.create({
     paddingLeft: 2,
   },
   icon: {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
   },
   text: {
     fontFamily: "CircularStd-Book",
@@ -152,18 +152,17 @@ const styles = (props) => StyleSheet.create({
 
 
   item: {
-    backgroundColor: props.darkBackground,
+    // backgroundColor: props.darkBackground,
     width: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 2))) / 5,
     height: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 6))) / 5,
-    paddingVertical: 4,
     alignItems: "center",
     justifyContent: "space-around",
     marginRight: 4,
     marginVertical: 4,
     borderRadius: 8,
     paddingHorizontal: 2,
-    borderWidth: 1,
-    borderColor: props.borderGray,
+    // borderWidth: 1,
+    // borderColor: props.borderGray,
   },
   annWrapper: {
     paddingHorizontal: PADDING_H,
@@ -186,12 +185,12 @@ const styles = (props) => StyleSheet.create({
   },
 
   img: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   },
   imgH: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
   },
   arr: {
     width: 12,

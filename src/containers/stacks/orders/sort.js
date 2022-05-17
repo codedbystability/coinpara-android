@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
     color: "rgb(112,122,129)",
     fontSize: 13,
     letterSpacing: 0,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   activeText: {
     color: "rgb(9,160,255)",
     fontSize: 13,
     letterSpacing: 0,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
 
 });

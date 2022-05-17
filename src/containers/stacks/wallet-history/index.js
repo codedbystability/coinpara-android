@@ -1,74 +1,50 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import InfoCard from "../../../components/info-card";
 import CustomButton from "../../../components/button";
 import { useSelector } from "react-redux";
 import transferServices from "../../../services/transfer-services";
 import EmptyContainer from "../../../components/empty-container";
 import WalletHistoryListHeader from "../../../components/wallet-history-list/header";
-import { depositHeaders, historyTypes, withdrawHeaders } from "./constants";
-import { PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { historyTypes, withdrawHeaders } from "./constants";
+import { LIST_ITEM_HEIGHT, PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
-import DropdownAlert from "../../../providers/DropdownAlert";
-import RenderTransferDepositItem from "../../../components/wallet-history-list/deposit-item";
 import RenderTransferWithdrawItem from "../../../components/wallet-history-list/withdraw-item";
 import { navigationRef } from "../../../providers/RootNavigation";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
-import SwipeAbleItem from "../../../components/swipe-list/components/item";
 import AnimatedTab from "../../../components/animated-tab";
-import PlLoading from "../../pl-loading";
-import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
-import { orderBy } from "lodash";
+import EditButton from "../../../components/edit-button";
+import WalletHistoryFilter from "./filter";
+import CustomList from "../../../components/custom-list";
+import moment from "moment";
+import FloatingAction from "../../../components/floating-action";
 
 
 const WalletHistory = (props) => {
-  const { activeTheme, language, connection } = useSelector(state => state.globalReducer);
+  const { activeTheme, activeThemeKey, language } = useSelector(state => state.globalReducer);
   const { wallets } = useSelector(state => state.walletReducer);
-  const { user } = useSelector(state => state.authenticationReducer);
 
   const [loading, setLoading] = useState(true);
   const [wallet, setWallet] = useState(null);
-  const [itemTransfers, setItemTransfers] = useState(null);
+  const [itemTransfers, setItemTransfers] = useState([]);
   const [activeHistory, setActiveHistory] = useState("deposit");
-  const [withdraws, setWithdraws] = useState(null);
-  const [deposits, setDeposits] = useState(null);
-  const [selectedTransfer, setSelectedTransfer] = useState({});
+  const [withdraws, setWithdraws] = useState([]);
+  const [deposits, setDeposits] = useState([]);
+  const [showFilter, setShowFilter] = useState(false);
+  const [page, setPage] = useState(null);
+  const [noMore, setNoMore] = useState(false);
+  const [filterObj, setFilterObj] = useState({});
 
   useEffect(() => {
-    if (connection && user.UserGuid) {
-      // TRANSFER HUB
-      connection.invoke("JoinTransferHubLiteGroupAsync", user.UserGuid)
-        .then(() => console.log("≠COREHUB- TRANSFER !"))
-        .catch(err => console.log("≠COREHUB- TRANSFER ! - ", err));
+    if (props && props.route.params
+      && props.route.params.wallet
+      && props.route.params.coinId
+      && typeof props.route.params.wallet === "string") {
 
-      //TRANSFERS
-      connection.on("notifyUserTransferDashBoard", (withdraws, deposits) => {
-        // console.log("notifyUserTransferDashBoard - ", withdraws.length, deposits.length);
-
-        setWithdraws(orderBy(withdraws, ["ts"], ["desc"]));
-        setDeposits(orderBy(deposits, ["ts"], ["desc"]));
-      });
-
-      connection.on("notifyUserTransferDashBoardUpdate", (withdraws, deposits) => {
-        // console.log("notifyUserTransferDashBoardUpdate - ", withdraws.length, " -> ", deposits.length);
-      });
-
-
-      return function cleanup() {
-        console.log("cleanup transfer hub");
-        connection.off("notifyUserTransferDashBoard");
-        connection.off("notifyUserTransferDashBoardUpdate");
-
-        if (user.UserGuid) {
-          connection.invoke("LeaveTransferHubLiteGroupAsync", user.UserGuid)
-            .then(() => console.log("LEFT TRANSFER HUB"))
-            .catch((e) => console.log("COULNT NOT LEAVE TRANSFER HUB - ", e));
-        }
-      };
 
     }
-  }, [connection, user]);
+  }, [props.route]);
 
   useEffect(() => {
     if (itemTransfers) {
@@ -77,7 +53,22 @@ const WalletHistory = (props) => {
   }, [itemTransfers]);
 
   useEffect(() => {
-    if (activeHistory && withdraws && deposits) {
+    if (activeHistory) {
+      setPage(1);
+      setNoMore(false);
+      setFilterObj({
+        ...filterObj,
+        type: activeHistory === "deposit" ? "1" : "-1",
+        to: moment().format("YYYY-MM-DD"),
+        from: moment().subtract(3, "months").format("YYYY-MM-DD"),
+        status: "",
+        coinId: props.route.params && props.route.params.wallet && props.route.params.coinId || "",
+      });
+    }
+  }, [activeHistory]);
+
+  useEffect(() => {
+    if (activeHistory) {
       if (activeHistory === "deposit") {
         setItemTransfers(wallet ? deposits.filter(transfer => transfer.cd === wallet.cd) : deposits);
       } else if (activeHistory === "withdraw") {
@@ -93,14 +84,14 @@ const WalletHistory = (props) => {
   }, [wallets, props.route]);
 
   useEffect(() => {
-    if (selectedTransfer && selectedTransfer.tg && selectedTransfer.st === 1) {
-      ActionSheetComProvider.show({
-        title: getLang(language, selectedTransfer.di === 1 ? "DO_YOU_WANT_TO_CANCEL_DEPOSIT_TRANSFER" : "DO_YOU_WANT_TO_CANCEL_WITHDRAW_TRANSFER"),
-        options: [getLang(language, "CANCEL_TRANSFER"), getLang(language, "CANCEL")],
-        onAction: (index) => handleCancelService(index),
-      });
-    }
-  }, [selectedTransfer]);
+    setTimeout(() => {
+      if (page && filterObj && filterObj.type) {
+        setActiveHistory(filterObj.type === "1" ? "deposit" : "withdraw");
+        handleFilter(filterObj, page === 1);
+      }
+    }, 500);
+  }, [page, filterObj]);
+
 
   const handleDepositWithdraw = (type) => navigationRef.current.navigate("Transfer", {
     wallet,
@@ -108,29 +99,56 @@ const WalletHistory = (props) => {
     coinType: ["TRY", "EUR", "USD"].includes(wallet.cd) ? "price" : "crypto",
   });
 
-  const handleCancelApprove = (transfer) => {
-    if (!transfer || transfer.st !== 1) {
-      return;
-    }
-    setSelectedTransfer(transfer);
-  };
-
-  const handleCancelService = (index) => {
-    if (index !== 0)
-      return;
-
-    transferServices.cancelTransfer(selectedTransfer.tg).then((response) => {
-      if (response.IsSuccess) {
-        return DropdownAlert.show("success", getLang(language, "SUCCESS"), response.ErrorMessage);
-      }
-    });
-  };
 
   const handleChangeTradeType = (item) => setActiveHistory(item.key);
 
+  const handleShowFilter = () => setShowFilter(!showFilter);
+
+
+  const handleFilterForm = (obj) => {
+    console.log(obj);
+    setPage(1);
+    setFilterObj(obj);
+  };
+
+  const handleFilter = (obj, isNew = false) => {
+    setShowFilter(false);
+    const myUrl = `https://apiv2.coinpara.com/api/transfers/search?RowLimit=20&PageNumber=${page}&coinId=${obj.coinId}&StatusList=${obj.status}&DirectionList=${obj.type}&DateFrom=${obj.from}&DateTo=${obj.to}`;
+
+    transferServices.search(myUrl).then((response) => {
+      if (response.IsSuccess) {
+        if (!response.Data || response.Data.length <= 0) {
+          if (obj.type === "1") {
+            setDeposits(isNew ? response.Data : [...deposits, ...response.Data]);
+          } else {
+            setWithdraws(isNew ? response.Data : [...withdraws, ...response.Data]);
+          }
+          return setNoMore(true);
+        }
+
+        if (obj.type === "1") {
+          setDeposits(isNew ? response.Data : [...deposits, ...response.Data]);
+        } else {
+          setWithdraws(isNew ? response.Data : [...withdraws, ...response.Data]);
+        }
+      }
+    });
+
+  };
+
+  const onEndReached = () => {
+    if (noMore) {
+      return;
+    }
+    setPage(page + 1);
+  };
+
   return (
     <>
-      <TabNavigationHeader {...props} backAble={true} options={{ title: getLang(language, "HISTORY") }} />
+      <TabNavigationHeader {...props}
+                           backAble={true}
+                           isBack={true}
+                           options={{ title: getLang(language, "HISTORY") }} />
 
       <View style={styles(activeTheme).container}>
 
@@ -138,58 +156,52 @@ const WalletHistory = (props) => {
         <View style={styles(activeTheme).wrapper}>
 
           {
-            loading ? <PlLoading height={120} /> : wallet &&
-              <InfoCard handleButton={(type) => handleDepositWithdraw(type)} showButtons={true} wallet={wallet} />
+            wallet &&
+            <InfoCard handleButton={(type) => handleDepositWithdraw(type)} showButtons={true} wallet={wallet} />
 
           }
 
           {
-            !loading && <View style={{ paddingVertical: 20 }}>
+            !loading && <View style={{
+              paddingVertical: 20, paddingHorizontal: PADDING_H,
+            }}>
               <AnimatedTab {...{
                 activeKey: activeHistory,
                 headers: historyTypes,
                 width: `${100 / historyTypes.length}%`,
                 onChange: handleChangeTradeType,
+                filled: true,
               }} />
             </View>
           }
 
 
           {
-            loading ? <ActivityIndicator color={activeTheme.secondaryText} /> :
-              itemTransfers.length <= 0 ? <View style={{
-                  width: SCREEN_WIDTH - (PADDING_H * 2),
-                  paddingTop: SCREEN_WIDTH / 1.5,
-                }}>
-                  <EmptyContainer icon={"empty-wallet"} text={""} />
-                </View> :
-                <>
-                  <WalletHistoryListHeader{...{
-                    activeTheme,
-                    language,
-                    headers: activeHistory === "deposit" ? depositHeaders : withdrawHeaders,
-                  }} />
+            itemTransfers.length <= 0 ? <View style={{
+                paddingTop: SCREEN_WIDTH / 2,
+              }}>
+                <EmptyContainer icon={"empty-wallet"} text={getLang(language, "NO_DATA_FOUND")} />
+              </View> :
+              <>
+                <WalletHistoryListHeader{...{
+                  activeTheme,
+                  language,
+                  headers: withdrawHeaders,
+                }} />
 
-                  <FlatList
-                    contentContainerStyle={styles(activeTheme).flat}
-                    showsVerticalScrollIndicator={false}
-                    data={itemTransfers}
-                    renderItem={({ item, index }) => {
-                      const isWaiting = item.st === 1;
-                      const isDeposit = item.di === 1;
 
-                      return isWaiting ? <SwipeAbleItem {...{ item }} Layout={() => isDeposit ?
-                          <RenderTransferDepositItem{...{ item }} /> :
-                          <RenderTransferWithdrawItem{...{ item }} />}
-                                                        onSwipe={() => handleCancelApprove(item)}
-                        /> :
-                        isDeposit ?
-                          <RenderTransferDepositItem{...{ item }} /> :
-                          <RenderTransferWithdrawItem{...{ item }} />;
-                    }}
-                    keyExtractor={item => item.tg}
-                  />
-                </>
+                <CustomList
+                  scrollEnabled
+                  borderGray={activeTheme.borderGray}
+                  contentStyle={styles(activeTheme).flat}
+                  style={{ backgroundColor: activeTheme.backgroundApp }}
+                  data={itemTransfers}
+                  keyExtractor={item => item.TransferGuid}
+                  itemHeight={LIST_ITEM_HEIGHT}
+                  renderItem={({ item, index }) => <RenderTransferWithdrawItem{...{ item, index }} />}
+                  onEndReached={onEndReached}
+                />
+              </>
 
 
           }
@@ -224,6 +236,24 @@ const WalletHistory = (props) => {
       </View>
 
 
+      <WalletHistoryFilter {...{
+        parity: props.route.params && props.route.params.wallet && props.route.params.wallet || "",
+        showFilter,
+        setShowFilter,
+        activeTheme,
+        activeThemeKey,
+        setFilterObj,
+        language,
+        handleShowFilter,
+        handleFilterForm,
+      }} />
+
+
+      <FloatingAction />
+
+
+      <EditButton onPress={handleShowFilter} />
+
     </>
 
   );
@@ -238,7 +268,6 @@ const styles = (props) => StyleSheet.create({
 
   wrapper: {
     flex: 1,
-    paddingHorizontal: PADDING_H,
   },
   buttonWrapper: {
     flexDirection: "row",
@@ -264,5 +293,10 @@ const styles = (props) => StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
-  flat: { paddingVertical: 20, paddingBottom: 80 },
+  flat: {
+    paddingVertical: 20,
+    paddingBottom: 80,
+
+
+  },
 });

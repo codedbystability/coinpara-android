@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   description: {
     color: "rgb(112,122,129)",
     fontSize: 12,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   middleWrapper: {
     height: "100%",

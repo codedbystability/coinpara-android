@@ -10,8 +10,7 @@ import {name as appName} from "./app.json";
 LogBox.ignoreAllLogs();
 AppRegistry.registerComponent(appName, () => App);
 
-console.log = () => {
-}
+// console.log = () => {}
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;

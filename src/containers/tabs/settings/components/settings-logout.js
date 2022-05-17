@@ -7,8 +7,10 @@ import LocalStorage from "../../../../providers/LocalStorage";
 import { disableInvalidToken } from "../../../../actions/auth-actions";
 import { useSelector } from "react-redux";
 import store from "../../../../reducers/createReducers";
+import TinyImage from "../../../../tiny-image";
+import { PADDING_H } from "../../../../../utils/dimensions";
 
-const SettingsLogout = (props) => {
+const SettingsLogout = () => {
   const { activeTheme, language } = useSelector(state => state.globalReducer);
 
   const showActionSheet = () => ActionSheetComProvider.show({
@@ -22,7 +24,7 @@ const SettingsLogout = (props) => {
       return;
     }
     LocalStorage.removeItem("token");
-    LocalStorage.removeItem("refresh_token");
+    // LocalStorage.removeItem("refresh_token");
     store.dispatch(disableInvalidToken(null));
     DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "LOGGED_OUT_SUCCESSFULLY"));
   };
@@ -31,6 +33,7 @@ const SettingsLogout = (props) => {
     <Pressable
       onPress={showActionSheet}
       style={styles(activeTheme).wrapper}>
+      <TinyImage parent={"rest/"} name={"logout"} style={styles(activeTheme).icon} />
       <Text style={styles(activeTheme).text}>
         {getLang(language, "LOGOUT")}
       </Text>
@@ -42,11 +45,20 @@ export default React.memo(SettingsLogout);
 
 const styles = props => StyleSheet.create({
   wrapper: {
-    marginTop: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "center",
   },
   text: {
     textAlign: "center",
     fontFamily: "CircularStd-Bold",
     color: props.noRed,
+    paddingVertical: PADDING_H / 2,
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    marginRight: PADDING_H,
   },
 });

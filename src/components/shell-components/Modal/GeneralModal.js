@@ -3,7 +3,7 @@ import ModalProvider, { setModalRef } from "../../../providers/ModalProvider";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import HapticProvider from "../../../providers/HapticProvider";
-import { PADDING_H, SCREEN_WIDTH, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
 import TinyImage from "../../../tiny-image";
 import { setNonUser } from "../../../actions/auth-actions";
 
@@ -57,6 +57,7 @@ const GeneralModal = forwardRef((props, ref) => {
            transparent={false}
            visible={visible}
            onRequestClose={onHide}
+           statusBarTranslucent
     >
       <View style={{ zIndex: 999, flex: 1, backgroundColor: activeTheme.backgroundApp, paddingTop: PADDING_H }}>
         {
@@ -85,24 +86,24 @@ const CustomActionSheetComp = () => {
 export default CustomActionSheetComp;
 
 
-const ww = SCREEN_WIDTH * 0.1;
+const ww = SCREEN_WIDTH * 0.2;
 
 const styles = () => StyleSheet.create({
   dismissButton: {
     fontFamily: "CircularStd-Bold",
     color: "#fff",
     position: "absolute",
-    bottom: 50,
+    bottom: 30,
     width: ww,
     height: ww,
     borderRadius: ww / 2,
-    left: "45%",
+    left: SCREEN_WIDTH / 2 - ww/2,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999999,
   },
   icon: {
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
   },
 });

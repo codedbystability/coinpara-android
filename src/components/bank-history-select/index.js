@@ -15,36 +15,46 @@ const BankHistorySelect = (props) => {
 
   const renderItem = ({ item }) => {
     return (
-      <Pressable
-        onPress={() => handleSelect(item)}
+      <View
         style={[styles(activeTheme).item]}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <View style={{ width: "70%" }}>
-            <Text style={styles(activeTheme).text}>{item.Account}</Text>
+          <Pressable
+            onPress={() => handleSelect(item)}
+            style={{ width: "60%" }}>
             <Text style={styles(activeTheme).title}>{item.BankName}</Text>
-          </View>
+            <Text style={styles(activeTheme).text}>{item.Account}</Text>
+          </Pressable>
 
 
           <View style={{
             flexDirection: "row",
             alignItems: "center",
-            width: "30%",
+            justifyContent: "space-between",
+            width: "40%",
           }}>
-            <View style={{ width: "70%", alignItems: "flex-end", marginRight: 10 }}>
+            <Pressable
+              onPress={() => handleSelect(item)}
+              style={{ width: "70%", alignItems: "flex-end", marginRight: 10 }}>
               <Text
                 style={[styles(activeTheme).title, { fontSize: NORMAL_FONTSIZE }]}>{moment(item.Timestamp).utc().local().format("YYYY-MM-DD")}</Text>
               <Text
                 style={[styles(activeTheme).text, { fontSize: NORMAL_FONTSIZE }]}>{moment(item.Timestamp).utc().local().format("HH:mm")}</Text>
-            </View>
+            </Pressable>
 
             <Pressable
               onPress={() => handleDeleteBank(item)}
-              style={{ width: "20%", alignItems: "flex-end" }}>
+              style={{
+                borderRadius: PADDING_H/2,
+                width: "30%",
+                alignItems: "center",
+                paddingVertical: PADDING_H / 2,
+                height: "100%",
+              }}>
               <TinyImage parent={"rest/"} name={"dismiss"} style={styles(activeTheme).icon} />
             </Pressable>
           </View>
         </View>
-      </Pressable>
+      </View>
     );
   };
 
@@ -104,7 +114,7 @@ const styles = (props) => StyleSheet.create({
     marginTop: 6,
   },
   text: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: NORMAL_FONTSIZE - 1,
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
   },

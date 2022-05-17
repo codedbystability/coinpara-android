@@ -42,9 +42,13 @@ export function getLanguageField(languageContent, key1, key2) {
 
 
 export function getLang(languageContent, key1, fallback) {
+  // if (!(key1 in languageContent))
   if (!languageContent || Object.keys(languageContent).keys <= 0 || !(key1 in languageContent))
-    return fallback ? fallback : key1 ? "ERROR_" + key1.toLowerCase() : "ERRRR";
+    return key1;
 
+  // if (key1 === "OPEN_SUPPORT_REQUESTS") {
+  //   console.log("languageContent[key1] - ", languageContent, languageContent[key1]);
+  // }
   return languageContent[key1];
 }
 

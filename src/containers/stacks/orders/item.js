@@ -5,13 +5,21 @@ import { formatMoney } from "../../../helpers/math-helper";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import moment from "moment";
+import { navigationRef } from "../../../providers/RootNavigation";
 
 const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
   // TODO width + type / 0-1
-  const { activeTheme,fontSizes, language } = useSelector(state => state.globalReducer);
+  const { activeTheme, fontSizes, language } = useSelector(state => state.globalReducer);
   const itemWidth = parseInt((item.fa * 100) / item.am);
+
+  const handleNavigation = () => {
+    navigationRef.current.navigate("OrderDetail", {
+      order: item,
+    });
+  };
   return (
-    <View
+    <Pressable
+      onPress={handleNavigation}
       key={item.ts}
       style={styles(activeTheme).container}>
 
@@ -20,13 +28,13 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 
           <View style={styles(activeTheme).inner2}>
             <View style={styles(activeTheme).content}>
-              <Text style={[styles(activeTheme,fontSizes).title, { width: "20%" }]}>{item.cf}/{item.ct}</Text>
-              <Text style={[styles(activeTheme,fontSizes).priceTitle, { width: "35%" }]}>
-                <Text style={styles(activeTheme,fontSizes).description}>{getLang(language, "PRICE")}: </Text>
+              <Text style={[styles(activeTheme, fontSizes).title, { width: "30%" }]}>{item.cf}/{item.ct}</Text>
+              <Text style={[styles(activeTheme, fontSizes).priceTitle, { width: "30%" }]}>
+                <Text style={styles(activeTheme, fontSizes).description}>{getLang(language, "PRICE")}: </Text>
                 {formatMoney(item.ov, item.fdp)}
               </Text>
-              <Text style={[styles(activeTheme,fontSizes).description, {
-                width: "45%",
+              <Text style={[styles(activeTheme, fontSizes).description, {
+                width: "35%",
                 textAlign: "right",
               }]}>{
                 moment.utc(item.ts).format("YYYY-MM-DD HH:mm:ss")
@@ -38,13 +46,13 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
             <View style={{
               flexDirection: "row",
             }}>
-              <Text style={[styles(activeTheme,fontSizes).priceTitle]}>
-                <Text style={styles(activeTheme,fontSizes).description}>{getLang(language, "AMOUNT")}: </Text>
+              <Text style={[styles(activeTheme, fontSizes).priceTitle]}>
+                <Text style={styles(activeTheme, fontSizes).description}>{getLang(language, "AMOUNT")}: </Text>
                 {/*{item.fa}*/}
                 {formatMoney(item.fa, item.tdp)}
               </Text>
-              <Text style={styles(activeTheme,fontSizes).description}>
-                <Text style={styles(activeTheme,fontSizes).description}> / </Text>
+              <Text style={styles(activeTheme, fontSizes).description}>
+                <Text style={styles(activeTheme, fontSizes).description}> / </Text>
                 {formatMoney(item.am, item.tdp)}
               </Text>
             </View>
@@ -58,7 +66,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 
 
             <Text
-              style={[styles(activeTheme,fontSizes).positive, { color: item.di === 1 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
+              style={[styles(activeTheme, fontSizes).positive, { color: item.di === 1 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
               {
                 item.ty === 1 ? getLang(language, "MARKET_ORDER") :
                   getLang(language, item.di === 1 ? "BUY_LIMIT" : "SELL_LIMIT")
@@ -66,7 +74,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 
               {
                 item.ty !== 1 && <Text>
-                   %{itemWidth}
+                  %{itemWidth}
                 </Text>
               }
 
@@ -78,7 +86,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
             }}>
               {
                 cancelAble && <Pressable onPress={() => handleCancel(item)} style={styles(activeTheme).cancelContainer}>
-                  <Text style={styles(activeTheme,fontSizes).cancelTitle}>
+                  <Text style={styles(activeTheme, fontSizes).cancelTitle}>
                     {getLang(language, "CANCEL")}
                   </Text>
                 </Pressable>
@@ -98,7 +106,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 
       </View>
 
-    </View>
+    </Pressable>
 
 
   );
@@ -107,7 +115,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 export const MemoizedOrderItem = React.memo(OrderItem);
 
 
-const styles = (props,fontSizes) => StyleSheet.create({
+const styles = (props, fontSizes) => StyleSheet.create({
 
   container: {
     width: "100%",
@@ -156,7 +164,7 @@ const styles = (props,fontSizes) => StyleSheet.create({
   description: {
     color: props.secondaryText,
     fontSize: fontSizes?.NORMAL_FONTSIZE,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   middleWrapper: {
     height: "100%",
@@ -176,12 +184,12 @@ const styles = (props,fontSizes) => StyleSheet.create({
   negative: {
     color: props.changeRed, //   for red
     fontSize: fontSizes?.TITLE_FONTSIZE,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
 
   },
   positive: {
     fontSize: fontSizes?.TITLE_FONTSIZE,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
 
   redColor: {

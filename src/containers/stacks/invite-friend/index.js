@@ -17,6 +17,7 @@ import { getLang } from "../../../helpers/array-helper";
 import ModalProvider from "../../../providers/ModalProvider";
 import AnimatedTab from "../../../components/animated-tab";
 import { headers, options, percentages } from "./constants";
+import FloatingAction from "../../../components/floating-action";
 
 
 const InviteFriends = (props) => {
@@ -91,6 +92,10 @@ const InviteFriends = (props) => {
         <View style={{ height: 100, width: "100%" }} />
 
       </ScrollView>
+
+
+      <FloatingAction />
+
     </>
   );
 

@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { AppState, Platform } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  AppState,
+  Platform,
+  DeviceEventEmitter,
+  Modal,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+} from "react-native";
 import { HubConnectionBuilder, JsonHubProtocol, LogLevel } from "@microsoft/signalr";
-import { createStackNavigator } from "@react-navigation/stack";
 import { useDispatch, useSelector } from "react-redux";
 import BackgroundTimer from "react-native-background-timer";
 import ReactNativeBiometrics from "react-native-biometrics";
 import moment from "moment";
 
-import TabNavigationHeader from "../components/tab-navigation-header";
-import { nonLoginStackItems, stackItems } from "./stack-items";
 import LocalStorage from "../providers/LocalStorage";
 import { getLang } from "../helpers/array-helper";
 import ModalProvider from "../providers/ModalProvider";
@@ -23,12 +29,20 @@ import DropdownAlert from "../providers/DropdownAlert";
 import AppStateLayout from "./layout";
 import fcmServices from "../services/fcm-services";
 import { navigationRef } from "../providers/RootNavigation";
+import QuickActions from "react-native-quick-actions";
+import TinyImage from "../tiny-image";
+import { BIG_TITLE_FONTSIZE, PADDING_H, SCREEN_HEIGHT, TITLE_FONTSIZE } from "../../utils/dimensions";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import DrawerContent from "./drawer-content";
+import { drawerItems } from "./stack-items";
+import StackTabNav from "./tab-navigator";
+import RegisterAdditional from "../containers/stacks/register/register-additional";
+import DeviceProvider from "../providers/DeviceProvider";
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 let subscription = null,
   timeoutId = null,
-  quitStateNotifyOpened = false,
   notifies = [],
   storedMarkets = [],
   connectionG = null,
@@ -36,59 +50,164 @@ let subscription = null,
   userGuid = null,
   intervalId = null,
   MARKET_COUNT = 0,
-  SECONDS_TO_WAIT = 30,
-  shouldReConnect = true;
+  SECONDS_TO_WAIT = 60,
+  shouldReConnect = false,
+  QUICK_ACTIONS_AUTH = [
+    {
+      type: "AccountInformation", // Required
+      title: "Profilim", // Optional, if empty, `type` will be used instead
+      subtitle: "Profilinizi görüntüleyin.",
+      icon: "iuser", // Icons instructions below
+      userInfo: {
+        url: "app://profile", // Provide any custom data like deep linking URL
+      },
+    },
+    {
+      type: "Transfer",
+      title: "Türk Lirası Yatır",
+      subtitle: "Kolay ve Güvenilir TL Yatır.",
+      icon: "tl",
+      userInfo: {
+        url: "app://deposit_tl",
+      },
+    },
+    {
+      type: "Wallet",
+      title: "Varlıklarım",
+      subtitle: "Varlıklarınızı görüntüleyin.",
+      icon: "wallet",
+      userInfo: {
+        url: "app://wallet",
+      },
+    },
+
+
+    {
+      type: "ScanScreen",
+      title: "QR Kod Tara",
+      subtitle: "QR Kodu taratınız.",
+      icon: "iqr",
+      userInfo: {
+        url: "app://qr",
+      },
+    },
+
+  ];
 
 const MainNavigator = ({ walkThroughSeen }) => {
   const dispatch = useDispatch();
   const { user, userToken } = useSelector(state => state.authenticationReducer);
   const { language, activeTheme, connection } = useSelector(state => state.globalReducer);
-  const [aState, setAppState] = useState(AppState.currentState);
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [faceIdModal, setFaceIdModal] = useState(false);
+  const [navigationType, setNavigationType] = useState("");
 
   useEffect(() => {
-    // LocalStorage.clearAll();
-    // FastImage.clearDiskCache().then(r => null);
-    // FastImage.clearMemoryCache().then(r => null);
     subscription = AppState.addEventListener("change", nextAppState => {
-      setAppState(nextAppState);
+
       if (nextAppState === "active") {
-        if (timeoutId) {
-          BackgroundTimer.clearTimeout(timeoutId);
-          BackgroundTimer.stop();
-          timeoutId = null;
+        const currentRoute = LocalStorage.getObject("currentRoute");
+
+        if (appState.current.match(/inactive|background/)) {
+
+          if (timeoutId) {
+            BackgroundTimer.clearTimeout(timeoutId);
+            BackgroundTimer.stop();
+            timeoutId = null;
+          }
+
+          if (shouldReConnect) {
+            shouldReConnect = false;
+            if (!user.UserGuid && !userToken && !connection) {
+              setupSignalRConnection(null, null).then(r => console.log("setupSignalRConnection"));
+            } else if (user && user.UserGuid && !connection) {
+              setupSignalRConnection(user.UserGuid, userToken).then(r => console.log("setupSignalRConnection"));
+            }
+
+            if (currentRoute && currentRoute.name && currentRoute.name !== navigationRef.current.getCurrentRoute().name) {
+              LocalStorage.removeItem("currentRoute");
+
+              setTimeout(() => {
+                navigationRef.current.navigate(currentRoute.name, currentRoute.params);
+              }, 2000);
+            }
+
+          }
+
+
+          appState.current = nextAppState;
+          setAppStateVisible(appState.current);
+
+
         }
-        if (!user.UserGuid && !userToken && !connection) {
-          setupSignalRConnection(null, null).then(r => console.log("setupSignalRConnection"));
-        } else if (user.UserGuid && user && !connection) {
-          setupSignalRConnection(user.UserGuid, userToken).then(r => console.log("setupSignalRConnection"));
-        }
-      } else {
+
+
+      } else if (appState.current.match(/active|inactive/) && nextAppState === "background") {
+
+
+        const route = navigationRef.current.getCurrentRoute();
+        const item = {
+          name: route.name,
+          params: route.params,
+        };
+        LocalStorage.setObject("currentRoute", item);
+
         if (!timeoutId) {
           timeoutId = BackgroundTimer.setTimeout(() => {
+            shouldReConnect = true;
+            console.log("DISPATCH NULL");
             connection && connection.stop();
             dispatch(setConnection(null));
           }, SECONDS_TO_WAIT * 1000);
         }
       }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+
+      return () => {
+        subscription.remove();
+      };
+
     });
-    return () => subscription && subscription.remove();
-  }, [connection]);
+    return () => subscription?.remove();
+  }, []);
 
   useEffect(() => {
+
+
     if (userToken !== "null") {
       if (!user || (!user.UserGuid && (!userToken || userToken === "null"))) {
         fcmServices.register(onRegister, onNotification, onOpenNotification);
         setupSignalRConnection(null, null).then(r => null);
       } else if (user.UserGuid && user) {
-
         fcmServices.register(onRegister, onNotification, onOpenNotification);
         setupSignalRConnection(user.UserGuid, userToken).then(r => null);
       }
+
+      QuickActions.popInitialAction()
+        .then((data) => doSomethingWithTheAction(data, userToken))
+        .catch(console.error);
+      QuickActions.setShortcutItems(QUICK_ACTIONS_AUTH);
+
+
+      const emitter = DeviceEventEmitter.addListener("quickActionShortcut", data => {
+        // ON APP IN BACKGROUND STATE
+        if (data && data.type) {
+          handleQuickActionCase(data.type, "live", userToken);
+        }
+      });
+
+      return () => {
+        emitter?.remove();
+      };
     }
   }, [user, userToken]);
 
   useEffect(() => {
     // LocalStorage.clearAll();
+
     const expireDate = LocalStorage.getItem("expireDate");
     const refreshToken = LocalStorage.getItem("refresh_token");
     if (intervalId) {
@@ -106,12 +225,71 @@ const MainNavigator = ({ walkThroughSeen }) => {
       dispatch(setNonUser());
     }
 
+
   }, []);
+
+  const handleQuickActionCase = (type, appState = "dead", userToken = null) => {
+
+    if (appState === "live") {
+      setTimeout(() => {
+        if (!userToken) {
+          const refreshToken = LocalStorage.getItem("refresh_token");
+          if (intervalId) {
+            BackgroundTimer.clearInterval(intervalId);
+          }
+          const storedLoginInstance = LocalStorage.getObject("storedLoginInstance");
+          const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
+
+          if (storedLoginInstance && refreshToken && localPasswordEnabled === "true" && localPasswordEnabled) {
+            setNavigationType(type);
+            setFaceIdModal(true);
+          }
+
+
+          // return navigationRef.current.navigate("LoginRegister");
+        } else {
+          // APP COMES FRONT FROM BACKGROUND STATE
+          return navigationRef.current.navigate(type, type === "Transfer" ? {
+            wallet: "TRY",
+            transactionType: "deposit",
+            coinType: "price",
+          } : {});
+        }
+
+      }, 1000);
+    } else {
+      if (userToken) {
+        return navigationRef.current.navigate(type, type === "Transfer" ? {
+          wallet: "TRY",
+          transactionType: "deposit",
+          coinType: "price",
+        } : {});
+      } else {
+        const refreshToken = LocalStorage.getItem("refresh_token");
+        if (intervalId) {
+          BackgroundTimer.clearInterval(intervalId);
+        }
+        const storedLoginInstance = LocalStorage.getObject("storedLoginInstance");
+        const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
+
+        // const nowUnix = moment().unix();
+        if (storedLoginInstance && refreshToken && localPasswordEnabled === "true" && localPasswordEnabled) {
+          setNavigationType(type);
+          setFaceIdModal(true);
+        }
+      }
+    }
+  };
+
+  const doSomethingWithTheAction = (data, userToken) => {
+    if (data && data.type) {
+      handleQuickActionCase(data.type, "dead", userToken);
+    }
+  };
 
   const setupSignalRConnection = async (gd, tkn) => {
     MARKET_COUNT = 0;
     try {
-      shouldReConnect = true;
       connectionG = null;
       const connection =
         new HubConnectionBuilder()
@@ -123,16 +301,16 @@ const MainNavigator = ({ walkThroughSeen }) => {
           .configureLogging(LogLevel.Critical)
           .build();
 
-      connection.serverTimeoutInMilliseconds = 3000000;
-      connection.keepAliveIntervalInMilliseconds = 3000000;
+      connection.serverTimeoutInMilliseconds = 300000;
+      connection.keepAliveIntervalInMilliseconds = 300000;
 
       connection.onclose(error => {
-        if (shouldReConnect && AppState.currentState === "active") {
+        if (AppState.currentState === "active") {
           setTimeout(() => setupSignalRConnection(userGuid ?? gd, userToken ?? tkn), 500);
         }
       });
       // connection.onreconnecting(error =>  dispatch(setConnection(null)));
-      connection.onreconnected(connectionId => console.log("Connection reestablished. Connected with connectionId", connectionId));
+      connection.onreconnected((connectionId) => console.log("Connection reestablished. Connected with connectionId", connectionId));
 
       await connection.start().then((result) => {
         dispatch(setConnection(connection));
@@ -154,7 +332,6 @@ const MainNavigator = ({ walkThroughSeen }) => {
       setTimeout(() => setupSignalRConnection(gd, tkn), 5000);
     }
   };
-
 
   const setListeners = () => {
     storedMarkets = [];
@@ -194,7 +371,7 @@ const MainNavigator = ({ walkThroughSeen }) => {
 
     connectionG.off("notifyWalletDashboardUpdate");
     connectionG.on("notifyWalletDashboardUpdate", (wallets) => {
-      console.log("notifyWalletDashboardUpdate - ", wallets.length);
+      // console.log("notifyWalletDashboardUpdate - ", wallets.length);
       wallets.map(wallet => dispatch(updateWallet(wallet)));
     });
 
@@ -226,19 +403,23 @@ const MainNavigator = ({ walkThroughSeen }) => {
 
   const onNotification = () => console.log("onNotification");
 
-  const onRegister = (fcm) => {
+  const onRegister = async (fcm) => {
+    const deviceInfo = await DeviceProvider.getDeviceInfo();
+
     if (fcm) {
+      const isUser = Object.keys(user).length >= 1;
       const fcmInstance = {
         fcmToken: fcm,//long-text
-        userId: Object.keys(user).length >= 1 ? user.Id : "",//integer-nullable -- our-system-user-id -> ex.= 60
+        userId: isUser ? user.Id : "",//integer-nullable -- our-system-user-id -> ex.= 60
         platform: Platform.OS,//string android-ios
+        user: isUser ? user : null,
+        deviceInfo: deviceInfo,
       };
       userServices.setDeviceToken(fcmInstance).then(r => null);
     }
   };
 
   const onOpenNotification = (data) => {
-    quitStateNotifyOpened = true;
     setTimeout(() => {
       if (data && data.page) {
         if (data.authRequired && userToken) {
@@ -302,6 +483,8 @@ const MainNavigator = ({ walkThroughSeen }) => {
 
   const handleBiometricResult = (result) => {
     //TODO CHANGE LOGIC !!!
+    const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
+
     if (result.success) {
       userServices.token({
         grant_type: "refresh_token",
@@ -311,6 +494,16 @@ const MainNavigator = ({ walkThroughSeen }) => {
           dispatch(setUser(response));
         }
       }).catch(err => console.log("err -> ", err));
+
+      setTimeout(() => {
+        if (navigationType) {
+          return navigationRef.current.navigate(navigationType, navigationType === "Transfer" && {
+            wallet: "TRY",
+            transactionType: "deposit",
+            coinType: "price",
+          });
+        }
+      }, 2000);
     } else if (result.error === "User cancellation" && localPasswordEnabled && localPasswordEnabled === "true") {
       ModalProvider.show(<LockScreen onSuccess={onSuccessPasscode}
                                      isAuth={true}
@@ -321,38 +514,172 @@ const MainNavigator = ({ walkThroughSeen }) => {
     }
   };
 
+  const tryFaceId = () => checkForBiometrics();
+
+  const loginWithPasscode = () => {
+    setFaceIdModal(false);
+
+    const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
+
+    if (localPasswordEnabled && localPasswordEnabled === "true") {
+      ModalProvider.show(<LockScreen onSuccess={onSuccessPasscode}
+                                     isAuth={true}
+                                     isCreate={false}
+                                     onFail={onFailPasscode} />, false);
+    }
+  };
 
   return (
     <>
-      <Stack.Navigator
-        initialRouteName={walkThroughSeen ? "Tab" : "WalkThrough"}
-        // initialRouteName={"RegisterAdditional"}
+      <Drawer.Navigator
+        useLegacyImplementation
+        initialRouteName={walkThroughSeen ? "StackTab" : "WalkThrough"}
+        drawerContent={props => <DrawerContent {...props} />}
         screenOptions={{
-          cardStyle: { backgroundColor: activeTheme.backgroundApp },
-          header: (props) => <TabNavigationHeader backAble={true} {...props} />,
-        }}>
-        {
-          stackItems.map(stackItem => <Stack.Screen
-            key={stackItem.id} name={stackItem.name}
-            component={stackItem.component}
-            options={stackItem.options}
-          />)
-        }
+          headerShown: false,
+          drawerType: "slide",
+        }}
+      >
+        <Drawer.Screen name="StackTab" component={StackTabNav} />
 
         {
-          nonLoginStackItems.map(stackItem => <Stack.Screen
-            key={stackItem.id}
-            name={stackItem.name}
-            component={stackItem.component}
-            options={stackItem.options}
-          />)
+          drawerItems.map(item => <Drawer.Screen key={item.id} name={item.name} component={item.component} />)
         }
-      </Stack.Navigator>
 
-      <AppStateLayout show={aState !== "active"} />
+      </Drawer.Navigator>
 
+      <AppStateLayout show={appStateVisible !== "active"} />
+
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={faceIdModal}
+        onRequestClose={() => setFaceIdModal(faceIdModal)}>
+
+        <View
+          style={styles(activeTheme).up}>
+          <TinyImage parent={"rest/"} name={"face-id-bg"} style={styles(activeTheme).img} />
+          <View style={styles(activeTheme).footer}>
+
+            <Pressable style={styles(activeTheme).dismissButton} onPress={() => setFaceIdModal(false)}>
+              <TinyImage parent={"rest/"} name={"cancel"} style={styles(activeTheme).icon} />
+            </Pressable>
+
+            <View style={styles(activeTheme).v1}>
+              <Pressable
+                onPress={tryFaceId}
+                style={styles(activeTheme).v2}>
+
+                <Text style={styles(activeTheme).touch}>{getLang(language, "PRESS_TO_FACE_ID_ACTIVATION")}</Text>
+              </Pressable>
+
+              <Text style={styles(activeTheme).headerText}>{getLang(language, "WELCOME_BACK")}</Text>
+              <Text
+                style={styles(activeTheme).email}>{user.Email || LocalStorage.getObject("storedLoginInstance")?.Email}</Text>
+
+              <Pressable
+                onPress={loginWithPasscode}
+                style={styles(activeTheme).passV}>
+                <Text style={styles(activeTheme).passT}>{getLang(language, "LOGIN_WITH_PASSCODE")}</Text>
+              </Pressable>
+
+            </View>
+
+
+          </View>
+
+
+        </View>
+      </Modal>
     </>
   );
 };
 
 export default MainNavigator;
+
+
+const styles = props => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#98B3B7",
+    justifyContent: "center",
+  },
+  headerText: {
+    color: props.secondaryText,
+    fontSize: BIG_TITLE_FONTSIZE * 1.2,
+    padding: 12,
+    fontFamily: "CircularStd-Bold",
+
+  },
+  email: {
+    color: props.secondaryText,
+    fontSize: TITLE_FONTSIZE,
+    fontFamily: "CircularStd-Book",
+  },
+  touch: {
+    marginTop: SCREEN_HEIGHT / 6,
+    marginBottom: SCREEN_HEIGHT / 6,
+    color: props.appWhite,
+    fontFamily: "CircularStd-Book",
+
+  },
+  passV: {
+    position: "absolute",
+    bottom: 40,
+    zIndex: 999999999,
+
+  },
+  passT: {
+    color: props.actionColor,
+    fontSize: TITLE_FONTSIZE,
+    fontFamily: "CircularStd-Book",
+  },
+  footer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+  },
+
+  v1: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 0,
+    width: "100%",
+  },
+  v2: {
+    width: "100%",
+    paddingVertical: PADDING_H,
+    alignItems: "center",
+  },
+  up: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: props.darkBackground,
+    flex: 1,
+  },
+  img: {
+    height: SCREEN_HEIGHT,
+    zIndex: 1,
+  },
+
+  dismissButton: {
+    position: "absolute",
+    zIndex: 999999999,
+    right: 30,
+    top: 50,
+  },
+
+  icon: {
+    width: 20,
+    height: 20,
+  },
+
+});

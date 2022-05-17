@@ -231,7 +231,6 @@ const LockScreen2 = (props) => {
       <View style={styles(activeTheme).valueWrap1}>
         <View style={{ alignItems: "center", justifyContent: "center" }}>
           <Image
-            useFastImage={true}
             source={{
               uri: "https://images.coinpara.com/files/mobile-assets/logo.png",
             }}

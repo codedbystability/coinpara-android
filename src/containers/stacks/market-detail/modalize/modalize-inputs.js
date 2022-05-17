@@ -13,11 +13,13 @@ import { useSelector } from "react-redux";
 import { isIphoneX } from "../../../../../utils/devices";
 import { percentages } from "./constants";
 import AnimatedTab from "../../../../components/animated-tab";
+import * as Animatable from "react-native-animatable";
 import TinyImage from "../../../../tiny-image";
 
 
 const ModalizeInputs = (props) => {
 
+  const viewRef = useRef(null);
   const { language, activeTheme } = useSelector(state => state.globalReducer);
   const [activeFocusedKey, setActiveKey] = useState("");
   const {
@@ -43,6 +45,12 @@ const ModalizeInputs = (props) => {
   const handleOnFocus = (input) => setActiveKey(input.key);
   const handleOnBlur = () => setActiveKey("");
 
+  useEffect(() => {
+    viewRef.current?.animate({
+      0: { opacity: 0 },
+      1: { opacity: 1 },
+    });
+  }, [activeInputs]);
 
   return (
     <View
@@ -86,7 +94,8 @@ const ModalizeInputs = (props) => {
           </View>
         }
 
-        <View
+        <Animatable.View
+          ref={viewRef}
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -97,26 +106,24 @@ const ModalizeInputs = (props) => {
               const inputValue = getProperTextValue(input);
               const inputPrecision = getProperPrecision(input);
               return (
-                <Pressable
-                  onPress={() => handleFakeFocus(input)}
+                <View
                   key={input.id} style={styles(activeTheme).inputWrapper}>
                   <View style={styles(activeTheme).inputContainer}>
 
-                    <View style={[styles(activeTheme).inputLabel,
+                    <Pressable onPress={() => handlePriceSet(input.key)} style={[styles(activeTheme).inputLabel,
                       { justifyContent: "space-between", paddingLeft: 8 }]}>
                       <Text
                         style={[styles(activeTheme).descText, { fontFamily: "CircularStd-Bold" }]}>
                         {getLang(language, input.leftLabel)}</Text>
 
                       {
-                        input.icon && <Pressable onPress={() => handlePriceSet(input.key)}>
-                          <TinyImage parent={"rest/"} name={"refresh"} style={styles(activeTheme).icon} />
-                        </Pressable>
+                        input.icon && <TinyImage parent={"rest/"} name={"refresh"} style={styles(activeTheme).icon} />
                       }
 
-                    </View>
+                    </Pressable>
 
                     <TextInput
+                      //onPress={() => handleFakeFocus(input)}
                       keyboardAppearance={"dark"}
                       onFocus={() => handleOnFocus(input)}
                       onBlur={handleOnBlur}
@@ -142,11 +149,13 @@ const ModalizeInputs = (props) => {
                     />
 
 
-                    <View style={styles(activeTheme).inputSecondLabel}>
+                    <Pressable
+                      onPress={() => handleFakeFocus(input)}
+                      style={styles(activeTheme).inputSecondLabel}>
                       <Text
                         numberOfLines={1}
                         style={[styles(activeTheme).descText, { fontFamily: "CircularStd-Bold" }]}>{market[input.rightLabel]}</Text>
-                    </View>
+                    </Pressable>
                   </View>
 
 
@@ -172,12 +181,12 @@ const ModalizeInputs = (props) => {
                   }
 
 
-                </Pressable>
+                </View>
               );
             })
 
           }
-        </View>
+        </Animatable.View>
 
         <View style={styles(activeTheme).percentageContainer}>
           <PercentageSelect percentages={percentages}

@@ -21,20 +21,22 @@ import VideosPlaceholder from "./videos-placeholder";
 import HapticProvider from "../../../../providers/HapticProvider";
 import TinyImage from "../../../../tiny-image";
 import NImage from "../../../../components/image/index.tsx";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const Videos = () => {
   const { activeLanguage } = useSelector(state => state.languageReducer);
 
+  const isFocused = useIsFocused();
   const { activeTheme, language } = useSelector(state => state.globalReducer);
   const [items, setItems] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    setIsFetching(true);
-    if (activeLanguage.Id) {
+    if (activeLanguage && activeLanguage.Id) {
+      setIsFetching(true);
       constantServices.getVideos(activeLanguage.Id, false).then((response) => {
-        if (response && response.IsSuccess) {
+        if (isFocused && response && response.IsSuccess) {
           setItems(response.Data.filter(dataItem => dataItem.EmbedLink && dataItem.EmbedLink.includes("youtube")));
           setIsFetching(false);
         }
@@ -86,7 +88,6 @@ const Videos = () => {
           <ActivityIndicator
             color={activeTheme.secondaryText}
             style={styles(activeTheme).loading}
-            size="small"
           />
         )}
         <WebView
@@ -106,17 +107,16 @@ const Videos = () => {
   }
 
   return (
-
-      <View style={styles(activeTheme).container}>
-        <FlatList
-          contentContainerStyle={{ marginTop: 10 }}
-          showsHorizontalScrollIndicator={false}
-          data={items}
-          renderItem={(item) => <Card item={item.item} />}
-          keyExtractor={item => item.RowNumber.toString()}
-          horizontal={true}
-        />
-      </View>
+    <View style={styles(activeTheme).container}>
+      <FlatList
+        contentContainerStyle={{ marginTop: 10 }}
+        showsHorizontalScrollIndicator={false}
+        data={items}
+        renderItem={(item) => <Card item={item.item} />}
+        keyExtractor={item => item.RowNumber.toString()}
+        horizontal={true}
+      />
+    </View>
   );
 };
 

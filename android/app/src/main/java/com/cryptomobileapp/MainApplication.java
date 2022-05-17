@@ -23,16 +23,12 @@ import com.facebook.react.bridge.JSIModulePackage; // <- add
 
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
-// import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
-// import com.oblador.vectoricons.VectorIconsPackage;
-// import com.brentvatne.react.ReactVideoPackage;
 import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
-// import com.BV.LinearGradient.LinearGradientPackage; // <--- This!
-// import com.github.yamill.orientation.OrientationPackage;  // <--- import
 import com.intercom.reactnative.IntercomModule; //  <-- Add this line
 import com.marcshilling.idletimer.IdleTimerPackage; // <--- This!
+import com.reactNativeQuickActions.AppShortcutsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -54,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
 //             new ReactVideoPackage();
             new RNSharePackage();
               new IdleTimerPackage();
+              new AppShortcutsPackage();
 //             new OrientationPackage();
 //             new LinearGradientPackage();
 

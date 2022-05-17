@@ -161,8 +161,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
 
   name: {
-    fontFamily: "CircularStd-Bold",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontFamily: "CircularStd-Book",
+    fontSize: fontSizes?.NORMAL_FONTSIZE,
     color: props.appWhite,
   },
   email: {

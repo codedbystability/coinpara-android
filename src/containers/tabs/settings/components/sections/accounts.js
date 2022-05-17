@@ -1,30 +1,46 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import NavigationListItem from "../../../../../components/navigation-list-item";
-import { LIST_ITEM_HEIGHT, PADDING_H } from "../../../../../../utils/dimensions";
-import CustomList from "../../../../../components/custom-list";
-import UserInfo from "../user-info";
-import WalletInfo from "../wallet-info";
-import SettingsLogout from "../settings-logout";
+import { LIST_ITEM_HEIGHT } from "../../../../../../utils/dimensions";
 import StillLogo from "../../../../../components/still-logo";
-import ThemeSelector from "../theme-selector";
-import FontSizeView from "../font-size/font-size-view";
-import ColorOption from "../color-option";
+import { View } from "react-native";
 
 const AUTH_ITEMS = [
+  {
+    id: 77,
+    key: "HOME",
+    type: "navigation",
+    page: "Tab",
+    image: "home",
+    activePages: ["HomeStack", "MarketsStack", "TradeStack", "WalletStack"],
+
+  },
   {
     id: 7,
     key: "ACCOUNT_APPROVE",
     type: "navigation",
     page: "AccountApprove",
     image: "settings",
-    name: "",
+    activePages: ["AccountApprove"],
+
+  },
+  {
+    id: 0,
+    key: "NOTIFICATIONS",
+    type: "navigation",
+    page: "Notifications",
+    image: "notifications",
+    activePages: ["Notifications"],
+
   },
   {
     id: 1,
     key: "ORDERS",
     type: "navigation",
-    page: "Orders",
+    title: "MY_ORDERS",
+    page: "OrderStack",
     image: "orders",
+    activePages: ["Orders"],
+
   },
   {
     id: 2,
@@ -32,26 +48,30 @@ const AUTH_ITEMS = [
     type: "navigation",
     page: "UserLogs",
     image: "user-activities",
+    activePages: ["UserLogs"],
+
   },
 
   {
     id: 4,
     key: "SECURITY_SETTINGS",
     type: "navigation",
-    page: "SettingsInner",
-    name: "",
+    page: "SettingsSecurity",
     param: "security",
     image: "about-us",
+    activePages: ["SecuritySettings"],
+
 
   },
   {
     id: 5,
     key: "SYSTEM_SETTINGS",
     type: "navigation",
-    page: "SettingsInner",
-    name: "",
+    page: "SettingsSystem",
     image: "system-settings",
     param: "system",
+    activePages: ["SettingsSystem"],
+
   },
   {
     id: 6,
@@ -59,7 +79,8 @@ const AUTH_ITEMS = [
     type: "navigation",
     page: "AboutInner",
     image: "settings",
-    name: "",
+    activePages: ["About"],
+
   },
 
   {
@@ -68,7 +89,25 @@ const AUTH_ITEMS = [
     type: "navigation",
     page: "InviteFriends",
     image: "ref",
-    name: "",
+    activePages: ["InviteFriends"],
+
+  },
+
+  {
+    id: 18,
+    key: "SUPPORT_CENTER",
+    type: "navigation",
+    page: "HelpCenter",
+    image: "support-center",
+    activePages: ["HelpCenterInner"],
+  },
+  {
+    id: 28,
+    key: "HELP_CENTER",
+    type: "navigation",
+    page: "SupportCenter",
+    image: "help-center",
+    activePages: ["SupportCenterInner"],
   },
   {
     id: 9,
@@ -76,33 +115,56 @@ const AUTH_ITEMS = [
     type: "modal",
     page: "VideoListItem",
     image: "video",
-    name: "",
+    activePages: [],
+
   },
   {
     id: 3,
     key: "CONTACT_SUPPORT",
     type: "modal",
     page: "Static",
-    name: "Contact Support",
     image: "support",
+    activePages: [],
   },
 
 ];
-
 const NON_AUTH_ITEMS = [
+  {
+    id: 77,
+    key: "HOME",
+    type: "navigation",
+    page: "Tab",
+    image: "home",
+    name: "",
+    activePages: ["HomeStack", "MarketsStack", "TradeStack", "WalletStack"],
+  },
   {
     id: 0,
     key: "LOGIN",
     type: "navigation",
     page: "Login",
     image: "login",
+    activePages: ["Login"],
   },
   {
     id: 1,
     key: "SIGN_UP",
     type: "navigation",
-    page: "RegisterEmail",
+    page: "RegisterStack",
     image: "register",
+    activePages: ["RegisterEmail", "RegisterStack"],
+
+  },
+  {
+    id: 5,
+    key: "SYSTEM_SETTINGS",
+    type: "navigation",
+    page: "SettingsSystem",
+    name: "",
+    image: "system-settings",
+    param: "system",
+    activePages: ["SettingsSystem"],
+
   },
   {
     id: 6,
@@ -111,15 +173,26 @@ const NON_AUTH_ITEMS = [
     page: "AboutInner",
     image: "settings",
     name: "",
+    activePages: ["About"],
+
   },
 
-
+  {
+    id: 28,
+    key: "HELP_CENTER",
+    type: "navigation",
+    page: "SupportCenter",
+    image: "help-center",
+    activePages: ["SupportCenterInner"],
+  },
   {
     id: 2,
     key: "LANGUAGE_SETTINGS",
     type: "language",
     page: null,
     image: "language",
+    activePages: [],
+
   },
 
   {
@@ -128,48 +201,37 @@ const NON_AUTH_ITEMS = [
     type: "modal",
     page: "Static",
     image: "support",
+    activePages: [],
+
+
+
   },
 ];
 
-
-const AccountsSection = ({ authenticated }) => {
-
+const AccountsSection = ({ authenticated, currentRouteName }) => {
 
   const keyExtractor = useCallback((item) => `$settings-${item.id}`, []);
 
   return (
-    <CustomList
-      contentStyle={{
-        padding: PADDING_H,
-      }}
-      data={authenticated ? AUTH_ITEMS : NON_AUTH_ITEMS}
-      showFooter={true}
-      ListHeaderComponent={
-        authenticated ?
-          <>
-            <UserInfo />
-            <WalletInfo />
-          </> : <>
-            <ThemeSelector />
+    <View
 
-            <FontSizeView />
-
-            <ColorOption />
-          </>
-      }
-      ListFooterComponent={
-        <>
-          {
-            authenticated && <SettingsLogout />
-          }
-          <StillLogo />
-        </>
-      }
       keyExtractor={keyExtractor}
       itemHeight={LIST_ITEM_HEIGHT}
       renderItem={({ item }) => <NavigationListItem key={item.id} item={item} />}
       onEndReached={null}
-    />
+    >
+      {
+        authenticated ?
+          AUTH_ITEMS.map((item) => <NavigationListItem active={item.activePages.includes(currentRouteName)}
+                                                       key={item.id} item={item} />) :
+          NON_AUTH_ITEMS.map((item) => <NavigationListItem
+            active={item.activePages.includes(currentRouteName)}
+            key={item.id} item={item} />)
+      }
+
+
+      <StillLogo />
+    </View>
   );
 };
 

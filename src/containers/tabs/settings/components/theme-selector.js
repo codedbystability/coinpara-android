@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import generalServices from "../../../../services/general-services";
 import { getLang } from "../../../../helpers/array-helper";
 import DropdownAlert from "../../../../providers/DropdownAlert";
-import { BIG_TITLE_FONTSIZE, LIST_MARGIN_T } from "../../../../../utils/dimensions";
+import { BIG_TITLE_FONTSIZE, LIST_MARGIN_T, PADDING_H } from "../../../../../utils/dimensions";
 import ActionSheetComProvider from "../../../../providers/ActionSheetComProvider";
 import HapticProvider from "../../../../providers/HapticProvider";
 import LocalStorage from "../../../../providers/LocalStorage";
@@ -52,6 +52,10 @@ const ThemeSelector = () => {
   const handleColorChange = (theme) => {
     generalServices.getColors(theme).then((response) => {
       if (response && response.IsSuccess) {
+
+        LocalStorage.setObject("classicColorsL", response.Data);
+        LocalStorage.setItem("classicColorsIcon", response.IconColor);
+
         dispatch(setClassicColors(response.Data));
         LocalStorage.setItem("activeTheme", theme);
         dispatch(setActiveTheme(theme, response.IconColor));
@@ -83,7 +87,7 @@ const ThemeSelector = () => {
                 onPress={() => handleThemeChange(theme)}
                 key={theme.key}
                 style={activeThemeKey === theme.key ? styles(activeTheme).active : styles(activeTheme).item}>
-                <View style={{ marginRight: 10 }}>
+                <View style={{ marginRight: 4 }}>
                   <TinyImage parent={"themes/"}
                              name={theme.key}
                              style={styles(activeTheme).image} />
@@ -108,10 +112,11 @@ export default React.memo(ThemeSelector);
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    paddingTop: LIST_MARGIN_T ,
+    paddingTop: LIST_MARGIN_T,
+    // paddingHorizontal: PADDING_H,
   },
   item: {
-    width: "33%",
+    width: "30%",
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
@@ -133,7 +138,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.TITLE_FONTSIZE,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
     // lineHeight: 16,
     color: props.secondaryText,
     marginTop: 12,
@@ -162,7 +167,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   text: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE || 2,
+    fontSize: fontSizes?.NORMAL_FONTSIZE,
     textAlign: "center",
     color: props.secondaryText,
   },

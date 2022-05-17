@@ -12,7 +12,6 @@ import DropdownAlert from "../../providers/DropdownAlert";
 import Validation from "../../components/validation";
 import { navigationRef } from "../../providers/RootNavigation";
 import LocalStorage from "../../providers/LocalStorage";
-import InputAccessory from "../../components/input-accessory";
 
 
 const inputs = [
@@ -174,14 +173,6 @@ const ForgotPassword = (props) => {
                   otpId={""}
                   onResult={handleSuccessValidation}
       />
-
-      <InputAccessory
-        handleStep={null}
-        onPress={(val) => setEmail(email + val)}
-        stepAble={false}
-        mailProviders={mailProviders}
-      />
-
 
     </>
 

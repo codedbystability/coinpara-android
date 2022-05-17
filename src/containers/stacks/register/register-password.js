@@ -9,10 +9,9 @@ import userServices from "../../../services/user-services";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { MIDDLE_IMAGE, NORMAL_FONTSIZE, PADDING_H } from "../../../../utils/dimensions";
+import { MIDDLE_IMAGE, PADDING_H } from "../../../../utils/dimensions";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
 import { passwordInputs } from "./constants";
-import InputAccessory from "../../../components/input-accessory";
 import { inputs } from "../login/constants";
 
 
@@ -33,8 +32,9 @@ const RegisterPassword = (props) => {
     phoneNumber = "",
     refCode = "",
     identityNumber = "",
+    birthdate = "",
     nationality = "",
-    } = props.route && props.route.params;
+  } = props.route && props.route.params;
   // } = props;
 
 
@@ -88,10 +88,12 @@ const RegisterPassword = (props) => {
       Password: password,
       PasswordCopy: passwordConfirmation,
       ReferralCode: refCode,
+      BirthDate: birthdate,
     };
 
+    console.log(instance);
     userServices.register(instance).then((response) => {
-      if (response.IsSuccess) {
+      if (response && response.IsSuccess) {
         DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "REGISTERED_SUCCESSFULLY"));
         setTimeout(() => {
           navigationRef.current.navigate("Login", {
@@ -99,8 +101,6 @@ const RegisterPassword = (props) => {
             password,
           });
         }, 1000);
-      } else {
-        DropdownAlert.show("success", getLang(language, "ERROR"), response.ErrorMessage);
       }
     }).catch(err => console.log("err -", err));
   };
@@ -165,6 +165,7 @@ const RegisterPassword = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{ title: getLang(language, "CREATE_PASSWORD") }}
       />
 
@@ -241,13 +242,6 @@ const RegisterPassword = (props) => {
         {/*</View>*/}
       </KeyboardAvoidingView>
 
-
-      <InputAccessory
-        handleStep={handleStep}
-        stepAble={true}
-        mailProviders={[]}
-        onPress={null}
-      />
     </>
 
   );

@@ -11,6 +11,7 @@ import { getLang } from "../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { version } from "../../../package.json";
 import Linking from "../../providers/Linking";
+import { isIos } from "../../../utils/devices";
 
 const VersionModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,6 +20,7 @@ const VersionModal = () => {
 
   const [data, setData] = useState([]);
   const [newVersionTitle, setNewVersionTitle] = useState("");
+  const [navigationLink, setNavigationLink] = useState("");
   const [desc, setDesc] = useState("");
   const [isMandatory, setIsMandatory] = useState(false);
   const renderItem = ({ item }) => {
@@ -41,15 +43,18 @@ const VersionModal = () => {
       })
         .then(res => res.json())
         .then(response => {
-          if (response && response.androidVersion && response.shouldCheck && response.androidVersion !== "0.0.0") {
-            // setHttpData(response);
-            if (version !== response.androidVersion) {
-
+          if (
+            response
+            && response.iosVersion
+            && response.shouldCheck
+            && response.iosVersion !== "0.0.0"
+          ) {
+            if (version < response.iosVersion) {
               if (response.isMandatory) {
                 setIsMandatory(true);
               }
-
               setDesc(response.desc);
+              setNavigationLink(isIos ? response.iosLink : response.androidLink);
               setData(response.changes);
               setNewVersionTitle(response.title || "Coinpara");
               setTimeout(() => {
@@ -63,16 +68,15 @@ const VersionModal = () => {
 
 
   const handleOpenUrl = () => {
-    setModalVisible(false);
-    setTimeout(async () => {
-      await Linking.openURL("itms-apps://itunes.apple.com/us/app/id1611133461");
-    }, 500);
+    if (navigationLink) {
+      setModalVisible(false);
+      setTimeout(async () => {
+        await Linking.openURL(navigationLink);
+      }, 500);
+    }
+
   };
 
-
-  // if (!modalVisible) {
-  //   return null;
-  // }
 
   return (
 
@@ -80,6 +84,7 @@ const VersionModal = () => {
       animationType="slide"
       transparent={true}
       visible={modalVisible}
+      statusBarTranslucent
       onRequestClose={() => setModalVisible(false)}>
 
       <View style={{

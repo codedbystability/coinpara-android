@@ -16,12 +16,11 @@ import TabNavigationHeader from "../../../components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { MIDDLE_IMAGE, NORMAL_FONTSIZE } from "../../../../utils/dimensions";
+import { MIDDLE_IMAGE, NORMAL_FONTSIZE, PADDING_H } from "../../../../utils/dimensions";
 import Validation from "../../../components/validation";
 import CustomCheckbox from "../../../components/custom-checkbox";
 import Linking from "../../../providers/Linking";
 import Intercom from "@intercom/intercom-react-native";
-import InputAccessory from "../../../components/input-accessory";
 import { validateEmail } from "../../../helpers/string-helper";
 import TinyImage from "../../../tiny-image";
 
@@ -91,7 +90,10 @@ const RegisterEmail = (props) => {
       setMailProviders([]);
     }
   }, [email]);
+
   const handleSendOtp = () => {
+
+    return navigationRef.current.navigate("RegisterAdditional");
 
     if (!agreementConfirmed) {
       return DropdownAlert.show("error", getLang(language, "ERROR"), getLang(language, "PLEASE_CONFIRM_AGGREEMENTS"));
@@ -150,10 +152,13 @@ const RegisterEmail = (props) => {
     const betweenV1V2 = originalText.substring(originalText.indexOf("V1"), originalText.lastIndexOf("V2"));
     const v2 = getLang(language, "END_USER_LICENCE_AGGREEMENT");
     const v3 = getLang(language, "PRIVACY_POLICY");
-    const betweenV3V4 = originalText.substring(originalText.indexOf("V3"), originalText.lastIndexOf("V4"));
+    // const betweenV3V4 = originalText.substring(originalText.indexOf("V3"), originalText.lastIndexOf("V4"));
     const v4 = getLang(language, "COOKIE_POLICY");
 
-    return <Text style={{}}>
+    return <Text style={{
+      paddingRight: PADDING_H,
+      width: "44%",
+    }}>
       <Text style={[styles(activeTheme).descText, {}]}>
       </Text>
 
@@ -244,14 +249,14 @@ const RegisterEmail = (props) => {
       Intercom.registerUnidentifiedUser().then(r => console.log("intercom - ", r));
     }
     Intercom.displayMessenger().then(null);
-    return;
+    // return;
   };
+
   const handleSetText = (key, value) => {
 
     setEmail(value);
   };
 
-  const inputAccessoryViewID = "inputAccessoryViewID";
   return (
     <>
 
@@ -268,9 +273,7 @@ const RegisterEmail = (props) => {
         onPress={handleSupport}
         style={styles(activeTheme).hC}>
 
-
         <TinyImage parent={"shortcuts/"} name={"contact"} style={styles(activeTheme).icon} />
-
 
       </Pressable>
 
@@ -288,7 +291,6 @@ const RegisterEmail = (props) => {
             inputs.map(input => <FormInput
               placeholder={input.placeholder}
               key={input.key}
-              // inputAccessoryViewID={inputAccessoryViewID}
               inputKey={input.key}
               value={email}
               keyboardType={input.keyboardType}
@@ -301,13 +303,17 @@ const RegisterEmail = (props) => {
           }
 
 
-          <CustomCheckbox
-            {...{
-              handleSetAgreementConfirmed,
-              agreementConfirmed,
-              specialTitle: getTitle(),
-            }}
-          />
+          <View style={{
+            width: "100%",
+          }}>
+            <CustomCheckbox
+              {...{
+                handleSetAgreementConfirmed,
+                agreementConfirmed,
+                specialTitle: getTitle(),
+              }}
+            />
+          </View>
 
 
           <View style={{ alignItems: "center", width: "100%" }}>
@@ -344,13 +350,6 @@ const RegisterEmail = (props) => {
                   otpId={otpId}
       />
 
-
-      <InputAccessory
-        handleStep={null}
-        onPress={(val) => setEmail(email + val)}
-        stepAble={false}
-        mailProviders={mailProviders}
-      />
 
     </>
   );

@@ -122,13 +122,11 @@ const FavSort = (props) => {
     const validOrder = [];
     for (const element of order) { // You can use `let` instead of `const` if you like
       if (data[element] && !removeds.includes(data[element].gd)) {
-        console.log("data[element] - ", data[element].to, "-", data[element].fs);
         validOrder.push(data[element].gd);
       }
     }
 
 
-    console.log("validOrder - ", validOrder);
     LocalStorage.setObject("FavSort", validOrder);
 
 
@@ -283,11 +281,6 @@ const styles = props => StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: props.backgroundApp,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-      },
-    }),
   },
   left: {
     flexDirection: "row",

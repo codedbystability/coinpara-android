@@ -10,6 +10,7 @@ import { getLang } from "../../helpers/array-helper";
 import { updateLanguage } from "../../actions/global-actions";
 import ActionSheetComProvider from "../../providers/ActionSheetComProvider";
 import HapticProvider from "../../providers/HapticProvider";
+import LocalStorage from "../../providers/LocalStorage";
 
 let isNew = false;
 const Checkbox = () => {
@@ -23,13 +24,13 @@ const Checkbox = () => {
   useEffect(() => {
     if (Object.keys(selectedLang).length >= 1 && isNew) {
       ModalProvider.hide();
-      setTimeout(()=>{
+      setTimeout(() => {
         ActionSheetComProvider.show({
           title: getLang(language, "CHANGE_LANGUAGE_POPUP_DESCRIPTION"),
           options: [getLang(language, "CHANGE_LANGUAGE_POPUP_TITLE"), getLang(language, "CANCEL")],
           onAction: (index) => handleLanguageSelect(index),
         });
-      },250)
+      }, 250);
 
     }
   }, [selectedLang]);
@@ -52,6 +53,8 @@ const Checkbox = () => {
         const newL = [];
         response.Data.map(item => newL[item.key] = item.value);
         DropdownAlert.show("success", getLang(newL, "SUCCESS"), getLang(newL, "LANGUAGE_UPDATED_SUCCESSFULLY"));
+        LocalStorage.setObject("theLanguage", response.Data);
+        // console.log(' selectedLang - ',selectedLang)//"tr-TR"
         dispatch(updateLanguage(response.Data, selectedLang));
       }
     });
@@ -62,6 +65,7 @@ const Checkbox = () => {
       return;
     }
     isNew = true;
+    LocalStorage.setObject("selectedLanguageL", lang);
     setSelectedLang(lang);
   };
 
@@ -83,7 +87,7 @@ const Checkbox = () => {
 };
 
 
-export default Checkbox;
+export default React.memo(Checkbox);
 
 const styles = (props) => StyleSheet.create({
   wrapper: {

@@ -53,7 +53,7 @@ const CustomDropdownAlert = forwardRef((props, ref) => {
             ]}
           >
             <View style={styles.info}>
-              <TinyImage parent={'rest/'} name={'info'} style={styles.icon}/>
+              <TinyImage parent={"rest/"} name={"info"} style={styles.icon} />
             </View>
 
 
@@ -83,7 +83,7 @@ const CustomDropdownAlert = forwardRef((props, ref) => {
         );
       }}
       ref={dropdownRef}
-      zIndex={10000}
+      zIndex={99}
       updateStatusBar={false}
     />
   );
@@ -92,9 +92,7 @@ const CustomDropdownAlert = forwardRef((props, ref) => {
 const CustomDropdownAlertProvider = () => {
   return (
     <CustomDropdownAlert
-      ref={(ref) => {
-        setDropdownAlert(ref);
-      }}
+      ref={(ref) => setDropdownAlert(ref)}
     />
   );
 };

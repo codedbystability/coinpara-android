@@ -4,6 +4,7 @@ import { INPUT_HEIGHT, NORMAL_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../
 import { useSelector } from "react-redux";
 import { getLang } from "../../helpers/array-helper";
 import TinyImage from "../../tiny-image";
+import TextInputMask from "react-native-text-input-mask";
 
 const FormInput = forwardRef((props, ref) => {
 
@@ -15,11 +16,12 @@ const FormInput = forwardRef((props, ref) => {
     autoFocus = false,
     icon = false,
     icon2 = false,
+    isMasked = false,
+    mask = "",
     leftAddition = null,
     onIconPressed = () => null,
     parentOnFocus = () => null,
     autoCapitalize = "words",
-    inputAccessoryViewID = "inputAccessoryViewID",
   } = props;
 
   const getIcon = () => {
@@ -104,29 +106,45 @@ const FormInput = forwardRef((props, ref) => {
         </View>
       }
 
+      {
+        isMasked ?
+          <TextInputMask
+            // refInput={(ref) => this.myDateText = ref}
+            mask={mask}
+            placeholder={getLang(language, placeholder)}
+            placeholderTextColor={activeTheme.secondaryText}
+            underlineColorAndroid="transparent"
+            keyboardType="numeric"
+            style={[styles(activeTheme).input,
+              !value ? { paddingVertical: 8 } : { paddingTop: 16 },
+              leftAddition && { paddingLeft: 40 },
+              focus && styles(activeTheme).active,
+            ]}
+            onChangeText={onChange}
+            value={value}
+          /> : <TextInput
+            keyboardAppearance={"dark"}
+            ref={ref}
+            secureTextEntry={type === "password"}
+            style={[styles(activeTheme).input,
+              !value ? { paddingVertical: 8 } : { paddingTop: 16 },
+              leftAddition && { paddingLeft: 40 },
+              focus && styles(activeTheme).active,
+            ]}
+            onChangeText={onChange}
+            value={value}
+            placeholder={getLang(language, placeholder)}
+            placeholderTextColor={activeTheme.secondaryText}
+            autoCapitalize={autoCapitalize}
+            keyboardType={keyboardType}
+            autoFocus={autoFocus}
+            autoComplete={autoComplete}
+            editable={editable}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />
+      }
 
-      <TextInput
-        keyboardAppearance={"dark"}
-        ref={ref}
-        secureTextEntry={type === "password"}
-        style={[styles(activeTheme).input,
-          !value ? { paddingVertical: 8 } : { paddingTop: 16 },
-          leftAddition && { paddingLeft: 40 },
-          focus && styles(activeTheme).active,
-        ]}
-        onChangeText={onChange}
-        value={value}
-        placeholder={getLang(language, placeholder)}
-        placeholderTextColor={activeTheme.appWhite}
-        autoCapitalize={autoCapitalize}
-        inputAccessoryViewID={inputAccessoryViewID}
-        keyboardType={keyboardType}
-        autoFocus={autoFocus}
-        autoComplete={autoComplete}
-        editable={editable}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      />
 
       {
         icon2 && <TouchableOpacity
@@ -157,7 +175,7 @@ const styles = (props) => StyleSheet.create({
     marginVertical: 8,
     borderWidth: 1,
     borderColor: props.borderGray,
-    borderRadius: 5,
+    borderRadius: 4,
     paddingHorizontal: 16,
     paddingRight: 40,
     width: "100%",

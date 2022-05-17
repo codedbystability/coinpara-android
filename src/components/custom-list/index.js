@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, View } from "react-native";
 import EmptyContainer from "../empty-container";
 import { LIST_ITEM_HEIGHT, PADDING_BH, SCREEN_HEIGHT } from "../../../utils/dimensions";
@@ -7,6 +7,10 @@ class CustomList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.flatListRef = React.createRef();
+    this.state = {
+      leftActionActivated: false,
+      toggle: false,
+    };
   }
 
 
@@ -26,6 +30,19 @@ class CustomList extends React.PureComponent {
     this.flatListRef.current.scrollToOffset({ animated: true, offset: this.props.hH || 160 });
   }
 
+  FlatListItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "100%",
+          backgroundColor: this.props.borderGray || "#bdbdbd",
+        }}
+      />
+    );
+  };
+
+
   render() {
     const {
       data, renderItem,
@@ -35,12 +52,15 @@ class CustomList extends React.PureComponent {
       ListHeaderComponent,
       ListFooterComponent,
       showFooter = false,
+      scrollEnabled = true,
       indicatorColor = "#bdbdbd",
       // iconKey = "empty-face",
       stickyHeaderIndices = [],
       contentStyle = {},
       style = {},
       refreshControl,
+      onScrollBeginDrag,
+      renderEmpty,
     } = this.props;
 
 
@@ -54,6 +74,7 @@ class CustomList extends React.PureComponent {
     return (
       <View style={{ flex: 1 }}>
         <FlatList
+          scrollEnabled={scrollEnabled}
           ref={this.flatListRef}
           refreshControl={refreshControl}
           stickyHeaderIndices={stickyHeaderIndices}
@@ -66,6 +87,7 @@ class CustomList extends React.PureComponent {
           updateCellsBatchingPeriod={200}
           initialNumToRender={14}
           onEndReachedThreshold={0.2}
+          onScrollBeginDrag={onScrollBeginDrag}
           getItemLayout={this.getItemLayout}
           keyExtractor={keyExtractor}
           onEndReached={onEndReached}
@@ -73,13 +95,15 @@ class CustomList extends React.PureComponent {
           removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={ListHeaderComponent}
+          ItemSeparatorComponent={this.FlatListItemSeparator}
           // ListEmptyComponent={<EmptyContainer icon={this.props.iconKey} text={this.props.emptyMessage} />}
-          ListEmptyComponent={this.renderEmpty}
+          ListEmptyComponent={renderEmpty || this.renderEmpty}
           // ListFooterComponent={ListFooterComponent}
           ListFooterComponent={showFooter && <>
-          {
-            ListFooterComponent?ListFooterComponent:<ActivityIndicator style={{ height: LIST_ITEM_HEIGHT }} color={indicatorColor} />
-          }
+            {
+              ListFooterComponent ? ListFooterComponent :
+                <ActivityIndicator style={{ height: LIST_ITEM_HEIGHT }} color={indicatorColor} />
+            }
           </>}
         />
       </View>

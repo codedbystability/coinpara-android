@@ -8,10 +8,11 @@ import Clipboard from "@react-native-community/clipboard";
 import { useSelector } from "react-redux";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
-import { formattedNumber } from "../../../helpers/math-helper";
+import { formatMoney, formattedNumber } from "../../../helpers/math-helper";
 import moment from "moment";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
 import { PADDING_H } from "../../../../utils/dimensions";
+import FloatingAction from "../../../components/floating-action";
 
 
 const TransactionDetail = (props) => {
@@ -28,7 +29,7 @@ const TransactionDetail = (props) => {
     Clipboard.setString(transfer.tg);
   };
 
-  if (!transfer || !transfer.cd) {
+  if (!transfer || !transfer.CoinCode) {
     return <Loading />;
   }
 
@@ -37,6 +38,7 @@ const TransactionDetail = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{ title: getLang(language, "TRANSACTION_DETAIL") }}
       />
       <View style={{ flex: 1, paddingHorizontal: PADDING_H }}>
@@ -49,21 +51,29 @@ const TransactionDetail = (props) => {
             [
               {
                 id: 1,
-                title: transfer.di === 1 ? "DEPOSIT_NOUN" : "WITHDRAW_NOUN",
-                text: formattedNumber(transfer.am, "TRY"),
+                title: transfer.Direction === 1 ? "DEPOSIT_NOUN" : "WITHDRAW_NOUN",
+                text: formatMoney(transfer.Amount, 2),
                 isLan: true,
               },
-              { id: 2, title: "DATE", text: moment(transfer.ts).utc().format("YYYY-MM-DD HH:mm:ss"), isLan: true },
-              { id: 3, title: "TRANSACTION_ID", text: transfer.tg, isLan: true, icon: "copy" },
+              {
+                id: 2,
+                title: "DATE",
+                text: moment(transfer.Timestamp).utc().format("YYYY-MM-DD HH:mm:ss"),
+                isLan: true,
+              },
+              { id: 3, title: "TRANSACTION_ID", text: transfer.TransferGuid, isLan: true, icon: "copy" },
             ]}
           transfer={transfer} handleCopyTg={handleCopyTg} />
 
       </View>
+
+      <FloatingAction />
+
     </>
 
   );
 
 };
 
-const TransactionDetailScreen = styledHigherOrderComponents(TransactionDetail);
+const TransactionDetailScreen = styledHigherOrderComponents(React.memo(TransactionDetail));
 export default TransactionDetailScreen;

@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const HistoryContent = ({ history, fdp, tdp }) => {
 
-  const { activeTheme } = useSelector(state => state.globalReducer);
+  const { activeTheme,activeUserColors } = useSelector(state => state.globalReducer);
   const awesomeChildListRenderItem =
     ({ item }) => {
 
@@ -24,7 +24,7 @@ const HistoryContent = ({ history, fdp, tdp }) => {
           <Text style={[styles(activeTheme).priceText, {
             width: "25%",
             textAlign: "right",
-            color: item.di === 1 ? activeTheme.yesGreen : activeTheme.noRed,
+            color: item.di === 1 ? activeUserColors.yesGreen : activeUserColors.noRed,
           }]}>{formatMoney(item.am, tdp)}</Text>
           <Text
             numberOfLines={1}
@@ -61,7 +61,7 @@ const HistoryContent = ({ history, fdp, tdp }) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               backgroundColor: "transparent",
-              paddingBottom: PADDING_V * 2,
+              paddingBottom:60
             }}
             renderItem={awesomeChildListRenderItem}
             keyExtractor={awesomeChildListKeyExtractor}

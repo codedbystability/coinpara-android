@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import * as Animatable from "react-native-animatable";
 import { BIG_TITLE_FONTSIZE, PADDING_H, PADDING_V } from "../../utils/dimensions";
 import { getLang } from "../helpers/array-helper";
 import NativeInput from "../components/native-input";
@@ -50,7 +51,7 @@ const CountrySelect = (props) => {
   const awesomeChildListRenderItem =
     ({ item }) => {
       return (
-        <View>
+        <Animatable.View easing={"ease"} animation={"fadeInUp"}>
           <Pressable
             onPress={() => handleSelectCountry(item)}
             style={[styles(activeTheme).item, { borderBottomColor: activeCountry.code === item.code ? activeTheme.actionColor : activeTheme.borderGray }]}>
@@ -79,7 +80,7 @@ const CountrySelect = (props) => {
               <TinyImage parent={"rest/"} name={"success"} style={styles(activeTheme).icon} />
             }
           </Pressable>
-        </View>
+        </Animatable.View>
       );
     };
 

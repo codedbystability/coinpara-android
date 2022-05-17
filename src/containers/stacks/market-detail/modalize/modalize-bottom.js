@@ -10,12 +10,13 @@ import { BIG_TITLE_FONTSIZE, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../
 import { getLang } from "../../../../helpers/array-helper";
 import { formatMoney } from "../../../../helpers/math-helper";
 import TinyImage from "../../../../tiny-image";
+import { isIphoneX } from "../../../../../utils/devices";
 
 const ModalizeBottom = (props) => {
 
   const {
     activeButtonType,
-    market,
+    activeUserColors,
     activeActionTab,
     activeType,
     activeTheme,
@@ -70,7 +71,7 @@ const ModalizeBottom = (props) => {
           onPress={handleOrder}
           style={[styles(activeTheme).buttonWrapper, {
             width: "80%",
-            backgroundColor: activeButtonType === "buy" ? activeTheme.bidText : activeTheme.askText,
+            backgroundColor: activeButtonType === "buy" ? activeUserColors.bidText : activeUserColors.askText,
           }]}>
           <Text style={[styles(activeTheme).buttonText]}>
             {activeButtonType === "sell" ? getLang(language, "SELL") : getLang(language, "BUY")}
@@ -91,7 +92,7 @@ const styles = (props) => StyleSheet.create({
   bottomContainer: {
     // position: "absolute",
     // height: 100
-    flex: .3,
+    flex: isIphoneX ? .35 : .1,
     paddingHorizontal: PADDING_H,
 
   },

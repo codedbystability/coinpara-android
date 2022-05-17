@@ -1,6 +1,5 @@
 import React from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import Swipeable from "react-native-gesture-handler/Swipeable";
+import {  Pressable, Text, View } from "react-native";
 
 import DynamicImage from "../../../components/dynamic-image";
 import styles from "./styles";
@@ -15,7 +14,6 @@ import { navigationRef } from "../../../providers/RootNavigation";
 import HapticProvider from "../../../providers/HapticProvider";
 import ModalProvider from "../../../providers/ModalProvider";
 import LocalStorage from "../../../providers/LocalStorage";
-import TinyImage from "../../../tiny-image";
 
 const refRow = [];
 let lastIndex = false;
@@ -30,54 +28,6 @@ class ListItemPure extends React.PureComponent {
       loadings: [],
     };
   }
-
-  updateButtonPress(index) {
-    HapticProvider.trigger();
-    this.handleFav(index);
-  }
-
-  rightActions(index) {
-
-    const { loadings } = this.state;
-    const { activeTheme, item } = this.props;
-    return (
-      <Pressable
-        onPress={() => this.updateButtonPress(index)}
-        style={[styles(activeTheme).rightActionOddWrapper,
-          index % 2 !== 0 && { backgroundColor: activeTheme.darkBackground }]}>
-        {
-          loadings.includes(index) ? <ActivityIndicator color={activeTheme.appWhite} /> :
-            <TinyImage parent={"rest/"} name={item.if ? "fav-active" : "fav"} style={styles(activeTheme).icon} />
-        }
-
-      </Pressable>
-    );
-  };
-
-  handleFav(index) {
-    const { authenticated, item, language, dispatch } = this.props;
-    const { loadings } = this.state;
-
-    if (!authenticated) {
-      return DropdownAlert.show("error", getLang(language, "ERROR"), getLang(language, "PLEASE_SIGNIN_OR_CREATE_ACCOUNT"));
-    }
-    this.setState({ loadings: [...loadings, index] });
-    if (item.if) {
-      marketServices.removeFavorite({ MarketGuid: item.gd }).then((response) => {
-        setTimeout(() => this.setState({ loadings: loadings.filter(itm => itm !== index) }), 500);
-        if (response.IsSuccess) {
-          return dispatch(setIsFavorite(false, item.gd));
-        }
-      });
-    } else {
-      marketServices.addFavorite({ MarketGuid: item.gd }).then((response) => {
-        setTimeout(() => this.setState({ loadings: loadings.filter(itm => itm !== index) }), 500);
-        if (response.IsSuccess) {
-          return dispatch(setIsFavorite(true, item.gd));
-        }
-      });
-    }
-  };
 
   handleDetailNavigation() {
     HapticProvider.trigger();
@@ -97,7 +47,6 @@ class ListItemPure extends React.PureComponent {
     } = this.props;
     if (prevOpenedRow) {
       if (index !== lastIndex) {
-
         prevOpenedRow.close();
         prevOpenedRow = null;
       }
@@ -110,7 +59,7 @@ class ListItemPure extends React.PureComponent {
     const { searchText = null } = this.props;
     if (searchText) {
       const storedArray = LocalStorage.getArray("marketsLocal");
-      const exist = storedArray.find(localItem => localItem.gd === market.gd);
+      const exist = storedArray.find(localItem => localItem.to === market.to);
       if (!exist) {
         const newItem = {
           to: market.to,
@@ -127,18 +76,13 @@ class ListItemPure extends React.PureComponent {
 
   render() {
     const {
-      item, index, activeTheme,fontSizes, language, swipeAble = true,
+      item, index, activeTheme, fontSizes, swipeAble = true,
     } = this.props;
 
     return (
-      <View style={{ backgroundColor: index % 2 !== 0 ? activeTheme.darkBackground : activeTheme.backgroundApp }}>
-        <Swipeable
-          renderRightActions={() => swipeAble ? this.rightActions(index) : null}
-          key={index}
-          ref={ref => refRow[index] = ref}
-          onSwipeableOpen={this.closeRow}
-        >
-
+      <View
+        key={index}
+        style={{ backgroundColor: index % 2 !== 0 ? activeTheme.darkBackground : activeTheme.backgroundApp }}>
           <Pressable
             style={({ pressed }) => [styles(activeTheme).oddContainer, {
               backgroundColor: pressed ? activeTheme.borderGray : index % 2 !== 0 ? activeTheme.darkBackground : "transparent",
@@ -149,17 +93,16 @@ class ListItemPure extends React.PureComponent {
               <View style={styles(activeTheme).leftWrapperContainer}>
                 {
                   item && item.in && <View style={styles(activeTheme).newWrapper}>
-                    <Text style={styles(activeTheme,fontSizes).newText}>
-                      {getLang(language, "NEW", "NEW").toUpperCase()}
-                    </Text>
+
                   </View>
                 }
                 <DynamicImage style={styles(activeTheme).image} market={item.to} />
               </View>
               <View>
-                <Text style={styles(activeTheme,fontSizes).title} adjustsFontSizeToFit={true}>{item.to}/{item.fs}</Text>
+                <Text style={styles(activeTheme, fontSizes).title}
+                      adjustsFontSizeToFit={true}>{item.to}/{item.fs}</Text>
 
-                <Text style={styles(activeTheme,fontSizes).description}>{nFormatter(item.vd, 4)}</Text>
+                <Text style={styles(activeTheme, fontSizes).description}>{nFormatter(item.vd, 4)}</Text>
               </View>
 
             </View>
@@ -171,26 +114,23 @@ class ListItemPure extends React.PureComponent {
             <View
               style={styles(activeTheme).rightWrapper}>
 
-              <Text numberOfLines={1} style={[styles(activeTheme,fontSizes).title, { textAlign: "right" }]}>
+              <Text numberOfLines={1} style={[styles(activeTheme, fontSizes).title, { textAlign: "right" }]}>
                 {
                   formatMoney(item.pr, item.fdp)
                 }
               </Text>
 
               <Text numberOfLines={1}
-                    style={item.cp < 0 ? styles(activeTheme,fontSizes).negative : styles(activeTheme,fontSizes).positive}>
-                {
-                  item.cd.toFixed(2)
-                }
-                (%{
+                    style={item.cp < 0 ? styles(activeTheme, fontSizes).negative : styles(activeTheme, fontSizes).positive}>
+                {/*{*/}
+                {/*  item.cd.toFixed(2)*/}
+                {/*}*/}
+                % {
                 item.cp.toFixed(2)
-              })
+              }
               </Text>
-
-
             </View>
           </Pressable>
-        </Swipeable>
       </View>
 
     );

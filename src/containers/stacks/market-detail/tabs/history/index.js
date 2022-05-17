@@ -15,7 +15,7 @@ const HistoryContentIndex = ({ history,tdp,fdp }) => {
   }, [history]);
 
   return (
-    <View style={{ flex: 1, paddingVertical: PADDING_V, paddingHorizontal: PADDING_H }}>
+    <View style={{ flex: 1, paddingVertical: PADDING_V, paddingHorizontal: PADDING_H}}>
 
       {
         loading ? <ActivityIndicator color={activeTheme.secondaryText}/> : <>

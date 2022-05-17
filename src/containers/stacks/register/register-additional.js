@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FormInput from "../../../components/form-input";
 import CustomButton from "../../../components/button";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
@@ -9,12 +9,14 @@ import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import {  NORMAL_FONTSIZE, PADDING_H } from "../../../../utils/dimensions";
+import { INPUT_HEIGHT, NORMAL_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
 import { normalizeInput } from "../../../helpers/math-helper";
 import { handleTcRegex, handleTcValid, phoneInputRegex } from "../../../helpers/string-helper";
 import CountrySelectInput from "../../../components/country-select";
 import ModalProvider from "../../../providers/ModalProvider";
-import InputAccessory from "../../../components/input-accessory";
+import moment from "moment";
+import TinyImage from "../../../tiny-image";
+import DatePicker from "react-native-date-picker";
 
 const initialInputs = [
   {
@@ -42,6 +44,21 @@ const initialInputs = [
     visible: true,
   },
 
+  // {
+  //   id: 4,
+  //   key: "birthdate",
+  //   value: "",
+  //   type: "text",
+  //   keyboardType: "numeric",
+  //   placeholder: "YOUR_BIRTHDATE",
+  //   autoComplete: "name",
+  //   autoFocus: false,
+  //   isMasked: true,
+  //   returnKey: "next",
+  //   visible: true,
+  //   mask: "[0000]-[00]-[00]",
+  // },
+
   {
     id: 3,
     key: "ref",
@@ -58,11 +75,13 @@ const initialInputs = [
 
 ];
 let refRow = [];
+const FROM_DATE = moment().subtract(20, "years").toDate();
+
 const RegisterAdditional = (props) => {
 
   const email = props.route.params && props.route.params.email ? props.route.params.email : "--";
 
-  const { language, activeTheme } = useSelector(state => state.globalReducer);
+  const { language, activeTheme, activeThemeKey } = useSelector(state => state.globalReducer);
 
 
   const [showRefCode, setShowRefCode] = useState(false);
@@ -70,7 +89,9 @@ const RegisterAdditional = (props) => {
   const [identityNumber, setIdentityNumber] = useState("");
   const [lastname, setLastname] = useState("");
   const [refCode, setRefCode] = useState("");
+  const [birthDate, setBirthDate] = useState(FROM_DATE);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(null);
   const [inputs, setInputs] = useState(initialInputs);
 
@@ -79,14 +100,11 @@ const RegisterAdditional = (props) => {
     "dial_code": "+90",
     "code": "TR",
   });
-
   const [activeIdCountry, setActiveIdCountry] = useState({
     "name": "Turkey",
     "dial_code": "+90",
     "code": "TR",
   });
-
-
 
 
   useEffect(() => {
@@ -123,14 +141,25 @@ const RegisterAdditional = (props) => {
     const num = phoneNumber.replace(/\s/g, "").replace(/-/g, "").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
     const validPhone = activeCountry.dial_code.substring(1) + num;
 
-    return navigationRef.current.navigate("RegisterPassword", {
+    return console.log({
       identityNumber,
-      nationality: activeCountry.name,
+      nationality: activeCountry.code,
       name,
       lastname,
       phoneNumber: validPhone,
       email,
       refCode,
+      birthdate: moment(birthDate).format("DD-MM-YYYY") + "T00:00:00",
+    });
+    return navigationRef.current.navigate("RegisterPassword", {
+      identityNumber,
+      nationality: activeCountry.code,
+      name,
+      lastname,
+      phoneNumber: validPhone,
+      email,
+      refCode,
+      birthdate: moment(birthDate).format("DD-MM-YYYY") + "T00:00:00",
     });
 
 
@@ -143,6 +172,8 @@ const RegisterAdditional = (props) => {
       return lastname;
     if (input.key === "ref")
       return refCode;
+    if (input.key === "birthdate")
+      return birthDate;
   };
 
   const handleSetText = (key, value) => {
@@ -152,10 +183,12 @@ const RegisterAdditional = (props) => {
       return setLastname(value);
     if (key === "ref")
       return setRefCode(value);
+    if (key === "birthdate")
+      return setBirthDate(value);
 
   };
 
-  const handleIdentitySet = (val) =>  setIdentityNumber(activeCountry.name === "Turkey" ? val ? handleTcRegex(val) : "" : val);
+  const handleIdentitySet = (val) => setIdentityNumber(activeCountry.name === "Turkey" ? val ? handleTcRegex(val) : "" : val);
 
   const onFocusCountry = () => setFocusedIndex(19);
 
@@ -189,6 +222,7 @@ const RegisterAdditional = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{
           presentation: "modal",
           title: email,
@@ -204,9 +238,7 @@ const RegisterAdditional = (props) => {
           </TouchableOpacity>
         }
       />
-      {/*<View style={styles(activeTheme).wrapper}>*/}
       <KeyboardAvoidingView behavior={"padding"} style={styles(activeTheme).wrapper}>
-
 
         <View style={styles(activeTheme).inputWrapper}>
 
@@ -233,12 +265,26 @@ const RegisterAdditional = (props) => {
                 autoComplete={input.autoComplete}
                 returnKey={input.returnKey}
                 autoFocus={input.autoFocus}
+                mask={input.mask}
+                isMasked={input.isMasked || false}
                 type={input.type}
                 parentOnFocus={() => parentOnFocus(index)}
                 ref={ref => refRow[index] = ref}
                 onChange={(value) => handleSetText(input.key, value)}
               />)
           }
+
+
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            style={styles(activeTheme).inp1}>
+
+            <Text style={styles(activeTheme).dte}>{moment(birthDate).format("DD-MM-YYYY")}</Text>
+
+            <TinyImage parent={"rest/"} name={"c-down"} style={styles(activeTheme).a1} />
+
+
+          </Pressable>
 
 
           <FormPhoneInput value={normalizeInput(phoneNumber)}
@@ -264,16 +310,28 @@ const RegisterAdditional = (props) => {
                         onPress={handleRegister} />
 
         </View>
-        {/*</View>*/}
       </KeyboardAvoidingView>
 
 
-      <InputAccessory
-        handleStep={handleStep}
-        stepAble={true}
-        mailProviders={[]}
-        onPress={null}
+      <DatePicker
+        modal
+        mode={"date"}
+        confirmText={getLang(language, "APPROVE")}
+        cancelText={getLang(language, "CANCEL")}
+        theme={activeThemeKey === "light" ? "light" : "dark"}
+        textColor={activeTheme.appWhite}
+        title={getLang(language, "BIRTH_DATE")}
+        // maximumDate={activeDateType === "END_DATE" ? moment().toDate() : startDate}
+        open={showDatePicker}
+        date={birthDate}
+        onConfirm={(date) => {
+          setBirthDate(date);
+          setShowDatePicker(false);
+        }}
+
+        onCancel={() => setShowDatePicker(false)}
       />
+
     </>
   );
 
@@ -299,7 +357,7 @@ const styles = (props) => StyleSheet.create({
 
   refText: {
     color: props.actionColor,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
     fontSize: 14,
   },
 
@@ -354,5 +412,22 @@ const styles = (props) => StyleSheet.create({
   text: {
     // paddingTop: 12,
     color: "rgba(255,255,255,1)",
+  },
+
+  inp1: {
+    width: "100%",
+    height: INPUT_HEIGHT,
+    borderColor: props.borderGray,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: PADDING_H,
+    flexDirection: "row",
+  },
+  dte: {
+    color: props.appWhite,
+    fontFamily: "CircularStd-Bold",
+    fontSize: TITLE_FONTSIZE,
   },
 });

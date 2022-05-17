@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
-import InputAccessory from "../../../components/input-accessory";
 
 const inputs = [
   {
@@ -21,7 +20,7 @@ const inputs = [
     autoComplete: "off",
     returnKey: "done",
     autoFocus: true,
-    icon: "eye-open",
+    icon: "eye-close",
   },
   {
     id: 2,
@@ -33,7 +32,7 @@ const inputs = [
     autoComplete: "off",
     returnKey: "done",
     autoFocus: false,
-    icon: "eye-open",
+    icon: "eye-close",
 
   },
   {
@@ -46,13 +45,13 @@ const inputs = [
     autoComplete: "off",
     returnKey: "done",
     autoFocus: false,
-    icon: "eye-open",
+    icon: "eye-close",
 
   },
 ];
 
 const ChangePassword = (props) => {
-  const [icon, setIcon] = useState("eye-open");
+  const [icon, setIcon] = useState("eye-close");
 
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -128,6 +127,7 @@ const ChangePassword = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{ title: getLang(language, "CHANGE_PASSWORD") }}
       />
       {/*<Pressable*/}
@@ -148,7 +148,6 @@ const ChangePassword = (props) => {
                          value={getInputValue(input.key)}
                          icon={icon}
                          onIconPressed={() => handleSetIcon(input)}
-                         inputAccessoryViewID={"inputAccessoryViewIDCh"}
                          keyboardType={input.keyboardType}
                          autoComplete={input.autoComplete}
                          returnKey={input.returnKey}
@@ -165,12 +164,7 @@ const ChangePassword = (props) => {
       <CustomButton text={getLang(language, "CHANGE_PASSWORD")}
                     filled={true}
                     onPress={handlePress} />
-      <InputAccessory
-        handleStep={null}
-        onPress={null}
-        stepAble={false}
-        mailProviders={[]}
-      />
+
     </>
 
   );

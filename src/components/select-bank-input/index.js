@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import TinyImage from "../../tiny-image";
+import { NORMAL_FONTSIZE } from "../../../utils/dimensions";
 
 
 const SelectBankInput = (props) => {
@@ -30,35 +31,27 @@ const SelectBankInput = (props) => {
             <Text style={styles(activeTheme).text}>
               {getLang(language, "SELECT_BANK")}
             </Text>
-            : <>
-              <Text style={[styles(activeTheme).text, { color: activeTheme.appWhite }]}>
-                {
-                  selectedBank && Object.keys(selectedBank).length >= 1 && <Text style={{
-                    color: isCapital ? activeTheme.appWhite : activeTheme.secondaryText,
-                  }}>
-                    {/*{getLang(language, "IBAN")}*/}
-                    {isWithdraw ? getLang(language, "IBAN") : selectedBank.BankName}
+            : <View style={{
+              height: "100%",
+              paddingVertical: 4,
+              flex: 1,
+            }}>
+              {
+                selectedBank && Object.keys(selectedBank).length >= 1 && <Text
 
-                  </Text>
-                }
-                {"\n"}
-                {"\n"}
-                <Text style={{
-                  color: activeTheme.appWhite,
-                }}>
-                  {isWithdraw ? selectedBank.BankName : selectedBank.Iban}
+                  style={[styles(activeTheme).text, {
+                    marginTop:4,
+                    color: isCapital ? activeTheme.appWhite : activeTheme.secondaryText,
+                  }]}>
+                  {isWithdraw ? getLang(language, "BANK") : selectedBank.BankName.replace(/\s/g, '')}
                 </Text>
-                {
-                  showIban &&
-                  <>
-                    {"\n"}
-                    <Text style={[styles(activeTheme).text, { color: activeTheme.appWhite }]}>
-                      {selectedBank.Iban}
-                    </Text>
-                  </>
-                }
+              }
+
+
+              <Text style={[styles(activeTheme).text, { color: activeTheme.appWhite, marginTop: 6 }]}>
+                {isWithdraw ? selectedBank.BankName.replace(/\s/g, '') : showIban && selectedBank.Iban}
               </Text>
-            </>
+            </View>
         }
 
 
@@ -87,8 +80,6 @@ const SelectBankInput = (props) => {
               </View> : null
         }
 
-
-        {/*<Entypo name={"chevron-right"} size={20} color={activeTheme.secondaryText} />*/}
       </Pressable>
 
 
@@ -96,19 +87,23 @@ const SelectBankInput = (props) => {
         showName && selectedBank && Object.keys(selectedBank).length >= 1 &&
         <Pressable onPress={handlePress} style={styles(activeTheme).wrapper}>
 
+          <View style={{
+            height: "100%",
+            paddingVertical: 4,
+            flex: 1,
+          }}>
 
-          <Text style={[styles(activeTheme).text, { color: activeTheme.secondaryText }]}>
-            {getLang(language, "TAKER")}
-            <>
-              {"\n"}
-              {"\n"}
-              <Text style={[styles(activeTheme).text, { color: activeTheme.appWhite }]}>
-                {selectedBank.NameSurname}
-              </Text>
-            </>
+            <Text style={[styles(activeTheme).text, {
+              marginTop:4,
+              color: activeTheme.secondaryText }]}>
+              {getLang(language, "TAKER")}
+            </Text>
 
 
-          </Text>
+            <Text style={[styles(activeTheme).text, { color: activeTheme.appWhite, marginTop: 6 }]}>
+              {selectedBank.NameSurname}
+            </Text>
+          </View>
 
 
           <View style={[{
@@ -153,7 +148,7 @@ const styles = (props) => StyleSheet.create({
   },
   text: {
     color: props.appWhite,
-    fontSize: 12,
+    fontSize: NORMAL_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
   icon: {

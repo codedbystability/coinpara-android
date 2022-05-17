@@ -36,9 +36,9 @@ const UserTransferList = (props) => {
         paddingHorizontal: PADDING_H,
         paddingVertical: PADDING_BV,
       }}
+      showsVerticalScrollIndicator={false}
       onEndReached={onEndReached}
       onEndReachedThreshold={0}
-      showsVerticalScrollIndicator={false}
       data={transfers}
       renderItem={(item) =>
         <TransferItem {...{

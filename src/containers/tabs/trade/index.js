@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Keyboard,
 } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { useEffect, useState } from "react";
@@ -16,7 +15,7 @@ import {
   BIG_TITLE_FONTSIZE,
   NORMAL_FONTSIZE,
   PADDING_H,
-  PADDING_V, SCREEN_WIDTH,
+  SCREEN_WIDTH,
   TITLE_FONTSIZE,
 } from "../../../../utils/dimensions";
 import { formatMoney } from "../../../helpers/math-helper";
@@ -26,25 +25,18 @@ import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
 import PercentageSelect from "../../../components/percentage-select";
 import { percentages, tradeTypes } from "./constants";
-import { isIphoneX } from "../../../../utils/devices";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
 import AnimatedTab from "../../../components/animated-tab";
 import store from "../../../reducers/createReducers";
 import DynamicImage from "../../../components/dynamic-image";
 import { replaceAll } from "../../../helpers/string-helper";
-import InputAccessory from "../../../components/input-accessory";
 import TradeChart from "./chart";
-
-
-import LocalStorage from "../../../providers/LocalStorage";
-import { useIsFocused } from "@react-navigation/native";
 import TinyImage from "../../../tiny-image";
 
 
 const Trade = (props) => {
 
   const authenticated = useSelector(state => state.authenticationReducer.authenticated);
-  const isFocused = useIsFocused();
 
   const { activeTheme, language } = useSelector(state => state.globalReducer);
   const { marketsWithKey, marketCount, btcTryGd } = useSelector(state => state.marketReducer);
@@ -140,9 +132,13 @@ const Trade = (props) => {
   const handleSetPercentage = (tab) => setActivePercentage(tab.value);
 
   const handleSelect = (item) => {
+    setActivePercentage("0");
+    setAmount("");
+    setPrediction("");
+
     const newItem = marketsWithKey[item["MarketGuids"]["TRY"]];
     if (!newItem) {
-      return console.log("no new item - ", newItem);
+      return;
     }
     setSelectedMarket(newItem);
     const wallets = store.getState()["walletReducer"]["wallets"];
@@ -154,7 +150,6 @@ const Trade = (props) => {
 
   };
 
-  // const handleMax = () => userFromWallet && userFromWallet.wb > 0 && setAmount(userFromWallet.wb);
 
   const getMarketInfo = (from, to) => {
     setInfo({});
@@ -169,6 +164,8 @@ const Trade = (props) => {
   };
 
   const handleOrder = () => {
+
+
     if (!authenticated) {
       return navigationRef.current.navigate("LoginRegister");
     }
@@ -176,6 +173,7 @@ const Trade = (props) => {
     if (!amount || parseFloat(amount) < 0) {
       return DropdownAlert.show("error", getLang(language, "ERROR"), getLang(language, "ENTER_VALID_AMOUNT"));
     }
+
 
 
     if (activeType === "buy" && amount > userFromWallet.wb) {
@@ -219,7 +217,6 @@ const Trade = (props) => {
       "PriceRiseDrop": 0,//stop
     };
     path = "orders/market/new";
-    Keyboard.dismiss();
 
     marketServices.newOrder(path, instance).then((response) => {
       if (!response)
@@ -232,8 +229,6 @@ const Trade = (props) => {
             onAction: (index) => handleActionDeposit(index),
           });
 
-        } else {
-          return DropdownAlert.show("error", getLang(language, "ERROR"), response.ErrorMessage);
         }
       } else {
         setAmount("");
@@ -263,106 +258,104 @@ const Trade = (props) => {
   return (
     <>
 
-      <TabNavigationHeader{...props} backAble={false}
+      <TabNavigationHeader{...props}
+                          backAble={true}
+                          isBack={false}
                           options={{ title: getLang(language, "TRADE") }} />
 
       <View style={{ flex: 1 }}>
 
 
-          <View style={styles(activeTheme).upW}>
-            <AnimatedTab {...{
-              cd: selectedMarket ? selectedMarket.to : null,
-              filled: false,
-              activeKey: activeType,
-              headers: tradeTypes,
-              width: `50%`,
-              isBig: true,
-              onChange: handleChangeTradeType,
-            }} />
-          </View>
+        <View style={styles(activeTheme).upW}>
+          <AnimatedTab {...{
+            cd: selectedMarket ? selectedMarket.to : null,
+            filled: false,
+            activeKey: activeType,
+            headers: tradeTypes,
+            width: `50%`,
+            isBig: true,
+            onChange: handleChangeTradeType,
+          }} />
+        </View>
 
 
         <View>
 
 
-            <View style={styles(activeTheme).upW}>
-              <TradeSelect {...{ selectedMarket, handleSelect }} />
-            </View>
+          <View style={styles(activeTheme).upW}>
+            <TradeSelect {...{ selectedMarket, handleSelect, activeType }} />
+          </View>
 
-            <View style={[styles(activeTheme).wrapper, { paddingTop: PADDING_H / 2 }]}>
+          <View style={[styles(activeTheme).wrapper, { paddingTop: PADDING_H / 2 }]}>
 
-              {
-                selectedMarket && Object.keys(selectedMarket).length >= 1 &&
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {
+              selectedMarket && Object.keys(selectedMarket).length >= 1 &&
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
 
-                  <Text style={[styles(activeTheme).text, { fontSize: BIG_TITLE_FONTSIZE + 4, marginRight: 4 }]}>
-                    {selectedMarket && Object.keys(selectedMarket).length >= 1 && formatMoney(selectedMarket.pr, info.FromCoinDecimalPoints)}
-                    {
-                      "  "
-                    }
-                    {selectedMarket && selectedMarket.fs}
-                  </Text>
+                <Text style={[styles(activeTheme).text, { fontSize: BIG_TITLE_FONTSIZE + 4, marginRight: 4 }]}>
+                  {selectedMarket && Object.keys(selectedMarket).length >= 1 && formatMoney(selectedMarket.pr, info.FromCoinDecimalPoints)}
+                  {
+                    "  "
+                  }
+                  {selectedMarket && selectedMarket.fs}
+                </Text>
 
-                  <Text
-                    style={[styles(activeTheme).textChange, { color: parseFloat(selectedMarket.cp) >= 0 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
-                    % {selectedMarket && selectedMarket.cp.toFixed(2)}
-                  </Text>
+                <Text
+                  style={[styles(activeTheme).textChange, { color: parseFloat(selectedMarket.cp) >= 0 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
+                  % {selectedMarket && selectedMarket.cp.toFixed(2)}
+                </Text>
 
-                  <TinyImage parent={"rest/"}
-                             name={selectedMarket && selectedMarket.cp >= 0 ? "arrow-up" : "arrow-down"}
-                             style={styles(activeTheme).icon}
-                  />
-                </View>
+                <TinyImage parent={"rest/"}
+                           name={selectedMarket && selectedMarket.cp >= 0 ? "arrow-up" : "arrow-down"}
+                           style={styles(activeTheme).icon}
+                />
+              </View>
 
-              }
+            }
 
-            </View>
+          </View>
 
 
           <View
             style={styles(activeTheme).wrapper}>
 
+            <View style={styles(activeTheme).inputContainer}>
 
-              <View style={styles(activeTheme).inputContainer}>
+              <TextInput
+                keyboardAppearance={"dark"}
+                style={styles(activeTheme).textInput}
+                onFocus={handleOnFocus}
+                onBlur={handleOnBlur}
+                textAlign={"center"}
+                blurOnSubmit={true}
+                // onChangeText={setAmount}
+                onChangeText={val => (val.match(/\./g) || []).length <= 1 && setAmount(val.replace(/,/g, "."))}
+                // onChangeText={val => setAmount(val)}
 
-                <TextInput
-                  keyboardAppearance={"dark"}
-                  style={[styles(activeTheme).textInput, {
-                    fontSize: 18,
-                    borderColor: activeType === "sell" ? activeTheme.noRed : activeTheme.yesGreen,
-                    color: activeType === "sell" ? activeTheme.noRed : activeTheme.yesGreen,
-                  }]}
-                  onFocus={handleOnFocus}
-                  onBlur={handleOnBlur}
-                  textAlign={"center"}
-                  blurOnSubmit={true}
-                  // onChangeText={setAmount}
-                  onChangeText={val => (val.match(/\./g) || []).length <= 1 && setAmount(val)}
-
-                  value={
-                    (!amount) || isFocusedTI ?
-                      amount.toString() : formatMoney(amount, formatPrecision)
-                  }
-                  keyboardType={"numeric"}
-                  numberOfLines={1}
-                />
+                value={
+                  (!amount) || isFocusedTI ?
+                    amount.toString() : formatMoney(amount, formatPrecision)
+                }
+                keyboardType={"numeric"}
+                numberOfLines={1}
+              />
 
 
-                <Text style={styles(activeTheme).txt}>
-                  {
-                    selectedMarket && selectedMarket.to && replaceAll(getLang(language, activeType === "buy" ? "INSTANT_TRADE_BUY" : "INSTANT_TRADE_SELL"), "COINNAME", selectedMarket.to)
-                  }
-                </Text>
-                <View style={styles(activeTheme).tlIcon}>
-                  {
-                    selectedMarket && <DynamicImage style={styles(activeType).icon2}
-                                                    market={activeType === "buy" ? selectedMarket.fs : selectedMarket.to} />
-                  }
-
-                </View>
-
+              <Text style={styles(activeTheme).txt}>
+                {
+                  selectedMarket && selectedMarket.to && replaceAll(getLang(language, activeType === "buy" ? "INSTANT_TRADE_BUY" : "INSTANT_TRADE_SELL"), "COINNAME", selectedMarket.to)
+                }
+              </Text>
+              <View style={styles(activeTheme).tlIcon}>
+                {
+                  selectedMarket && <DynamicImage style={styles(activeType).icon2}
+                                                  market={activeType === "buy" ? selectedMarket.fs : selectedMarket.to} />
+                }
 
               </View>
+
+
+            </View>
 
 
             {
@@ -426,16 +419,14 @@ const Trade = (props) => {
           </View>
         }
 
-            <CustomButton
-              text={getLang(language, activeType.toUpperCase())} onPress={handleOrder}
-              style={{ backgroundColor: activeType === "sell" ? activeTheme.noRed : activeTheme.yesGreen }}
-            />
+
+        <CustomButton
+          text={getLang(language, activeType.toUpperCase())} onPress={handleOrder}
+          style={{ backgroundColor: activeType === "sell" ? activeTheme.noRed : activeTheme.yesGreen }}
+        />
 
 
       </View>
-      <InputAccessory
-        tabBarShown={true}
-      />
 
     </>
   );
@@ -464,7 +455,7 @@ const styles = (props) => StyleSheet.create({
   text: {
     color: props.appWhite,
     fontSize: TITLE_FONTSIZE,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   image: {
     height: 26,
@@ -492,19 +483,19 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: PADDING_H,
-    paddingVertical: 8,
-    marginBottom: 4,
+    paddingVertical: 4,
   },
   textInput: {
     borderWidth: 1,
     width: "100%",
     height: 50,
     borderRadius: 10,
-    // paddingHorizontal: 8,
     fontSize: 18,
     fontFamily: "CircularStd-Bold",
     alignItems: "center",
     paddingRight: 30,
+    borderColor: props.actionColor,
+    color: props.actionColor,
   },
 
   prediction: {
@@ -513,6 +504,7 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 10,
     flexDirection: "row",
+
   },
   maxContainer2: {
     position: "absolute",
@@ -549,7 +541,13 @@ const styles = (props) => StyleSheet.create({
     alignItems: "center",
     // backgroundColor: "red",
   },
-  upW: { paddingHorizontal: PADDING_H, paddingVertical: isIphoneX ? PADDING_V * 2 : 0 },
+  upW: {
+    // paddingHorizontal: PADDING_H, paddingVertical: isIphoneX ? PADDING_V * 2 : 0
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: PADDING_H,
+    paddingVertical: PADDING_H,
+  },
   txt: {
     color: props.secondaryText,
     marginLeft: -10,

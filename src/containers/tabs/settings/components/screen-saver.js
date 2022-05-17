@@ -127,7 +127,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontSize: fontSizes?.TITLE_FONTSIZE,
     color: props.appWhite,
   },
 

@@ -29,6 +29,9 @@ export const postFetchInstance = async (urlKEY, endpoint, instance, loading = tr
         }
         return resolve(response.data);
       }).catch(error => {
+        if (loading) {
+          Loading.hide();
+        }
         const errorRes = handleHttpError(error, URL + endpoint);
         return resolve(errorRes);
 
@@ -68,6 +71,9 @@ export const getFetchInstance = async (urlKEY, endpoint, loading = true, direct 
           return resolve(response.data);
         },
       ).catch(error => {
+      if (loading) {
+        Loading.hide();
+      }
       handleHttpError(error, URL);
       return resolve(null);
 
@@ -109,7 +115,7 @@ const handleHttpError = (error, URL) => {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
     console.log(error.response.status);
-  } else if ("The request was made bu --- ", error.request) {
+  } else if (error.request) {
     console.log("The request was made but no response was received", error.request);
   } else {
     console.log("Something happened in setting up the request that triggered an Error", error.message);

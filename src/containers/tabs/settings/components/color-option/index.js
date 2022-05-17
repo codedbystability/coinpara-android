@@ -5,8 +5,10 @@ import RealAnimatedTab from "../../../../../components/real-animated-tab";
 import { useDispatch, useSelector } from "react-redux";
 import LocalStorage from "../../../../../providers/LocalStorage";
 import { setColorOption } from "../../../../../actions/global-actions";
+import DropdownAlert from "../../../../../providers/DropdownAlert";
+import { PADDING_H } from "../../../../../../utils/dimensions";
 
-const ColorOption = (props) => {
+const ColorOption = () => {
   const {
     activeTheme,
     colorOptions,
@@ -20,37 +22,42 @@ const ColorOption = (props) => {
   const [headers, setHeaders] = useState([]);
 
   useEffect(() => {
-    if (activeType === "") {
+    if (activeColorOption) {
       setActiveType(activeColorOption);
     }
   }, [activeColorOption]);
 
 
   useEffect(() => {
-    LocalStorage.setItem("COLOR_OPTION", activeType);
-    dispatch(setColorOption(activeType));
-  }, [activeType]);
-
-  useEffect(() => {
     if (colorOptions.length >= 1) {
       setHeaders([{
         id: 1, key: "SYSTEM", title: "SYSTEM", colors: {
-          green: activeTheme.changeGreen,
-          red: activeTheme.changeRed,
+          bidText: activeTheme.changeGreen,
+          askText: activeTheme.changeRed,
         },
       }, ...colorOptions]);
     }
   }, [colorOptions]);
 
 
+  const onChange = (val) => {
+    if (val !== activeType) {
+      LocalStorage.setItem("COLOR_OPTION", val);
+      dispatch(setColorOption(val));
+      DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "COLOR_OPTION_UPDATED"), {
+        duration: 1000,
+      });
+    }
+  };
   return (
     <View>
       <Text
         style={{
           fontFamily: "CircularStd-Book",
-          fontSize: fontSizes?.TITLE_FONTSIZE,
+          fontSize: fontSizes?.SUBTITLE_FONTSIZE,
           color: activeTheme.secondaryText,
           marginTop: 12,
+          paddingHorizontal: PADDING_H,
         }}>{getLang(language, "YOU_CAN_CUSTOMIZE_COLORS")}</Text>
 
       <RealAnimatedTab {...{
@@ -58,7 +65,7 @@ const ColorOption = (props) => {
         headers: headers,
         width: `25%`,
         filled: true,
-        onChange: setActiveType,
+        onChange,
       }} />
 
 
@@ -68,4 +75,4 @@ const ColorOption = (props) => {
 };
 
 
-export default ColorOption;
+export default React.memo(ColorOption);

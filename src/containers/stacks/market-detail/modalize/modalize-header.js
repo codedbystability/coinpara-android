@@ -11,7 +11,7 @@ import { getLang } from "../../../../helpers/array-helper";
 
 const ModalizeHeader = (props) => {
 
-  const { handleSetActiveButtonType, activeButtonType, activeTheme, activeIndex, language } = props;
+  const { handleSetActiveButtonType, activeButtonType, activeTheme,activeUserColors, activeIndex, language } = props;
 
   return (
 
@@ -21,7 +21,7 @@ const ModalizeHeader = (props) => {
         onPress={() => handleSetActiveButtonType("buy")}
         style={[styles(activeTheme).buttonWrapper, {
           backgroundColor: activeIndex === "initial" || activeButtonType === "buy" ?
-            activeTheme.bidText
+            activeUserColors.bidText
             : activeTheme.borderGray,
         }]}>
         <Text style={[styles(activeTheme).buttonText]}>
@@ -34,7 +34,7 @@ const ModalizeHeader = (props) => {
         style={[styles(activeTheme).buttonWrapper, {
           backgroundColor: activeIndex === "initial" ||
           activeButtonType === "sell" ?
-            activeTheme.askText
+            activeUserColors.askText
             : activeTheme.borderGray,
         }]}>
 

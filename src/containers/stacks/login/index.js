@@ -3,7 +3,7 @@ import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponen
 import {
   ActivityIndicator,
   Image,
-  Keyboard, KeyboardAvoidingView,
+  KeyboardAvoidingView,
   Pressable,
   StyleSheet,
   Text,
@@ -28,7 +28,6 @@ import { validateEmail } from "../../../helpers/string-helper";
 import ReactNativeBiometrics from "react-native-biometrics";
 import ModalProvider from "../../../providers/ModalProvider";
 import LockScreen from "../lock-screen";
-import InputAccessory from "../../../components/input-accessory";
 import Recaptcha from "react-native-recaptcha-that-works";
 
 let refRow = [];
@@ -39,10 +38,10 @@ const Login = (props) => {
   const [userGuid, setUserGuid] = useState("");
   const [userAuthType, setUserAuthType] = useState("");
   const [showValidation, setShowValidation] = useState(false);
-  const [icon, setIcon] = useState("eye-open");
+  const [icon, setIcon] = useState("eye-close");
   const [phone, setPhone] = useState("eye");
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const { language, activeTheme, keyboardShown } = useSelector(state => state.globalReducer);
+  const { language, activeTheme } = useSelector(state => state.globalReducer);
   const [mailProviders, setMailProviders] = useState([]);
 
   const dispatch = useDispatch();
@@ -61,6 +60,19 @@ const Login = (props) => {
     userServices.check(instance)
       .then((response) => {
         if (response.IsSuccess) {
+
+          //TODO CHECK NEW USER CONTROL
+          const storedLoginInstance = LocalStorage.getObject("storedLoginInstance");
+          const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
+          const localPassword = LocalStorage.getItem("localPassword");
+
+          if (storedLoginInstance && storedLoginInstance.Email && localPassword && localPasswordEnabled && localPasswordEnabled === "true") {
+            LocalStorage.removeItem("localPasswordEnabled");
+            LocalStorage.removeItem("storedLoginInstance");
+            LocalStorage.removeItem("localPassword");
+          }
+
+
           dispatch(setUserVerifyType(response.Data.VerifyType));
           setPhone(response.Data.Phone);
           LocalStorage.setObject("storedLoginInstance", instance);
@@ -70,6 +82,7 @@ const Login = (props) => {
         }
       }).catch(err => console.log("err -> ", err));
   };
+
   const onError = () => DropdownAlert.show("error", getLang(language, "ERROR"), getLang(language, "GOOGLE_RECAPTCHA_REQUIRED"));
 
 
@@ -116,7 +129,13 @@ const Login = (props) => {
   useEffect(() => {
     if (isFocused) {
       const storedLoginInstance = LocalStorage.getObject("storedLoginInstance");
+
       if (storedLoginInstance) {
+
+        if (storedLoginInstance.Email) {
+          setEmail(storedLoginInstance.Email);
+        }
+
         setTimeout(() => checkForBiometrics(), 250);
       }
 
@@ -173,11 +192,11 @@ const Login = (props) => {
     const localPasswordEnabled = LocalStorage.getItem("localPasswordEnabled");
     if (result.success) {
       storeFromLocal(storedLoginInstance);
-    } else if (result.error === "User cancellation" && localPasswordEnabled && localPasswordEnabled === 'true') {
+    } else if (result.error === "User cancellation" && localPasswordEnabled && localPasswordEnabled === "true") {
       ModalProvider.show(<LockScreen onSuccess={onSuccessPasscode}
                                      isAuth={true}
                                      isCreate={false}
-                                     onFail={onFailPasscode}/>, false);
+                                     onFail={onFailPasscode} />, false);
     }
   };
 
@@ -209,7 +228,7 @@ const Login = (props) => {
 
   const handleForgotPassword = () => navigationRef.current.navigate("ForgotPassword");
 
-  const handleRegister = () => navigationRef.current.navigate("RegisterEmail");
+  const handleRegister = () => navigationRef.current.navigate("RegisterStack");
 
 
   const onResult = response => {
@@ -231,7 +250,6 @@ const Login = (props) => {
   };
   return (
     <>
-
       <TabNavigationHeader{...props} backAble={true}
                           headerRight={
                             <View style={styles(activeTheme).icon}>
@@ -271,7 +289,7 @@ const Login = (props) => {
                                                     icon={input.icon ? icon : null}
                                                     onIconPressed={onIconPressed}
                                                     textContentType={input.textContentType ?? "none"}
-                                                    type={input.type === "password" ? icon === "eye-open" ? "password" : "text" : input.type}
+                                                    type={input.type === "password" ? icon === "eye-close" ? "password" : "text" : input.type}
                                                     onChange={(value) => handleSetText(input.key, value)} />)
           }
 
@@ -315,14 +333,6 @@ const Login = (props) => {
                   onResult={onResult}
                   iconType={userAuthType === 2 ? "phone" : "email"}
       />
-
-      <InputAccessory
-        handleStep={handleStep}
-        stepAble={true}
-        mailProviders={mailProviders}
-        onPress={(val) => setEmail(email + val)}
-      />
-
 
       <Recaptcha
         ref={recaptcha}
@@ -389,10 +399,9 @@ const styles = (props) => StyleSheet.create({
     position: "absolute",
     right: 10,
     bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
     borderRadius: 8,
-    paddingHorizontal: 12,
     paddingVertical: 4,
   },
   bottom: { paddingHorizontal: PADDING_H, paddingVertical: PADDING_V, alignItems: "center", width: "100%" },

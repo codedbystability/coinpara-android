@@ -1,13 +1,13 @@
 import { StyleSheet } from "react-native";
 import {
-  BIG_TITLE_FONTSIZE,
+  BIG_TITLE_FONTSIZE, LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
   PADDING_H,
   PADDING_V,
   SCREEN_HEIGHT, SCREEN_WIDTH,
   SUBTITLE_FONTSIZE,
 } from "../../../../utils/dimensions";
 
-const styles = (props,fontSizes) => StyleSheet.create({
+const styles = (props, fontSizes) => StyleSheet.create({
   container: {
     paddingTop: 12,
   },
@@ -144,7 +144,7 @@ const styles = (props,fontSizes) => StyleSheet.create({
     backgroundColor: props.backgroundApp,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderRadius: 12,
+    borderRadius: 8,
     marginBottom: 8,
     paddingVertical: PADDING_V,
     paddingHorizontal: PADDING_H,
@@ -160,7 +160,7 @@ const styles = (props,fontSizes) => StyleSheet.create({
 
   sheetSortTitle: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE - 1,
     letterSpacing: 0,
     color: props.secondaryText,
   },
@@ -228,9 +228,24 @@ const styles = (props,fontSizes) => StyleSheet.create({
     paddingHorizontal: PADDING_H,
     height: SCREEN_HEIGHT / 1.5,
   },
+  left:{
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingRight: 20,
+  },
   icon: {
     width: 16,
     height: 16,
+  },
+  mainI: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
   },
   icon2: {
     height: 12,
@@ -249,9 +264,25 @@ const styles = (props,fontSizes) => StyleSheet.create({
     left: 0,
     width: SCREEN_WIDTH,
     zIndex: 9999,
-    backgroundColor:'red'
+    backgroundColor: "red",
   },
   wrap3: { flex: 1, backgroundColor: props.backgroundApp, paddingTop: PADDING_H },
+
+  actionText: {
+    fontFamily: "CircularStd-Book",
+    color: props.buttonWhite,
+    fontSize: NORMAL_FONTSIZE,
+    marginTop: 6,
+    textAlign: "center",
+    width: 80,
+  },
+  actionCon: {
+    // alignItems: "center",
+    justifyContent: "center",
+    minWidth: 80,
+    height: LIST_ITEM_HEIGHT,
+    // paddingLeft: 30,
+  },
 });
 
 export default styles;

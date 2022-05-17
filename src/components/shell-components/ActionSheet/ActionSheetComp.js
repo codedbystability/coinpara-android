@@ -1,8 +1,10 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useSelector } from "react-redux";
 import { setActionSheetRef } from "../../../providers/ActionSheetComProvider";
-import { Text, TouchableOpacity, View, Pressable, Animated } from "react-native";
+import { Text, TouchableOpacity, View, Pressable, Animated, ScrollView } from "react-native";
 import styles from "./ActionSheetComp.styles";
+import * as Animatable from "react-native-animatable";
+import DynamicImage from "../../dynamic-image";
 
 const fake = {
   title: "",
@@ -17,16 +19,17 @@ const ActionSheetComp = forwardRef((props, ref) => {
     hide: hide,
   }));
 
-  const { activeTheme, activeThemeKey } = useSelector(state => state.globalReducer);
+  const { activeTheme } = useSelector(state => state.globalReducer);
   const [params, setParams] = useState(fake);
   // const animatedValue = new Animated.Value(0);
   const [visible, setVisible] = useState(false);
-  const show = (title, options, onAction, animate = true) => {
+  const show = (title, options, onAction, animate = true, oldActive = null) => {
     setParams({
       title,
       options,
       onAction,
       animate,
+      oldActive,
     });
     // slideUp();
 
@@ -95,27 +98,44 @@ const ActionSheetComp = forwardRef((props, ref) => {
     <Pressable
       // onPress={slideDown}
       style={[styles(activeTheme).wrap, {
-        backgroundColor: activeThemeKey === "light" ? "rgba(0,0,0,.8)" : "rgba(31,31,31,.8)",
+        backgroundColor: "rgba(0,0,0,.5)",
       }]}>
-      <View
+      <Animatable.View
+        animation={"fadeInUp"}
         style={[styles(activeTheme).modal]}>
 
-        <View style={{ alignItems: "center" }}>
+        <View style={{
+          alignItems: "center",
+
+        }}>
           <Text style={styles(activeTheme).modalText}>
             {params.title}
           </Text>
         </View>
 
-        {
-          params.options.map((option, i) => <TouchableOpacity
-            activeOpacity={.8}
-            key={option} style={styles(activeTheme).button}
-            onPress={() => handleAction(i)}>
-            <Text
-              style={[i === params.options.length - 1 ? styles(activeTheme).cancel : styles(activeTheme).text]}>{option}</Text>
-          </TouchableOpacity>)
-        }
-      </View>
+        <ScrollView style={{
+          width: "100%",
+        }}>
+          {
+            params.options.map((option, i) => <TouchableOpacity
+              activeOpacity={.8}
+              key={option} style={[styles(activeTheme).button, params.oldActive === i && {
+              borderWidth: 1,
+              borderColor: activeTheme.actionColor,
+            }]}
+              onPress={() => handleAction(i)}>
+              {
+                ["USDT", "BTC"].includes(option) &&
+                <DynamicImage market={option} style={styles(activeTheme).image} />
+
+              }
+              <Text
+                style={[i === params.options.length - 1 ? styles(activeTheme).cancel : styles(activeTheme).text]}>{option}</Text>
+            </TouchableOpacity>)
+          }
+        </ScrollView>
+
+      </Animatable.View>
     </Pressable>
   );
 });

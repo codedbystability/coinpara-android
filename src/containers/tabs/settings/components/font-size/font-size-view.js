@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {  TouchableOpacity, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import {
   PanGestureHandler,
   GestureHandlerRootView,
@@ -57,9 +57,9 @@ const FontSizeView = () => {
   }, [count]);
 
   useEffect(() => {
-    if (count === 0) {
-      setCount(fontSizeActive);
-    }
+    // if (count === 0) {
+    setCount(fontSizeActive);
+    // }
   }, [fontSizeActive]);
 
   const onPanGestureEvent =
@@ -138,17 +138,22 @@ const FontSizeView = () => {
     <GestureHandlerRootView style={{
       flex: 1,
     }}>
+      <Text
+        style={[styles(activeTheme, fontSizes).title, {
+          paddingLeft: PADDING_H,
+        }]}>{getLang(language, "YOU_CAN_CUSTOMIZE_FONTSIZE")}</Text>
+
       <View style={{
         flex: 1,
-        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: PADDING_H,
+
       }}>
-        <Text
-          style={styles(activeTheme, fontSizes).title}>{getLang(language, "YOU_CAN_CUSTOMIZE_FONTSIZE")}</Text>
 
         <Animated.View style={[styles(activeTheme).button, rButtonStyle]}>
           <TouchableOpacity onPress={decrementCount} style={{
-            paddingHorizontal:10,
-            zIndex:99
+            paddingHorizontal: 10,
+            zIndex: 99,
           }}>
             <Animated.View style={[rPlusMinusIconStyle, {
               justifyContent: "center",
@@ -165,8 +170,8 @@ const FontSizeView = () => {
             }} />
           </Animated.View>
           <TouchableOpacity onPress={incrementCount} style={{
-            paddingHorizontal:10,
-            zIndex:99
+            paddingHorizontal: 10,
+            zIndex: 99,
           }}>
             <Animated.View style={rPlusMinusIconStyle}>
               <Text style={[styles(activeTheme, fontSizes).text, {
@@ -198,7 +203,7 @@ export default FontSizeView;
 
 const styles = (props, fontSizes) => StyleSheet.create({
   button: {
-    height: 50,
+    height: 40,
     width: BUTTON_WIDTH,
     backgroundColor: props.darkBackground,
     borderWidth: 2,
@@ -216,7 +221,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     fontFamily: "CircularStd-Bold",
   },
   circle: {
-    height: 50,
+    height: 40,
     width: 90,
     backgroundColor: props.activeListBg,
     borderColor: props.actionColor,
@@ -225,6 +230,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 11,
   },
   text: {
     fontFamily: "CircularStd-Bold",
@@ -233,7 +239,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.TITLE_FONTSIZE,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
     // lineHeight: 16,
     color: props.secondaryText,
     marginTop: 12,

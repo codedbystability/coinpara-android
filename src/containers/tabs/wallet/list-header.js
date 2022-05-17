@@ -5,6 +5,7 @@ import { getLang } from "../../../helpers/array-helper";
 import { PADDING_H } from "../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import TinyImage from "../../../tiny-image";
+import HapticProvider from "../../../providers/HapticProvider";
 
 const WalletListHeader = ({
                             searchText,
@@ -14,10 +15,19 @@ const WalletListHeader = ({
                             sortObj,
                             activeSmallPrices,
                             handleSortAction,
+
                           }) => {
 
-  const { activeTheme,fontSizes, language } = useSelector(state => state.globalReducer);
 
+  const { activeTheme, fontSizes, language } = useSelector(state => state.globalReducer);
+
+  const handleSortActionOn = (type) => {
+    handleSortAction(type);
+    HapticProvider.trigger();
+  };
+  // const onDeleteLocals = () => {
+  //   Alert.alert("delete");
+  // };
   return (
     <>
       <View style={{ flex: 1, backgroundColor: activeTheme.backgroundApp }}>
@@ -26,11 +36,11 @@ const WalletListHeader = ({
         <View style={[styles(activeTheme).sheetContainer]}>
 
           <View style={styles(activeTheme).sheetHeaderContainer}>
-            <Text style={styles(activeTheme,fontSizes).sheetTitle}>{getLang(language, "BALANCES")}</Text>
+            <Text style={styles(activeTheme, fontSizes).sheetTitle}>{getLang(language, "BALANCES")}</Text>
 
             <View style={styles(activeTheme).sheetHeaderContainer}>
               <Text
-                style={[styles(activeTheme,fontSizes).smallPriceText, activeSmallPrices && {
+                style={[styles(activeTheme, fontSizes).smallPriceText, activeSmallPrices && {
                   color: activeTheme.actionColor,
                 }]}>
 
@@ -48,9 +58,9 @@ const WalletListHeader = ({
 
           <View style={styles(activeTheme).sheetSortWrapper}>
 
-            <View style={[styles(activeTheme).sheetSortItem, { width: "28%" }]}>
-              <Pressable onPress={() => handleSortAction("cd")} style={{}}>
-                <Text style={[styles(activeTheme,fontSizes).sheetSortTitle,
+            <View style={[styles(activeTheme).sheetSortItem, { width: "28%"}]}>
+              <Pressable onPress={() => handleSortActionOn("cd")} style={{}}>
+                <Text style={[styles(activeTheme, fontSizes).sheetSortTitle,
                   sortObj.type === "cd" ? { color: activeTheme.appWhite } : {},
                 ]}>{getLang(language, "CURRENCY")}</Text>
               </Pressable>
@@ -75,14 +85,14 @@ const WalletListHeader = ({
               }
 
 
-              <Pressable onPress={() => handleSortAction("wb")}>
-                <Text style={[styles(activeTheme,fontSizes).sheetSortTitle,
+              <Pressable onPress={() => handleSortActionOn("wb")}>
+                <Text style={[styles(activeTheme, fontSizes).sheetSortTitle,
                   sortObj.type === "wb" ? { color: activeTheme.appWhite } : {},
                 ]}>{getLang(language, "AVAILABLE")} / </Text>
               </Pressable>
 
-              <Pressable onPress={() => handleSortAction("am")}>
-                <Text style={[styles(activeTheme,fontSizes).sheetSortTitle,
+              <Pressable onPress={() => handleSortActionOn("am")}>
+                <Text style={[styles(activeTheme, fontSizes).sheetSortTitle,
 
                   sortObj.type === "am" ? { color: activeTheme.appWhite } : {},
                 ]}>{getLang(language, "TOTAL")}</Text>
@@ -95,33 +105,28 @@ const WalletListHeader = ({
             <View style={[styles(activeTheme).sheetSortItem, {
               width: "40%",
               justifyContent: "flex-end",
-              paddingRight: PADDING_H,
             }]}>
 
+
+              <Text
+                style={styles(activeTheme, fontSizes).sheetSortTitle}>≈ </Text>
+
+
+              <Pressable
+                onPress={() => handleSortActionOn("EstimatedTRY")}>
+                <Text style={[styles(activeTheme, fontSizes).sheetSortTitle,
+                  sortObj.type === "EstimatedTRY" ? { color: activeTheme.appWhite } : {},
+                ]}>TRY-USDT-BTC</Text>
+              </Pressable>
+
+
               {
-                ["EstimatedTRY", "EstimatedBTC"].includes(sortObj.type) &&
+                sortObj.type === "EstimatedTRY" &&
                 <TinyImage
                   style={styles(activeTheme).icon2}
                   parent={"rest/"} name={sortObj.direction === "desc" ? "arrow-up" : "arrow-down"} />
 
               }
-
-              <Text style={styles(activeTheme,fontSizes).sheetSortTitle}>{getLang(language, "ESTIMATED_SHORT", "Est")}: </Text>
-
-
-              <Pressable onPress={() => handleSortAction("EstimatedBTC")}>
-                <Text style={[styles(activeTheme,fontSizes).sheetSortTitle,
-                  sortObj.type === "EstimatedBTC" ? { color: activeTheme.appWhite } : {},
-                ]}>BTC / </Text>
-              </Pressable>
-
-
-              <Pressable onPress={() => handleSortAction("EstimatedTRY")}>
-                <Text style={[styles(activeTheme,fontSizes).sheetSortTitle,
-                  sortObj.type === "EstimatedTRY" ? { color: activeTheme.appWhite } : {},
-                ]}>TRY</Text>
-              </Pressable>
-
             </View>
 
 
@@ -130,19 +135,17 @@ const WalletListHeader = ({
 
           <View style={styles(activeTheme).searchContainer}>
             <View style={styles(activeTheme).searchIcon}>
-              <TinyImage parent={'rest/'} name={'search'} style={styles(activeTheme).icon}/>
+              <TinyImage parent={"rest/"} name={"search"} style={styles(activeTheme).icon} />
             </View>
 
             <TextInput
               keyboardAppearance={"dark"}
-
               style={styles(activeTheme).input}
               value={searchText}
               onChangeText={setSearchText}
               placeholder={getLang(language, "SEARCH")}
               autoFocus={false}
               autoCorrect={false}
-              inputAccessoryViewID={"inputAccessoryViewID2"}
               onFocus={handleFocus}
               autoComplete={"off"}
               autoCapitalize={"characters"}
@@ -155,7 +158,7 @@ const WalletListHeader = ({
               searchText ?
                 <Pressable onPress={() => setSearchText("")}>
                   <View style={styles(activeTheme).searchIcon}>
-                    <TinyImage parent={'rest/'} name={'dismiss'} style={styles(activeTheme).icon}/>
+                    <TinyImage parent={"rest/"} name={"dismiss"} style={styles(activeTheme).icon} />
                   </View>
                 </Pressable> : null
             }
@@ -164,14 +167,6 @@ const WalletListHeader = ({
         </View>
       </View>
 
-      {/*<InputAccessory*/}
-      {/*  isAddition={false}*/}
-      {/*  stepAble={false}*/}
-      {/*  mailProviders={localWallets}*/}
-      {/*  isDelete={localWallets.length >= 1}*/}
-      {/*  onDelete={onDeleteLocals}*/}
-      {/*  onPress={setSearchText}*/}
-      {/*/>*/}
 
     </>
 

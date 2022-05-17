@@ -24,10 +24,11 @@ import Validation from "../../../components/validation";
 import ModalProvider from "../../../providers/ModalProvider";
 import { replaceAll } from "../../../helpers/string-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
-import InputAccessory from "../../../components/input-accessory";
 import TransactionDescriptions from "../transaction-descriptions";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { formattedNumber } from "../../../helpers/math-helper";
+import Loading from "../../../components/loading";
+import userServices from "../../../services/user-services";
 
 const percentages = [
   { id: 1, value: "10" },
@@ -57,8 +58,27 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
   const [isMemo, setIsMeMo] = useState("");
   const [isTag, setIsTag] = useState("");
 
+
+  const [isAdminApproved, setIsAdminApproved] = useState(false);
+
+
   useEffect(() => {
+    setWalletAddress("");
+    setAmount("");
+    // setActiveNetwork("");
+    // console.log("wallet - ", wallet);
     if (wallet && wallet.gd) {
+      if (!isAdminApproved) {
+        userServices.getApproval().then((response) => {
+          if (response.IsSuccess) {
+            setIsAdminApproved(response.Data.AdminApproval === true);
+          }
+        });
+      }
+
+      setIsMeMo("");
+      setIsTag("");
+      setNetworkInstance({});
       walletServices.getNetworks(wallet.gd).then((response) => {
         if (response.IsSuccess && response.Data.length >= 1 && response.Data[0].netWorks.providerNetWorks.length >= 1) {
           // const actives = response.Data[0].netWorks.providerNetWorks.filter(itm => !itm.DefaultNetWork);
@@ -121,17 +141,22 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
 
     const formattedAmount = parseFloat(amount.replace(/\./g, "").replace(/,/g, "."));
 
+
+    const dailyRemainingField = isAdminApproved ? wallet.lk : wallet.li;
+    const monthlyRemainingField = isAdminApproved ? wallet.lm : wallet.lj;
+
+
     if (!formattedAmount || parseInt(formattedAmount) <= 0) {
       return DropdownAlert.show("info", getLang(language, "INFORMATION"), getLang(language, "PLEASE_ENTER_A_VALID_AMOUNT"));
-    }  else if (parseFloat(amount) > wallet.wb) {
+    } else if (parseFloat(amount) > wallet.wb) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), getLang(language, "NO_BALANCE"));
     } else if (parseFloat(amount) < wallet.ld) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MINIMUM_AMOUNT_TO_WITHDRAW"), "MINIMUM_AMOUNT", formattedNumber(wallet.ld, wallet.dp) + " " + wallet.cd));
     } else if (parseFloat(amount) > wallet.lc) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MAXIMUM_AMOUNT_TO_WITHDRAW"), "MAXIMUM_AMOUNT", formattedNumber(wallet.lc, wallet.dp) + " " + wallet.cd));
-    } else if (parseFloat(amount) > wallet.li) {
+    } else if (parseFloat(amount) > dailyRemainingField) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "DAILY_REMAINING_WITHDRAW_AMOUNT"), "REMAINING_DAILY", formattedNumber(wallet.li, wallet.dp) + " " + wallet.cd));
-    } else if (parseFloat(amount) > wallet.lj) {
+    } else if (parseFloat(amount) > monthlyRemainingField) {
       return DropdownAlert.show("info", getLang(language, "WARNING"), replaceAll(getLang(language, "MONTHLY_REMAINING_WITHDRAW_AMOUNT"), "REMAINING_MONTHLY", formattedNumber(wallet.lj, wallet.dp) + " " + wallet.cd));
     }
 
@@ -142,6 +167,7 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
       DestinationTag: isMemo ? memoValue : isTag ? tagValue : "",
       TransferSecret: "",
       wallet: wallet,
+      NetworkId: activeNetwork,
     };
 
     setTransferInstance(instance);
@@ -209,96 +235,91 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
 
   return (
     <>
-      <KeyboardAwareScrollView
-        extraScrollHeight={200}
-        enableAutomaticScroll={true}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles(activeTheme).scroll}>
-
-        {
-          validUser !== null ? <>
-            <InfoCard wallet={wallet} onPress={showModal} />
 
 
-            <Networks activeNetwork={activeNetwork}
-                      networks={networks}
-                      onSelect={(val, networkName, ntw) => {
-                        setNetworkInstance(ntw);
-                        setActiveNetwork(val);
-                        setActiveNetworkName(networkName);
-                      }}
-            />
-
-            <BigInput handleAction={handleAction} paste={true}
-                      onLongPress={onLongPress}
-                      inputValue={walletAddress ? walletAddress : getLang(language, "PRESS_LONG_TO_PASTE")} />
-            {
-              !valid &&
-              <Text style={styles(activeTheme).warn}>{getLang(language, "ADDRESS_NOT_MATCH_NETWORK_DESCRIPTION")}</Text>
-            }
-
-            {
-              isMemo ? <FormInput returnKey={"done"} autoComplete={"off"}
-                                  placeholder={"ENTER_MEMO_ID"}
-                                  value={memoValue} keyboardType={"numeric"}
-                                  smallTitle={getLang(language, "MEMO_ID")}
-                                  onChange={setMemoValue} /> : null
-            }
+      {
+        validUser !== null ? <KeyboardAwareScrollView
+          extraScrollHeight={200}
+          enableAutomaticScroll={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles(activeTheme).scroll}>
+          <InfoCard wallet={wallet} onPress={showModal} />
 
 
-            {
-              isTag ? <FormInput returnKey={"done"} autoComplete={"off"}
-                                 placeholder={"ENTER_DESTINATION_TAG"}
-                                 value={tagValue} keyboardType={"numeric"}
-                                 smallTitle={getLang(language, "DESTINATION_TAG")}
-                                 onChange={setTagValue} /> : null
-            }
+          <Networks activeNetwork={activeNetwork}
+                    networks={networks}
+                    onSelect={(val, networkName, ntw) => {
+                      setNetworkInstance(ntw);
+                      setActiveNetwork(val);
+                      setActiveNetworkName(networkName);
+                    }}
+          />
+
+          <BigInput handleAction={handleAction} paste={true}
+                    onLongPress={onLongPress}
+                    inputValue={walletAddress ? walletAddress : getLang(language, "PRESS_LONG_TO_PASTE")} />
+          {
+            !valid &&
+            <Text style={styles(activeTheme).warn}>{getLang(language, "ADDRESS_NOT_MATCH_NETWORK_DESCRIPTION")}</Text>
+          }
+
+          {
+            isMemo ? <FormInput returnKey={"done"} autoComplete={"off"}
+                                placeholder={"ENTER_MEMO_ID"}
+                                value={memoValue} keyboardType={"numeric"}
+                                smallTitle={getLang(language, "MEMO_ID")}
+                                onChange={setMemoValue} /> : null
+          }
 
 
-            <FormInput returnKey={"done"} autoComplete={"off"} placeholder={"AMOUNT"}
-                       value={amount} keyboardType={"numeric"}
-                       onChange={setAmount} />
-
-            {
-              wallet.wb > 0 && <PercentageSelect
-                percentages={percentages}
-                handlePress={(item) => handleSetPercentage(item)}
-                activePercentage={activePercentage}/>
-            }
+          {
+            isTag ? <FormInput returnKey={"done"} autoComplete={"off"}
+                               placeholder={"ENTER_DESTINATION_TAG"}
+                               value={tagValue} keyboardType={"numeric"}
+                               smallTitle={getLang(language, "DESTINATION_TAG")}
+                               onChange={setTagValue} /> : null
+          }
 
 
-            <TransactionDescriptions
-              isNormal={false}
-              o1={"WITHDRAW_LIMIT"}
-              n1={networkInstance && networkInstance.WithdrawMinLimit ? networkInstance.WithdrawMinLimit : wallet.ld}
-              o2={"COINNAME"}
-              n2={wallet.cd}
-              descriptions={[
-                {
-                  id: 1, text: "COIN_WITHDRAW1", isChange: true,
-                },
-                {
-                  id: 2, text: "COIN_WITHDRAW2",
-                },
-                {
-                  id: 3,
-                  text: "COIN_WITHDRAW3",
-                },
-                {
-                  id: 4,
-                  text: "COIN_WITHDRAW4",
-                },
-              ]}
-            />
+          <FormInput returnKey={"done"} autoComplete={"off"} placeholder={"AMOUNT"}
+                     value={amount} keyboardType={"numeric"}
+                     onChange={setAmount} />
+
+          {
+            wallet.wb > 0 && <PercentageSelect
+              percentages={percentages}
+              handlePress={(item) => handleSetPercentage(item)}
+              activePercentage={activePercentage} />
+          }
 
 
-          </> : <View style={styles(activeTheme).load}>
-            <ActivityIndicator />
-          </View>
-        }
+          <TransactionDescriptions
+            isNormal={false}
+            o1={"WITHDRAW_LIMIT"}
+            n1={networkInstance && networkInstance.WithdrawMinLimit ? networkInstance.WithdrawMinLimit : wallet.ld}
+            o2={"COINNAME"}
+            n2={wallet.cd}
+            descriptions={[
+              {
+                id: 1, text: "COIN_WITHDRAW1", isChange: true,
+              },
+              {
+                id: 2, text: "COIN_WITHDRAW2",
+              },
+              {
+                id: 3,
+                text: "COIN_WITHDRAW3",
+              },
+              {
+                id: 4,
+                text: "COIN_WITHDRAW4",
+              },
+            ]}
+          />
 
 
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView> : <Loading />
+      }
 
 
       {
@@ -343,12 +364,6 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
       />
 
 
-      <InputAccessory
-        handleStep={null}
-        stepAble={false}
-        mailProviders={[]}
-        onPress={null}
-      />
     </>
   );
 

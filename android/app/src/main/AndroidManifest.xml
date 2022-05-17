@@ -2,7 +2,6 @@
           package="com.necen.coinpara.react">
 
 
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -35,7 +34,45 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
+
         </activity>
+
+<!--        <activity-alias-->
+<!--                android:label="Black Icon"-->
+<!--                android:icon="@mipmap/black"-->
+<!--                android:name="Black"-->
+<!--                android:enabled="true"-->
+<!--                android:targetActivity=".MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+
+<!--        <activity-alias-->
+<!--                android:label="Light Icon"-->
+<!--                android:icon="@mipmap/light"-->
+<!--                android:name="Light"-->
+<!--                android:enabled="false"-->
+<!--                android:targetActivity=".MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+
+<!--        <activity-alias-->
+<!--                android:label="Classic Icon"-->
+<!--                android:icon="@mipmap/classic"-->
+<!--                android:name="Classic"-->
+<!--                android:enabled="false"-->
+<!--                android:targetActivity=".MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+
         <!--        <activity-->
         <!--                android:name="com.zoontek.rnbootsplash.RNBootSplashActivity"-->
         <!--                android:theme="@style/BootTheme"-->

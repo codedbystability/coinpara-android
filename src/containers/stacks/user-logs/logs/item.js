@@ -13,22 +13,24 @@ const UserLogItem = ({ item, activeTheme }) => {
 
 
       </View>
-      <View style={[styles(activeTheme).titleText, {}]}>
+      <View style={[styles(activeTheme).titleText, {
+        width: "35%",
+      }]}>
         <Text style={[styles(activeTheme).itemText, {
           color: activeTheme.appWhite,
           fontSize: NORMAL_FONTSIZE,
         }]}>{item.ActionTypeName}</Text>
       </View>
 
-      <View style={[styles(activeTheme).titleText, { alignItems: "flex-end" }]}>
-        <Text style={[styles(activeTheme).itemText, { fontSize: 12 }]}>
+      <View style={[styles(activeTheme).titleText, { alignItems: "flex-end", width: "15%" }]}>
+        <Text style={[styles(activeTheme).itemText, { fontSize: NORMAL_FONTSIZE }]}>
           {item.MachineInfo}
         </Text>
       </View>
 
 
       <View style={[styles(activeTheme).titleText, { alignItems: "flex-end" }]}>
-        <Text style={[styles(activeTheme).itemText, { fontSize: 12, color: activeTheme.appWhite }]}>
+        <Text style={[styles(activeTheme).itemText, { fontSize: NORMAL_FONTSIZE, color: activeTheme.appWhite }]}>
           {item.Ip}
         </Text>
       </View>
@@ -37,7 +39,7 @@ const UserLogItem = ({ item, activeTheme }) => {
 };
 
 
-export default UserLogItem;
+export default React.memo(UserLogItem);
 
 
 const styles = (props) => StyleSheet.create({

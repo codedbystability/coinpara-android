@@ -14,35 +14,78 @@ import {
   MARGIN_T,
   NORMAL_IMAGE,
   PADDING_BH,
+  PADDING_H,
   TITLE_FONTSIZE,
 } from "../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../helpers/array-helper";
 import marketServices from "../../services/market-services";
-import ModalProvider from "../../providers/ModalProvider";
 import EmptyContainer from "../empty-container";
-import InputAccessory from "../input-accessory";
-import TinyImage from "../../tiny-image";
+import AnimatedTab from "../../components/animated-tab";
 
+const NORMAL_HEAD = [
+  {
+    id: 3, key: "TRY", title: "TRY",
+  },
+  {
+    id: 4, key: "USDT", title: "USDT",
+  },
+];
+const AUTH_HEAD = [
+
+  {
+    id: 3,
+    key: "TRY",
+    title: "TRY",
+  },
+  {
+    id: 2,
+    key: "FAVORITE",
+    title: "FAVORITE",
+  },
+  {
+    id: 4,
+    key: "USDT",
+    title: "USDT",
+  },
+];
 
 const MarketSelectDetail = (props) => {
   const {
     handleSelect,
+    shouldFocus = false,
   } = props;
 
   const [coinList, setCoinList] = useState([]);
   const { activeTheme, language, marketDetailList } = useSelector(state => state.globalReducer);
+  const { authenticated } = useSelector(state => state.authenticationReducer);
+  const { initialMarkets } = useSelector(state => state.marketReducer);
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeType, setActiveType] = useState("TRY");
+  const [headers, setHeaders] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+    if (shouldFocus) {
+
+    }
+  }, [shouldFocus]);
+
+  useEffect(() => {
+    setHeaders(authenticated ? AUTH_HEAD : NORMAL_HEAD);
+    if (authenticated) {
+      const favs = initialMarkets.filter(market => market.if === true).map(a => a.gd);
+      setFavorites(favs);
+    }
+  }, [authenticated]);
 
   useEffect(() => {
     setSearchText("");
     if (marketDetailList.length <= 0) {
       marketServices.getCoins(false).then((response) => {
-        console.log("getCoins - RESSSS");
         if (response && response.IsSuccess) {
           setCoinList(response.Data);
         }
@@ -57,38 +100,45 @@ const MarketSelectDetail = (props) => {
     setLoading(false);
   }, [coinList]);
 
-  useEffect(() => {
-    setFilteredData(searchText ? coins.filter(item => item.fs.toLowerCase().includes(searchText.toLowerCase()) || item.to.toLowerCase().includes(searchText.toLowerCase())) : coins);
-  }, [searchText]);
 
   useEffect(() => {
-    setFilteredData(coins);
-  }, [coins]);
+    let typeCoins;
+
+    if (activeType === "TRY" || activeType === "USDT") {
+      typeCoins = coins.filter(coin => coin.fs === activeType);
+    } else {
+      typeCoins = coins.filter(item => favorites.includes(item.gd));
+    }
+
+    if (searchText) {
+      setFilteredData(searchText ? typeCoins.filter(item => item.fs.toLowerCase().includes(searchText.toLowerCase()) || item.to.toLowerCase().includes(searchText.toLowerCase())) : typeCoins);
+    } else {
+      setFilteredData(typeCoins);
+    }
+  }, [coins, searchText, activeType]);
 
   const awesomeChildListRenderItem = ({ item }) => {
     return (
-      <View>
-        <Pressable
-          onPress={() => handleSelect(item)}
-          style={styles(activeTheme).item}>
-          <View style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            width: "100%",
-          }}>
+      <Pressable
+        onPress={() => handleSelect(item)}
+        style={styles(activeTheme).item}>
+        <View style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          width: "100%",
+        }}>
 
-            <DynamicImage market={item.to} style={styles(activeTheme).image} />
+          <DynamicImage market={item.to} style={styles(activeTheme).image} />
 
-            <View style={{ width: "60%" }}>
-              <Text style={[styles(activeTheme).title]}>{item.to + " / " + item.fs}</Text>
-              <Text style={[styles(activeTheme).text]}>{item.sk}</Text>
-            </View>
-
+          <View style={{ width: "60%" }}>
+            <Text style={[styles(activeTheme).title]}>{item.to}</Text>
+            <Text style={[styles(activeTheme).text]}>{item.sk}</Text>
           </View>
 
-        </Pressable>
-      </View>
+        </View>
+
+      </Pressable>
     );
   };
 
@@ -100,17 +150,28 @@ const MarketSelectDetail = (props) => {
 
         <View style={styles(activeTheme).innerWrapper}>
 
-          <View style={{ width: "90%" }}>
-            <NativeInput {...{
-              autoCapitalize: "characters",
-              searchText, setSearchText,
-              placeholder: getLang(language, "SEARCH"),
-            }} />
-          </View>
 
-          <Pressable onPress={() => ModalProvider.hide()} style={styles(activeTheme).iconWrapper}>
-            <TinyImage parent={'rest/'} name={'cancel'} style={styles(activeTheme).icon}/>
-          </Pressable>
+          <AnimatedTab {...{
+            activeKey: activeType,
+            headers: headers,
+            width: parseInt(100 / headers.length),
+            filled: true,
+            onChange: item => setActiveType(item.key),
+          }} />
+
+          <View style={{
+            width: "100%",
+            height: PADDING_H,
+          }} />
+
+          <NativeInput {...{
+            autoFocus: shouldFocus,
+            autoCapitalize: "characters",
+            searchText,
+            setSearchText,
+            placeholder: getLang(language, "SEARCH"),
+          }} />
+
         </View>
 
 
@@ -118,16 +179,21 @@ const MarketSelectDetail = (props) => {
           loading ? <ActivityIndicator style={styles(activeTheme).loading} /> : coins && coins.length >= 1 ?
             <View style={styles(activeTheme).container}>
               <View
-                               style={{
-                                 flex: 1,
-                                 marginVertical: MARGIN_T,
-                               }}>
+                style={{
+                  flex: 1,
+                  marginVertical: MARGIN_T,
+                }}>
 
-                <Text style={styles(activeTheme).title}>
+                <Text style={[styles(activeTheme).title, {
+                  paddingVertical: PADDING_H,
+                }]}>
                   {getLang(language, "SEARCH_RESULTS")}
                 </Text>
 
                 <FlatList
+                  contentContainerStyle={{
+                    paddingBottom: 120,
+                  }}
                   keyboardShouldPersistTaps={"handled"}
                   showsVerticalScrollIndicator={false}
                   data={filteredData}
@@ -140,12 +206,6 @@ const MarketSelectDetail = (props) => {
         }
       </View>
 
-
-      <InputAccessory
-        inputAccessoryViewID={"inputAccessoryViewIDNative"}
-        mailProviders={[]}
-        onPress={null}
-      />
     </>
   );
 };
@@ -168,9 +228,9 @@ const styles = (props) => StyleSheet.create({
     borderBottomWidth: .3,
     borderRadius: 12,
     // paddingHorizontal: 20,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 6,
-    marginVertical: 4,
+    marginVertical: 6,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -179,7 +239,6 @@ const styles = (props) => StyleSheet.create({
     fontSize: TITLE_FONTSIZE,
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
-    // paddingVertical:PADDING_H
   },
 
   titleS: {
@@ -212,7 +271,6 @@ const styles = (props) => StyleSheet.create({
   innerWrapper: {
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
   },
   iconWrapper: {
     width: "10%",
@@ -245,8 +303,8 @@ const styles = (props) => StyleSheet.create({
   main: {
     color: props.appWhite,
   },
-  icon:{
-    width:16,
-    height:16,
-  }
+  icon: {
+    width: 16,
+    height: 16,
+  },
 });

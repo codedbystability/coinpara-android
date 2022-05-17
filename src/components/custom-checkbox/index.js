@@ -8,7 +8,12 @@ const CustomCheckbox = (props) => {
   const { agreementConfirmed, handleSetAgreementConfirmed, title, specialTitle = null } = props;
   const { activeTheme } = useSelector(state => state.globalReducer);
   return (
-    <View style={{ flexDirection: "row", marginVertical: PADDING_H, justifyContent: "space-between", width: "100%" }}>
+    <View style={{
+      flexDirection: "row",
+      marginVertical: PADDING_H,
+      justifyContent: "space-between",
+      width: "100%",
+    }}>
 
       <Pressable onPress={() => handleSetAgreementConfirmed(!agreementConfirmed)}
                  style={{ alignItems: "center", justifyContent: "center" }}>
@@ -21,12 +26,14 @@ const CustomCheckbox = (props) => {
           style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }}
         />
       </Pressable>
-      <View style={{ paddingHorizontal: PADDING_H, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ }}>
         {
+          //, alignItems: "center", justifyContent: "center"
           specialTitle ? specialTitle : <Text style={{
             fontFamily: "CircularStd-Book",
             fontSize: TITLE_FONTSIZE,
             color: activeTheme.secondaryText,
+            maxWidth:'90%'
           }}>
             {
               title

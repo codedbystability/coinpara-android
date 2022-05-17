@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import {  View } from "react-native";
 import { LIST_ITEM_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
 import { SvgUri } from "react-native-svg";
 
@@ -26,21 +26,19 @@ class MarketChart extends React.PureComponent {
     if (!market || !market.fs)
       return null;
     return (
-      <View style={styles}>
         <SvgUri
           width={width}
           height={LIST_ITEM_HEIGHT}
           uri={`${CHART_BASE_URI}${market.fs}-${market.to}.svg`}
         />
-      </View>
     );
   }
 }
 
 export default MarketChart;
 
-const styles = {
-  width: width,
-  alignItems: "center",
-  justifyContent: "center",
-};
+// const styles = {
+//   width: width,
+//   alignItems: "center",
+//   justifyContent: "center",
+// };

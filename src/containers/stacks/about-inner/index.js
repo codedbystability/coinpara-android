@@ -13,23 +13,20 @@ import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import generalServices from "../../../services/general-services";
 import { PADDING_H } from "../../../../utils/dimensions";
-import SettingsHeader from "../../tabs/settings/settings-header";
 import LinksSection from "../../tabs/settings/components/sections/links";
 import Loading from "../../../components/loading";
+import TabNavigationHeader from "../../../components/tab-navigation-header";
+import { getLang } from "../../../helpers/array-helper";
+import FloatingAction from "../../../components/floating-action";
 
 const AboutInner = (props) => {
 
-  const { navigation } = props;
   const scrollRef = useRef(null);
   const { activeTheme, language } = useSelector(state => state.globalReducer);
   const { activeLanguage } = useSelector(state => state.languageReducer);
 
   const [loading, setLoading] = useState(true);
   const [statics, setStatics] = useState([]);
-
-  React.useEffect(() => {
-    return navigation.addListener("tabPress", (e) => scrollRef.current?.scrollTo({ y: 0, x: 0, animated: true }));
-  }, [navigation]);
 
   useEffect(() => {
     if (activeLanguage && activeLanguage.Id) {
@@ -124,12 +121,13 @@ const AboutInner = (props) => {
   return (
 
     <>
-      <SettingsHeader
-        title={'ABOUT_US'}
-        language={language}
-        props={props}
-        authenticated={true}
+
+      <TabNavigationHeader
+        {...props}
         backAble={true}
+        options={{
+          title: getLang(language, "ABOUT_US"),
+        }}
       />
 
       <View style={styles(activeTheme).wrapper}>
@@ -137,16 +135,17 @@ const AboutInner = (props) => {
         {
           loading ? <Loading /> :
             <ScrollView showsVerticalScrollIndicator={false}
-              ref={scrollRef}
-              contentContainerStyle={styles(activeTheme).scroll}>
+                        ref={scrollRef}
+                        contentContainerStyle={styles(activeTheme).scroll}>
 
-              <LinksSection  statics={statics} />
+              <LinksSection statics={statics}/>
 
             </ScrollView>
         }
 
 
       </View>
+      <FloatingAction />
 
     </>
 

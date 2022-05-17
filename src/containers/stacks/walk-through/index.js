@@ -83,14 +83,14 @@ const WalkThrough2 = () => {
   const handleNext = () => {
 
     if (activeSlide === ENTRIES1.length - 1) {
-      return navigationRef.current.navigate("Tab");
+      return navigationRef.current.navigate("StackTab");
     }
 
     setActiveSlide(activeSlide < ENTRIES1.length ? activeSlide + 1 : ENTRIES1.length - 1);
   };
   const handlePrev = () => setActiveSlide(activeSlide >= 1 ? activeSlide - 1 : 0);
 
-  const handleSkip = () => navigationRef.current.navigate("Tab");
+  const handleSkip = () => navigationRef.current.navigate("StackTab");
   const customExample = () => {
 
     // Do not render examples on Android; because of the zIndex bug, they won't work as is

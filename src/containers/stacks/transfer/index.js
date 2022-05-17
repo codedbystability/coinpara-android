@@ -18,6 +18,7 @@ import { isIphoneX } from "../../../../utils/devices";
 import userServices from "../../../services/user-services";
 import { useIsFocused } from "@react-navigation/native";
 import TinyImage from "../../../tiny-image";
+import FloatingAction from "../../../components/floating-action";
 
 
 const transactionTypes = [
@@ -169,13 +170,13 @@ const TransferContainer = (props) => {
     setTransactionType(item.key);
   };
 
+
   if (!transactionType || !coinType || !wallet) {
     return <LoadingScreen />;
   }
 
   return (
     <>
-
       <View style={styles(activeTheme).container}>
 
         <Pressable onPress={() => props.navigation.goBack()} activeOpacity={1}
@@ -213,6 +214,9 @@ const TransferContainer = (props) => {
       {
         getDynamicContent()
       }
+
+      <FloatingAction isButton={true}/>
+
 
     </>
   );

@@ -51,7 +51,7 @@ const TransactionDescriptions = ({
 
                 {
                   icon ?
-                    <TinyImage parent={'rest/'} name={'info'} style={styles(activeTheme).icon}/>
+                    <TinyImage parent={"rest/"} name={"info"} style={styles(activeTheme).icon} />
                     : null
                 }
 
@@ -90,7 +90,6 @@ const styles = (props) => StyleSheet.create({
     paddingBottom: 2,
     marginTop: PADDING_H,
     // marginBottom: 8,
-
   },
   title: {
     fontFamily: "CircularStd-Bold",

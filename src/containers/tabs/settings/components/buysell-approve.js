@@ -29,7 +29,7 @@ const BuySellApprove = () => {
   useEffect(() => {
     if (selectedVal !== null) {
       ActionSheetComProvider.show({
-        title: getLang(language, "CHANGE_SCREEN_SAVER_DESCRIPTION"),
+        title: getLang(language, "DO_YOU_WANT_TO_UPDATE_LAST_APPROVE"),
         options: [getLang(language, "OK"), getLang(language, "CANCEL")],
         onAction: (index) => handleApprove(index),
       });
@@ -116,7 +116,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontSize: fontSizes?.TITLE_FONTSIZE,
     color: props.appWhite,
   },
 

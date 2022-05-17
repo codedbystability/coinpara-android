@@ -1,15 +1,8 @@
 import { GLOBAL_CONSTANTS } from "../constants/global-constants";
+import LocalStorage from "../providers/LocalStorage";
 
 const initialNormal = 11;
-const languageDEFAULT = [];
-const themeDEFAULT = [];
-const fontSizes = {
-  HEADER_TITLE_FONTSIZE: initialNormal + 4,
-  BIG_TITLE_FONTSIZE: initialNormal + 3,
-  TITLE_FONTSIZE: initialNormal + 2,
-  SUBTITLE_FONTSIZE: initialNormal + 1,
-  NORMAL_FONTSIZE: initialNormal,
-};
+
 const GlobalStates = {
   isConnectedWifi: true,
   keyboardShown: false,
@@ -23,16 +16,21 @@ const GlobalStates = {
   classicColors: [],
   darkColors: [],
   lightColors: [],
-  activeTheme: themeDEFAULT,
-  language: languageDEFAULT,
-  fontSizes: fontSizes,
+  activeTheme: [],
+  language: [],
+  fontSizes: {
+    HEADER_TITLE_FONTSIZE: initialNormal + 4,
+    BIG_TITLE_FONTSIZE: initialNormal + 3,
+    TITLE_FONTSIZE: initialNormal + 2,
+    SUBTITLE_FONTSIZE: initialNormal + 1,
+    NORMAL_FONTSIZE: initialNormal,
+  },
   fontSizeActive: 13,
   iconColor: "white",
   activeThemeKey: "classic",
   connection: null,
   companyInfo: {},
   marketDetailList: [],
-
   activeColorOption: "SYSTEM",
   activeUserColors: {},
   colorOptions: [
@@ -44,20 +42,58 @@ const GlobalStates = {
     // },
     {
       id: 2, key: "PASTEL", title: "PASTEL", colors: {
-        green: "rgba(96,186,137,1)",
-        red: "rgba(226,84,96,1)",
+        bidText: "rgba(96,186,137,1)",
+        askText: "rgba(226,84,96,1)",
+
+        bidBg: "rgba(96,186,137,.2)",
+        askBg: "rgba(226,84,96,.2)",
+
+        changeRed: "rgba(96,186,137,.5)",
+        noRed: "rgba(96,186,137,1)",
+
+        changeGreen: "rgba(96,186,137,.5)",
+        yesGreen: "rgba(96,186,137,1)",
+
+        // appWhite: "#fff",
+        // borderGray: "#bdbdbd",
       },
     },
     {
       id: 3, key: "TRADITIONAL", title: "TRADITIONAL", colors: {
-        green: "rgba(128,165,50,1)",
-        red: "rgba(209,50,111,1)",
+        bidText: "rgba(128,165,50,1)",
+        askText: "rgba(209,50,111,1)",
+
+
+        bidBg: "rgba(128,165,50,.2)",
+        askBg: "rgba(209,50,111,.2)",
+
+        changeRed: "rgba(128,165,50,.5)",
+        noRed: "rgba(209,50,111,1)",
+
+        changeGreen: "rgba(128,165,50,.5)",
+        yesGreen: "rgba(209,50,111,1)",
+
+        // appWhite: "#fff",
+        // borderGray: "#bdbdbd",
       },
     },
     {
       id: 4, key: "COLOR_BLIND", title: "COLOR_BLIND", colors: {
-        green: "rgba(76,163,242,1)",
-        red: "rgba(208,126,62,1)",
+        bidText: "rgba(76,163,242,1)",
+        askText: "rgba(208,126,62,1)",
+
+
+        bidBg: "rgba(76,163,242,.2)",
+        askBg: "rgba(208,126,62,.2)",
+
+        changeRed: "rgba(208,126,62,.5)",
+        noRed: "rgba(208,126,62,1)",
+
+        changeGreen: "rgba(76,163,242,.5)",
+        yesGreen: "rgba(209,50,111,1)",
+
+        // appWhite: "#fff",
+        // borderGray: "#bdbdbd",
       },
     },
   ],
@@ -75,10 +111,24 @@ const globalReducer = (state = GlobalStates, action) => {
     case GLOBAL_CONSTANTS.SET_COLOR_OPTION:
       const data = action.data;
       const active = state.colorOptions.find(item => item.key === data);
+
+
       return {
         ...state,
         activeColorOption: data,
-        activeUserColors: active,
+        activeUserColors: active ? active.colors : {
+          askText: state.classicColors.askText,
+          bidText: state.classicColors.bidText,
+          bidBg: state.classicColors.bidBg,
+          askBg: state.classicColors.askBg,
+          changeRed: state.classicColors.changeRed,
+          noRed: state.classicColors.noRed,
+          changeGreen: state.classicColors.changeGreen,
+          yesGreen: state.classicColors.yesGreen,
+          appWhite: state.classicColors.appWhite,
+          borderGray: state.classicColors.borderGray,
+        },
+
       };
 
 
@@ -119,46 +169,52 @@ const globalReducer = (state = GlobalStates, action) => {
       };
 
     case GLOBAL_CONSTANTS.SET_CLASSIC_COLORS:
-
       let classic = [];
       if (action.data && action.data.length >= 1) {
         action.data.map(item => classic[item.key] = item.rgb);
-      } else {
-        DEFAULT_THEME.map(item => classic[item.key] = item.rgb);
       }
+
       return {
         ...state,
         classicColors: classic,
         activeTheme: classic,
+        activeUserColors: state.activeColorOption === "COLOR_BLIND" ? state.activeUserColors
+          : state.activeColorOption !== "SYSTEM" ? state.activeUserColors
+            : {
+              askText: classic.askText,
+              bidText: classic.bidText,
+              bidBg: classic.bidBg,
+              askBg: classic.askBg,
+              changeRed: classic.changeRed,
+              noRed: classic.noRed,
+              changeGreen: classic.changeGreen,
+              yesGreen: classic.yesGreen,
+              appWhite: classic.appWhite,
+              borderGray: classic.borderGray,
+            },
         iconColor: action.iconColor,
       };
 
-    case GLOBAL_CONSTANTS.SET_DARK_COLORS:
-      const classic2 = [];
-      action.data.map(item => classic2[item.key] = item.rgb);
-      return {
-        ...state,
-        darkColors: classic2,
-      };
-
-    case GLOBAL_CONSTANTS.SET_LIGHT_COLORS:
-      const classic3 = [];
-      action.data.map(item => classic3[item.key] = item.rgb);
-      return {
-        ...state,
-        lightColors: classic3,
-      };
-
     case GLOBAL_CONSTANTS.SET_LANGUAGE:
+      console.log(GLOBAL_CONSTANTS.SET_LANGUAGE);
       const languageC = [];
       if (action.data && action.data.length >= 1) {
         action.data.map(item => languageC[item.key] = item.value);
-      } else {
-        DEFAULT_LANG.map(item => languageC[item.key] = item.value);
       }
       return {
         ...state,
         language: languageC,
+      };
+
+    case GLOBAL_CONSTANTS.SET_LANGUAGE_KEYS:
+      console.log(GLOBAL_CONSTANTS.SET_LANGUAGE_KEYS);
+      const languageC2 = [];
+      if (action.data && action.data.length >= 1) {
+        action.data.map(item => languageC2[item.key] = item.value);
+      }
+      return {
+        ...state,
+        language: languageC2
       };
 
 
@@ -168,9 +224,22 @@ const globalReducer = (state = GlobalStates, action) => {
         activeTheme: state.classicColors,
         iconColor: action.iconColor,
         activeThemeKey: action.data,
+        activeUserColors: state.activeColorOption === "COLOR_BLIND" ? state.activeUserColors : {
+          askText: state.classicColors.askText,
+          bidText: state.classicColors.bidText,
+          bidBg: state.classicColors.bidBg,
+          askBg: state.classicColors.askBg,
+          changeRed: state.classicColors.changeRed,
+          noRed: state.classicColors.noRed,
+          changeGreen: state.classicColors.changeGreen,
+          yesGreen: state.classicColors.yesGreen,
+          appWhite: state.classicColors.appWhite,
+          borderGray: state.classicColors.borderGray,
+        },
       };
 
     case GLOBAL_CONSTANTS.UPDATE_LANGUAGE:
+      console.log(GLOBAL_CONSTANTS.UPDATE_LANGUAGE);
       const languageU = [];
       action.data.map(item => languageU[item.key] = item.value);
       return {
@@ -207,6 +276,7 @@ const globalReducer = (state = GlobalStates, action) => {
 
 
     case GLOBAL_CONSTANTS.SET_COMPANY_INFO:
+      LocalStorage.setObject("companyInfo", action.data);
       return {
         ...state,
         companyInfo: action.data,

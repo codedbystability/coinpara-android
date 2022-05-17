@@ -10,7 +10,7 @@ const styledHigherOrderComponents = WrappedComponent => props => {
     return <Loading />;
   }
   return (
-    <View style={{ flex: 1, paddingTop: 0, backgroundColor: activeTheme.backgroundApp }}>
+    <View style={{ flex: 1, backgroundColor: activeTheme.backgroundApp }}>
       <WrappedComponent {...props} />
     </View>
   );

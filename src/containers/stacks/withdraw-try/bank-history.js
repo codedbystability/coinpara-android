@@ -15,6 +15,7 @@ import BankHistorySelect from "../../../components/bank-history-select";
 import ModalProvider from "../../../providers/ModalProvider";
 import userServices from "../../../services/user-services";
 import TinyImage from "../../../tiny-image";
+import { useIsFocused } from "@react-navigation/native";
 
 const BankHistory = (props) => {
   const { handleSelect } = props;
@@ -22,6 +23,7 @@ const BankHistory = (props) => {
 
   const innerRef = useRef(null);
   const [bankHistory, setBankHistory] = useState([]);
+  const isFocused = useIsFocused();
 
   const handleSelection = (item) => {
     ModalProvider.hide();
@@ -33,18 +35,19 @@ const BankHistory = (props) => {
 
   const getUserBankHistory = () => {
     transferServices.getUserBankHistory().then((response) => {
-      if (response && response.IsSuccess) {
+      if (response && response.IsSuccess && isFocused) {
         setBankHistory(response.Data);
       }
     });
   };
   const handleDeleteBank = (bankItem) => {
+    ModalProvider.hide();
+
     userServices.removeBankHistory({
       BankAccount: bankItem.Account,
     }).then(res => {
       if (res.IsSuccess) {
         setBankHistory(bankHistory.filter(itm => itm.Account !== bankItem.Account));
-        ModalProvider.hide();
       }
     });
   };

@@ -1,9 +1,10 @@
 import * as React from "react";
-import { StyleSheet, View, Pressable, Modal, Text, Keyboard, Alert } from "react-native";
+import { StyleSheet, View, Pressable, Modal, Text, Keyboard } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import ModalizeHeader from "../modalize/modalize-header";
 import {
-  BIG_TITLE_FONTSIZE, MARGIN_T,
+  BIG_TITLE_FONTSIZE,
+  MARGIN_T,
   PADDING_H,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
@@ -26,12 +27,17 @@ import AnimatedTab from "../../../../components/animated-tab";
 import CustomCheckbox from "../../../../components/custom-checkbox";
 import { actionTabs, modalProps, tradeTypes } from "../constants";
 import { replaceAll } from "../../../../helpers/string-helper";
+import TinyImage from "../../../../tiny-image";
+import HapticProvider from "../../../../providers/HapticProvider";
 
 
 const AnimatedSheet = (props) => {
-  const { commissionRate, selectedOrder, selectedType, marketInfo, market } = props;
+// const AnimatedSheet = forwardRef((props, ref) => {
+  const { selectedOrder, selectedType, marketInfo, market, getLastTickerParent } = props;
 
-  const { activeTheme, language } = useSelector(state => state.globalReducer);
+  const [commissionRate, setCommissionRate] = useState(null);
+
+  const { activeTheme, activeUserColors, language } = useSelector(state => state.globalReducer);
   const { authenticated } = useSelector(state => state.authenticationReducer);
   const { wallets } = useSelector(state => state.walletReducer);
 
@@ -58,6 +64,7 @@ const AnimatedSheet = (props) => {
 
 
   useEffect(() => {
+    setCommissionRate(parseFloat(marketInfo.CommissionRate / 100));
     sheetRef.current.snapTo(1);
     setActivePercentage("");
     setAmount("");
@@ -73,11 +80,21 @@ const AnimatedSheet = (props) => {
   useEffect(() => {
     if (market.gd && wallets.length >= 1) {
 
+
       if (!price) {
-        setStopPrice(market.pr);
+        // setStopPrice(market.pr);
+
+        const result = getLastTickerParent();
+        if (!result.ask || !result.bid) {
+          return;
+        }
+        setStopPrice(activeButtonType === "sell" ? result.bid : result.ask);
 
         const re = new RegExp("^-?\\d+(?:\.\\d{0," + (marketInfo.FromCoinDecimalPoints || -1) + "})?");
-        setPrice(parseFloat(market.pr).toString().match(re)[0]);
+
+
+        // setPrice(parseFloat(market.pr).toString().match(re)[0]);
+        setPrice(parseFloat(activeButtonType === "sell" ? result.bid : result.ask).toString().match(re)[0]);
       }
 
       setToWallet(wallets.find(wallet => wallet.cd === market.to));
@@ -147,11 +164,19 @@ const AnimatedSheet = (props) => {
         const newAmount = (availableToAmount * parseInt(activePercentage) / 100).toString().match(reAmount)[0];
         setAmount(newAmount);
 
-        const newTotal = newAmount * market.pr;
+        const result = getLastTickerParent();
+        if (!result.ask || !result.bid) {
+          return;
+        }
+        const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+        const newTotal = newAmount * marketPrice;
+        // const newTotal = newAmount * market.pr;
         const commissionForAll = newAmount * commissionRate;
         const availableTotal = newTotal - commissionForAll;
-        const re = new RegExp("^-?\\d+(?:\.\\d{0," + marketInfo.FromCoinDecimalPoints + "})?");
-        setTotal(availableTotal.toString().match(re)[0]);
+        if (availableTotal) {
+          const re = new RegExp("^-?\\d+(?:\.\\d{0," + marketInfo.FromCoinDecimalPoints + "})?");
+          setTotal(availableTotal.toString().match(re)[0]);
+        }
 
       } else if (activeActionTab === "limit" || activeActionTab === "stop-limit") {
 
@@ -159,12 +184,18 @@ const AnimatedSheet = (props) => {
         const newAmount = (availableToAmount * parseInt(activePercentage) / 100).toString().match(re)[0];
 
         if (price) {
-          const priceUp = price ? price : market.pr;
+          const result = getLastTickerParent();
+          if (!result.ask || !result.bid) {
+            return;
+          }
+          const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
+          const priceUp = price ? price : marketPrice;
           const newTotal = newAmount * priceUp;
           // const newAmountForAll = newTotal / price;
           const commissionForAll = newAmount * commissionRate;
           const availableTotal = newTotal - commissionForAll;
-          const exactAmount = availableTotal / price;
+          // const exactAmount = availableTotal / price;
 
           const re = new RegExp("^-?\\d+(?:\.\\d{0," + (marketInfo.ToCoinDecimalPoints || -1) + "})?");
           // setAmount(exactAmount.toString().match(re)[0]);
@@ -176,32 +207,55 @@ const AnimatedSheet = (props) => {
   };
 
   const handleBuyOnPercentageChange = () => {
+
+
     const availableFromAmount = fromWallet.wb;
 
     if (availableFromAmount > 0 && parseFloat(activePercentage) > 0) {
 
       const newTotal = availableFromAmount * parseInt(activePercentage) / 100;
-      setTotal(newTotal);
 
-      handleInputRelations(newTotal);
+      const re = new RegExp("^-?\\d+(?:\.\\d{0," + (fromWallet.dp || -1) + "})?");
+      // console.log('newTotal.toString().match(re)[0] - ', newTotal.toString().match(re)[0])
+      setTotal(newTotal.toString().match(re)[0]);
+
+      // setTotal(newTotal);
+
+      handleInputRelations(newTotal.toString().match(re)[0]);
     }
   };
 
   // TODO SEND USER TOTAL AS PARAM
   const handleInputRelations = (newTotal) => {
-    const pp = price || market.pr;
+    const result = getLastTickerParent();
+    if (!result.ask || !result.bid) {
+      return;
+    }
+    const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+    const pp = price || marketPrice;
 
-    const newAmountForAll = newTotal / pp;
-    const commissionForAll = newAmountForAll * commissionRate;
+    // console.log('newTotal - ', newTotal)
+    // console.log('commissionRate - ', commissionRate)
+    // console.log('pp - ', pp)
+    const calculatedAmount = (newTotal - (newTotal * commissionRate)) / pp;
+    setAmount(calculatedAmount);
 
-    const availableTotal = newTotal - commissionForAll;
-    const exactAmount = availableTotal / pp;
-    setAmount(exactAmount);
+
+    // const newAmountForAll = newTotal / pp;
+    // const commissionForAll = newAmountForAll * commissionRate;
+
+    //(245.20552301 - (245.20552301*(0.25/100))) / 61
+
+
+    // console.log('fakeAmount - ', fakeAmount)
+    // const availableTotal = newTotal - commissionForAll;
+    // const exactAmount = availableTotal / pp;
   };
 
   const handleChangeTradeType = (e) => setActiveType(e.key);
 
   const handleUpDown = (inputKey, type) => {
+    HapticProvider.trigger();
     let calc;
     if (inputKey === "amount") {
       calc = marketInfo.ToCoinMin / 10;
@@ -223,7 +277,13 @@ const AnimatedSheet = (props) => {
       if (price) {
         newPrice = type === "+" ? parseFloat(price) + calc : parseFloat(price) - calc;
       } else {
-        newPrice = market.pr;
+        const result = getLastTickerParent();
+        if (!result.ask || !result.bid) {
+          return;
+        }
+        newPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
+        // newPrice = market.pr;
       }
       handlePriceChange(newPrice);
       setPrice(newPrice);
@@ -238,13 +298,12 @@ const AnimatedSheet = (props) => {
           // setAmount(marketInfo.ToCoinMin);
           newwAmount = marketInfo.ToCoinMin;
         } else {
-          const newAmount = toWallet.wb;
-          // const newAmountForAll = newAmount * price;
-          // const commissionForAll = newAmountForAll * commissionRate;
-          // const availableTotal = (newAmount * price) - commissionForAll;
-          // setTotal(availableTotal);
-          newwAmount = newAmount;
-          // setAmount(newAmount);
+          const result = getLastTickerParent();
+          if (!result.ask || !result.bid) {
+            return;
+          }
+          // const newAmount = toWallet.wb;
+          newwAmount = activeButtonType === "sell" ? result.bid : result.ask;
         }
       }
       handleAmountChange(newwAmount);
@@ -259,7 +318,13 @@ const AnimatedSheet = (props) => {
         } else {
           const re = new RegExp("^-?\\d+(?:\.\\d{0," + (activeType === "total" ? marketInfo.FromCoinDecimalPoints : marketInfo.ToCoinDecimalPoints || -1) + "})?");
           const newAmount = toWallet.wb.toString().match(re)[0];
-          const newTotal = newAmount * market.pr;
+          const result = getLastTickerParent();
+          if (!result.ask || !result.bid) {
+            return;
+          }
+          // const newAmount = toWallet.wb;
+          const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+          const newTotal = newAmount * marketPrice;
           const commissionForAll = newAmount * commissionRate;
           const availableTotal = newTotal - commissionForAll;
           // const re = new RegExp("^-?\\d+(?:\.\\d{0," + (marketInfo.ToCoinDecimalPoints || -1) + "})?");
@@ -291,9 +356,14 @@ const AnimatedSheet = (props) => {
 
   const handleTotalChange = (value) => {
     const re = new RegExp("^-?\\d+(?:\.\\d{0," + (marketInfo.ToCoinDecimalPoints || -1) + "})?");
-    setAmount(value ? (value / market.pr).toString().match(re)[0] : 0);
+    const result = getLastTickerParent();
+    if (!result.ask || !result.bid) {
+      return;
+    }
+    // const newAmount = toWallet.wb;
+    const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+    setAmount(value ? (value / marketPrice).toString().match(re)[0] : 0);
   };
-
 
   const handleAmountChange = (value) => {
     if (activeActionTab === "limit" || activeActionTab === "stop-limit" || true) {
@@ -315,7 +385,6 @@ const AnimatedSheet = (props) => {
       }
     }
   };
-
 
   const handleInputChange = (key, value, inputPrecision) => {
     switch (key) {
@@ -340,13 +409,22 @@ const AnimatedSheet = (props) => {
   };
 
   const handleSetActiveButtonType = (type) => {
+
+    HapticProvider.trigger();
+
     if (!type) {
       setActiveIndex("initial");
       Keyboard.dismiss();
       return sheetRef.current.snapTo(1);
     }
+
     setActiveButtonType(type);
-    if (sheetRef.current) {
+    if (sheetRef.current && activeIndex !== "top") {
+      const result = getLastTickerParent();
+      if (!result.ask || !result.bid) {
+        return;
+      }
+      setPrice(type === "sell" ? result.bid : result.ask);
       setActiveIndex("top");
       sheetRef.current.snapTo(0);
     }
@@ -410,7 +488,7 @@ const AnimatedSheet = (props) => {
 
             <Pressable
               onPress={handleKeyboard} style={{
-              flex: .8,
+              flex: .7,
             }}>
               <ModalizeInputs
                 {...{
@@ -435,6 +513,7 @@ const AnimatedSheet = (props) => {
 
             <ModalizeBottom {...{
               activeButtonType,
+              activeUserColors,
               activeActionTab,
               activeType,
               activeTheme,
@@ -475,15 +554,20 @@ const AnimatedSheet = (props) => {
             sheetRef.current.snapTo(1)}
           style={[styles(activeTheme).headerIcon]}>
 
-          {/*{*/}
-          {/*  activeIndex === "top" ? <ChevronDownSvg fill={activeTheme.appWhite} /> :*/}
-          {/*    <ChevronDownSvg fill={activeTheme.appWhite} />*/}
-          {/*}*/}
+          <TinyImage parent={"rest/"} name={activeIndex === "top" ? "c-down" : "c-up"}
+                     style={styles(activeTheme).icon} />
         </Pressable>
 
         {
           !authenticated && activeIndex === "top" ? null :
-            <ModalizeHeader {...{ handleSetActiveButtonType, language, activeTheme, activeButtonType, activeIndex }} />
+            <ModalizeHeader {...{
+              handleSetActiveButtonType,
+              activeUserColors,
+              language,
+              activeTheme,
+              activeButtonType,
+              activeIndex,
+            }} />
         }
       </View>
     );
@@ -495,11 +579,24 @@ const AnimatedSheet = (props) => {
         setTotal(fromWallet.wb);
       } else {
         const totalCoin = toWallet.wb;
-        const totalTotal = totalCoin * market.pr;
+        const result = getLastTickerParent();
+        if (!result.ask || !result.bid) {
+          return;
+        }
+        // const newAmount = toWallet.wb;
+        const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+        const totalTotal = totalCoin * marketPrice;
         setTotal(totalTotal);
       }
     } else if (type === "price") {
-      setPrice(market.pr);
+
+      const result = getLastTickerParent();
+      if (!result.ask || !result.bid) {
+        return;
+      }
+      setPrice(activeButtonType === "sell" ? result.bid : result.ask);
+
+      // setPrice(market.pr);
     } else if (type === "amount") {
       setAmount(toWallet.wb);
     }
@@ -539,11 +636,17 @@ const AnimatedSheet = (props) => {
 
 
       // CHECK MARKET BALANCE CONTROL
-      if (activeType === "total" && fromWallet.wb < total) {
+      if (activeButtonType === "buy" && activeType === "total" && fromWallet.wb < total) {
         return DropdownAlert.show("info", getLang(language, "INFO"), getLang(language, "NO_BALANCE"));
 
-      } else if (activeType === "amount" && toWallet.wb < parseFloat(amount)) {
+      } else if (activeButtonType === "sell" && activeType === "amount" && toWallet.wb < parseFloat(amount)) {
         return DropdownAlert.show("info", getLang(language, "INFO"), getLang(language, "NO_BALANCE"));
+      }
+
+
+      const result = getLastTickerParent();
+      if (!result.ask || !result.bid) {
+        return;
       }
 
 
@@ -552,7 +655,7 @@ const AnimatedSheet = (props) => {
         "CoinTo": market.to,
         "Amount": parseFloat(amount),
         // "Total": activeType === "total" ? parseFloat(total) : 0,
-        "OrderValue": market.pr,
+        "OrderValue": activeButtonType === "sell" ? result.bid : result.ask,
         "Direction": activeButtonType === "buy" ? 1 : 2,// buy-sell
         "StopAmount": 0,//stop
         "PriceRiseDrop": 0,//stop
@@ -574,17 +677,20 @@ const AnimatedSheet = (props) => {
 
 
       // CHECK MARKET BALANCE CONTROL
-      if (fromWallet.wb < total && activeButtonType === "buy") {
+      if (activeButtonType === "buy" && fromWallet.wb < total) {
         return DropdownAlert.show("info", getLang(language, "INFO"), getLang(language, "NO_BALANCE"));
-      } else if (toWallet.wb < parseFloat(amount) && activeButtonType === "sell") {
+      } else if (activeButtonType === "sell" && toWallet.wb < parseFloat(amount)) {
         return DropdownAlert.show("info", getLang(language, "INFO"), getLang(language, "NO_BALANCE"));
       }
 
 
+      //
+      // TODO CHECK DECS
       instance = {
         "CoinFrom": market.fs,
         "CoinTo": market.to,
-        "Amount": parseFloat(amount),
+        // "Amount": parseFloat(amount),
+        "Amount": amount.toString().match(new RegExp("^-?\\d+(?:\.\\d{0," + (marketInfo.ToCoinDecimalPoints) + "})?"))[0],
         // "Total": 0,
         "OrderValue": parseFloat(price),
         "Direction": activeButtonType === "buy" ? 1 : 2,// buy-sell
@@ -598,6 +704,14 @@ const AnimatedSheet = (props) => {
       if ((!total || parseFloat(total) <= 0) || (!price || parseFloat(price) <= 0) || (!amount || parseFloat(amount) <= 0)) {
         return DropdownAlert.show("info", getLang(language, "ERROR"), getLang(language, "PLEASE_FILL_ALL_BLANKS"));
       }
+
+      const result = getLastTickerParent();
+      if (!result.ask || !result.bid) {
+        return;
+      }
+      const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
+
       instance = {
         "CoinFrom": market.fs,
         "CoinTo": market.to,
@@ -606,7 +720,7 @@ const AnimatedSheet = (props) => {
         "OrderValue": price,
         "Direction": activeButtonType === "buy" ? 1 : 2,// buy-sell
         "StopAmount": stopPrice,//stop
-        "PriceRiseDrop": stopPrice < market.pr ? 1 : 2,//stop
+        "PriceRiseDrop": stopPrice < marketPrice ? 1 : 2,//stop
       };
       path = "orders/stoploss/new";
     }
@@ -618,10 +732,16 @@ const AnimatedSheet = (props) => {
 
       // return Alert.alert("handle process");
 
+      const result = getLastTickerParent();
+      if (!result.ask || !result.bid) {
+        return;
+      }
+      const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
       const dontShowOrderDetails = LocalStorage.getItem("dontShowOrderDetails");
-      if ((dontShowOrderDetails || modalApproved) && activeButtonType === "buy" && validInstance.OrderValue > market.pr + (market.pr * 0.1)) {
+      if ((dontShowOrderDetails || modalApproved) && activeButtonType === "buy" && validInstance.OrderValue > marketPrice + (marketPrice * 0.1)) {
         return showAction();
-      } else if ((dontShowOrderDetails || modalApproved) && activeButtonType === "sell" && validInstance.OrderValue < market.pr - (market.pr * 0.1)) {
+      } else if ((dontShowOrderDetails || modalApproved) && activeButtonType === "sell" && validInstance.OrderValue < marketPrice - (marketPrice * 0.1)) {
         return showAction();
       } else if ((modalApproved || dontShowOrderDetails)) {
         setTimeout(() => handleStore(), 500);
@@ -631,6 +751,27 @@ const AnimatedSheet = (props) => {
     }
   };
 
+  const handleApprove = () => {
+
+    const result = getLastTickerParent();
+    if (!result.ask || !result.bid) {
+      return;
+    }
+    const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
+
+    setModalApproved(true);
+    setShowModal(false);
+    setTimeout(() => {
+      if (activeButtonType === "buy" && validInstance.OrderValue > marketPrice + (marketPrice * 0.1)) {
+        return showAction(activeButtonType);
+      } else if (activeButtonType === "sell" && validInstance.OrderValue < marketPrice - (marketPrice * 0.1)) {
+        return showAction(activeButtonType);
+      } else {
+        handleStore();
+      }
+    }, 500);
+  };
   const handleSetAgreementConfirmed = (val) => {
     if (val) {
       LocalStorage.setItem("dontShowOrderDetails", "1");
@@ -646,10 +787,11 @@ const AnimatedSheet = (props) => {
     }
     setModalApproved(false);
     marketServices.newOrder(validPath, validInstance).then((response) => {
-      // console.log("response - ", response);
-      // if (response && response.IsSuccess) {
-      //   DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "YOUR_ORDER_HAS_BEEN_PLACED"));
-      // }
+      if (response && response.IsSuccess) {
+        setModalApproved(false);
+        setShowModal(false);
+        // DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "YOUR_ORDER_HAS_BEEN_PLACED"));
+      }
     });
   };
 
@@ -676,7 +818,13 @@ const AnimatedSheet = (props) => {
         return getLang(language, activeButtonType.toUpperCase() + "_NOUN");
 
       case "PRICE":
-        return formatMoney(price, marketInfo.FromCoinDecimalPoints);
+        const result = getLastTickerParent();
+        if (!result.ask || !result.bid) {
+          return;
+        }
+        const marketPrice = activeButtonType === "sell" ? result.bid : result.ask;
+
+        return formatMoney(price || marketPrice, marketInfo.FromCoinDecimalPoints);
 
       // return validInstance.OrderValue;
 
@@ -684,7 +832,9 @@ const AnimatedSheet = (props) => {
         return formatMoney(amount, marketInfo.ToCoinDecimalPoints);
 
       case "COMMISSION":
-        return formatMoney(parseFloat(price) * parseFloat(amount) * commissionRate, fromWallet.dp);
+
+
+        return formatMoney(price * amount * commissionRate, fromWallet.dp);
       // return formattedNumber(parseFloat(price) * parseFloat(amount) * commissionRate, market.fs);
 
       case "TOTAL":
@@ -737,32 +887,22 @@ const AnimatedSheet = (props) => {
                   width: "100%",
                   justifyContent: "space-between",
                   marginTop: MARGIN_T,
+
                 }}>
                   <CustomButton text={getLang(language, "CANCEL")} isSecondary={true}
                                 onPress={() => {
                                   setModalApproved(false);
                                   setShowModal(false);
                                 }}
-                                style={styles(activeTheme).button}
+                                style={styles(activeUserColors).button}
                                 textStyles={styles(activeTheme).btnTxt}
                   />
 
 
                   <CustomButton text={getLang(language, "APPROVE")} isSecondary={false}
                                 textStyles={styles(activeTheme).btnTxt}
-                                onPress={() => {
-                                  setModalApproved(true);
-                                  setShowModal(false);
-                                  setTimeout(() => {
-                                    if (activeButtonType === "buy" && validInstance.OrderValue > market.pr + (market.pr * 0.1)) {
-                                      return showAction(activeButtonType);
-                                    } else if (activeButtonType === "sell" && validInstance.OrderValue < market.pr - (market.pr * 0.1)) {
-                                      return showAction(activeButtonType);
-                                    } else {
-                                      handleStore();
-                                    }
-                                  }, 500);
-                                }} style={styles(activeTheme).button} />
+                                onPress={handleApprove}
+                                style={styles(activeUserColors).buttonApprove} />
 
                 </View>
 
@@ -794,19 +934,6 @@ const AnimatedSheet = (props) => {
 };
 
 export default React.memo(AnimatedSheet);
-
-/*
-export default React.memo(AnimatedSheet, (props, nextProps) => {
-  if (
-    props.selectedOrder.ov === nextProps.selectedOrder.ov &&
-    props.selectedOrder.fa === nextProps.selectedOrder.fa &&
-    props.commissionRate === nextProps.commissionRate
-  ) {
-    return true;
-  }
-
-});
- */
 
 const styles = (props) => StyleSheet.create({
   tabWrapper: {},
@@ -869,7 +996,12 @@ const styles = (props) => StyleSheet.create({
   },
   button: {
     width: "48%",
-    backgroundColor: props.activeListBg,
+    backgroundColor: props.askText,
+    borderRadius: 10,
+  },
+  buttonApprove: {
+    width: "48%",
+    backgroundColor: props.bidText,
     borderRadius: 10,
   },
   btnTxt: {
@@ -907,5 +1039,9 @@ const styles = (props) => StyleSheet.create({
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     fontSize: BIG_TITLE_FONTSIZE,
+  },
+  icon: {
+    width: 14,
+    height: 14,
   },
 });

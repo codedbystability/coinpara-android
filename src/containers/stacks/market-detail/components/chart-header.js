@@ -65,7 +65,7 @@ const ChartHeader2 = ({ precision, gd }) => {
       <View style={styles(activeTheme).container}>
         {
           Object.keys(latestTicker).length >= 1 && <Text
-            style={styles(activeTheme).pr}>{formatMoney(market.pr, precision)}</Text>
+            style={styles(activeTheme).pr}>{formatMoney(latestTicker.ov, precision)}</Text>
 
         }
 

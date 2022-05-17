@@ -15,7 +15,6 @@ import NImage from "../../../components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { apiPostWithTokenAndImage } from "../../../services/fetch-instance";
-import LocalStorage from "../../../providers/LocalStorage";
 import DropdownAlert from "../../../providers/DropdownAlert";
 
 const items = [

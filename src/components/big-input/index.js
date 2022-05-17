@@ -44,7 +44,7 @@ const BigInput = (props) => {
         }
 
         {
-          inputValue === "LOADING" ? <ActivityIndicator size={"small"} color={activeTheme.secondaryText} /> :
+          inputValue === "LOADING" ? <ActivityIndicator  color={activeTheme.secondaryText} /> :
             inputValue ? <Text style={styles(activeTheme).bigTextValue}>{inputValue}</Text> : null
         }
 

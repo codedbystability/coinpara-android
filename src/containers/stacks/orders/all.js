@@ -1,6 +1,6 @@
 import React from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import OrdersPure from "./index-pure";
+import OrdersPure from "./index";
 import { View } from "react-native";
 import { PADDING_BV } from "../../../../utils/dimensions";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
@@ -17,12 +17,13 @@ const AllOrders = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{
           presentation: "modal",
-          title: getLang(language, "ORDERS"),
+          title: getLang(language, "MY_ORDERS"),
         }}
       />
-      <View style={{ flex: 1, paddingVertical: PADDING_BV }}>
+      <View style={{ flex: 1, paddingVertical: 0 }}>
         <OrdersPure />
       </View>
     </>

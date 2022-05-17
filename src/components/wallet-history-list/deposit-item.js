@@ -25,32 +25,32 @@ const RenderTransferDepositItem = (props) => {
       style={styles(activeTheme).itemContainer}>
       <View style={[styles(activeTheme).titleText, { color: color }]}>
         <Text style={[styles(activeTheme).itemText, { color: color, fontSize: 14 }]}>
-          {formatMoney(item.am, item.cd === "TRY" ? 2 : 8)}
+          {formatMoney(item.Amount, item.CoinCode === "TRY" ? 2 : 8)}
         </Text>
         <Text style={[styles(activeTheme).itemText, { color: color }]}>
-          {item.cd}
+          {item.CoinCode}
         </Text>
       </View>
       <View style={[styles(activeTheme).titleText, {}]}>
         <Text
           style={[styles(activeTheme).itemText, { color: color }]}>{
-          moment.utc(item.ts).format("YYYY-MM-DD")
+          moment.utc(item.Timestamp).format("YYYY-MM-DD")
 
         }</Text>
         <Text style={[styles(activeTheme).itemText, { color: color }]}>{
-          moment.utc(item.ts).format("HH:mm")
+          moment.utc(item.Timestamp).format("HH:mm")
         }</Text>
       </View>
 
       <View style={[styles(activeTheme).titleText, { alignItems: "center" }]}>
-        <TinyImage parent={"rest/"} name={item.eo ? "success" : "cancel"} style={styles(activeTheme).icon} />
+        <TinyImage parent={"rest/"} name={item.QuickBuyDeposit ? "checkmark" : "cancel"} style={styles(activeTheme).icon} />
       </View>
 
 
       <View
         style={[styles(activeTheme).titleText, { alignItems: "flex-end" }]}>
 
-        <TinyImage parent={"rest/"} name={isWaiting ? "waiting" : isApproved ? "success" : "cancel"}
+        <TinyImage parent={"rest/"} name={isWaiting ? "waiting" : isApproved ? "checkmark" : "checkmark"}
                    style={styles(activeTheme).icon} />
 
       </View>

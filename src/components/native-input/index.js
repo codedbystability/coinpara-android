@@ -9,6 +9,8 @@ const NativeInput = (props) => {
     searchText,
     setSearchText,
     placeholder = "",
+    autoFocus = false,
+    autoCapitalize = null,
   } = props;
   const { activeTheme } = useSelector(state => state.globalReducer);
   return (
@@ -19,18 +21,16 @@ const NativeInput = (props) => {
 
       <TextInput
         keyboardAppearance={"dark"}
-
         // showSoftInputOnFocus={showOnStart}
         style={styles(activeTheme).input}
         value={searchText}
-        autoCapitalize={"characters"}
+        autoCapitalize={autoCapitalize || "characters"}
         onChangeText={setSearchText}
         placeholder={placeholder}
         placeholderTextColor={activeTheme.secondaryText}
         keyboardType={"email-address"}
         autoCorrect={false}
-        inputAccessoryViewID={"inputAccessoryViewIDNative"}
-        // returnKeyType={"done"}
+        autoFocus={autoFocus}
       />
 
 

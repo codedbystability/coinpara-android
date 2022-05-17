@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, Pressable, FlatList, ActivityIndicator } from "
 import transferServices from "../../../services/transfer-services";
 import { useSelector } from "react-redux";
 import {
+  LIST_ITEM_HEIGHT,
   NORMAL_FONTSIZE,
   NORMAL_IMAGE,
   PADDING_BV,
@@ -22,6 +23,7 @@ const BankSelect = ({ handleItemSelect, handleClose, selectedBank, type = "depos
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const { activeTheme, activeThemeKey, language } = useSelector(state => state.globalReducer);
+  const KEY = activeThemeKey === "light" ? "light" : "dark";
 
   //NameSurname
   useEffect(() => {
@@ -64,34 +66,33 @@ const BankSelect = ({ handleItemSelect, handleClose, selectedBank, type = "depos
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
 
-    const KEY = activeThemeKey === "light" ? "light" : "dark";
     return (
       <Pressable
         key={item.Iban}
         onPress={() => handleItemSelect(item)}
-        style={selectedBank && selectedBank.Id === item.Id ? styles(activeTheme).actItem : styles(activeTheme).item}>
-        <View style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingVertical: PADDING_H,
-        }}>
+        style={[styles(activeTheme).item, {
+          borderColor: selectedBank && selectedBank.Iban === item.Iban ? activeTheme.actionColor : activeTheme.borderGray,
+        }]}>
+        <View style={styles(activeTheme).w1}>
           <NImage
-            useFastImage={false}
+            useFastImage={true}
             source={{ uri: "https://images.coinpara.com/files/banks/" + LogoPath + "-" + KEY + ".png" }}
             resizeMode={"contain"}
             style={styles(activeTheme).img}
           />
-          <Text style={styles(activeTheme).title}>{item.BankName}
-            {
-              item.Iban && <Text style={styles(activeTheme).title}>
-                {item.Iban}
-              </Text>
-            }
-          </Text>
+
+          <View style={styles(activeTheme).w2}>
+            <Text style={styles(activeTheme).title}>
+              {item.BankName.replace(/\s/g, "")}
+            </Text>
+
+            <Text style={styles(activeTheme).text}>
+              {item.Iban.replace(/\s/g, "")}
+            </Text>
+
+          </View>
 
         </View>
-
 
         <TinyImage parent={"rest/"} name={"c-right"} style={styles(activeTheme).icon} />
 
@@ -151,12 +152,12 @@ const styles = (props) => StyleSheet.create({
     paddingTop: PADDING_BV,
   },
   item: {
-    borderColor: props.borderGray,
+    // borderColor: props.borderGray,
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: PADDING_H,
     paddingVertical: 4,
-    marginVertical: 12,
+    marginVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -167,7 +168,7 @@ const styles = (props) => StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: PADDING_H,
     // paddingVertical: 4,
-    marginVertical: 6,
+    marginVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -176,13 +177,14 @@ const styles = (props) => StyleSheet.create({
     fontSize: TITLE_FONTSIZE - 1,
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    marginTop: 2,
+    // marginTop: 2,
   },
 
   text: {
     fontSize: NORMAL_FONTSIZE,
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
+    marginTop: 2,
   },
   filterWrapper: {
     alignItems: "center",
@@ -190,6 +192,12 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     backgroundColor: props.backgroundApp,
     marginBottom: PADDING_BV,
+
+  },
+  w2: {
+    // backgroundColor: "red",
+    justifyContent: "center",
+    width: "80%",
 
   },
   dismiss: {
@@ -214,13 +222,23 @@ const styles = (props) => StyleSheet.create({
     width: "100%",
   },
   img: {
-    height: NORMAL_IMAGE * 1.2, width: NORMAL_IMAGE * 3, marginBottom: PADDING_H / 2,
+    height: LIST_ITEM_HEIGHT / 2,
+    width: 60,
+    // marginBottom: PADDING_H / 2,
     marginRight: PADDING_H,
   },
 
   icon: {
     width: 16,
     height: 16,
+  },
+  w1: {
+    flexDirection: "row",
+    alignItems: "center",
+    // justifyContent: "center",
+    paddingVertical: PADDING_H,
+    // backgroundColor: "blue",
+    width: "90%",
   },
 });
 

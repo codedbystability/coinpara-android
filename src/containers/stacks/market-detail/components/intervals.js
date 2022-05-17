@@ -1,27 +1,31 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { TITLE_FONTSIZE } from "../../../../../utils/dimensions";
 import { intervals } from "../constants";
 import { getLang } from "../../../../helpers/array-helper";
 import TinyImage from "../../../../tiny-image";
+import HapticProvider from "../../../../providers/HapticProvider";
+import { useIsFocused } from "@react-navigation/native";
+import LocalStorage from "../../../../providers/LocalStorage";
 
 
 const ChartIntervals = ({
                           activeInterval,
-                          fullscreen,
                           setFullscreen,
                           activeChart,
                           setActiveChart,
                           setActiveInterval,
                         }) => {
   const scrollRef = useRef(null);
-
   const { activeTheme, language } = useSelector(state => state.globalReducer);
 
 
+
   const setActiveInterval2 = (val, i) => {
+    LocalStorage.setItem('storedInterval', val)
     setActiveInterval(val);
+    HapticProvider.trigger();
     scrollRef.current.scrollTo({ x: (i - 1) * 40, y: 0, animated: true });
   };
   return (

@@ -91,12 +91,12 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = true //true
+def enableSeparateBuildPerCPUArchitecture = false //true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = true //true
+def enableProguardInReleaseBuilds = false //true
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -133,7 +133,7 @@ android {
         applicationId "com.necen.coinpara.react"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
+        versionCode 25
         versionName "1.0"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'mlkit' //insert this line
@@ -219,6 +219,7 @@ dependencies {
     implementation project(':react-native-camera')
 
     implementation project(':react-native-share')
+    implementation project(':react-native-quick-actions')
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

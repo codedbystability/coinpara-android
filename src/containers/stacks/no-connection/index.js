@@ -9,9 +9,7 @@ const NoConnection = props => {
 
   const { activeTheme } = useSelector(state => state.globalReducer);
 
-  const handleCheckConnection = () => {
-    console.log("handleCheckConnection");
-  };
+  const handleCheckConnection = () => null;
 
   return (
     <View style={[styles(activeTheme).modal]}>

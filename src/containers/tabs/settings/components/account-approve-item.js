@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../../../helpers/array-helper";
 import {
-  LIST_MARGIN_T,
+  LIST_MARGIN_T, PADDING_BV,
   PADDING_H, PADDING_V,
 } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import { navigationRef } from "../../../../providers/RootNavigation";
 import TinyImage from "../../../../tiny-image";
 
 
-const AccountApproveItem = () => {
+const AccountApproveItem = ({ active }) => {
 
   const { activeTheme, fontSizes, language } = useSelector(state => state.globalReducer);
   const isFocused = useIsFocused();
@@ -55,7 +55,7 @@ const AccountApproveItem = () => {
   return (
     <Pressable
       onPress={() => navigationRef.current.navigate("AccountApprove")}
-      style={[styles(activeTheme).wrapper, {}]}>
+      style={[styles(activeTheme, {}, active).wrapper, {}]}>
       {
         !approved && <View style={{
           position: "absolute",
@@ -83,9 +83,12 @@ const AccountApproveItem = () => {
         </View>
       </View>
 
-      <View style={styles(activeTheme).rightWrapper}>
-        <TinyImage parent={"rest/"} name={"c-right"} style={styles(activeTheme).icon} />
-      </View>
+      {
+        !active &&
+        <View style={styles(activeTheme).rightWrapper}>
+          <TinyImage parent={"rest/"} name={"c-right"} style={styles(activeTheme).icon} />
+        </View>
+      }
     </Pressable>
   );
 
@@ -95,19 +98,17 @@ const AccountApproveItem = () => {
 export default AccountApproveItem;
 
 
-const styles = (props,fontSizes) => StyleSheet.create({
+const styles = (props, fontSizes, active) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    backgroundColor: props.darkBackground,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: PADDING_V,
+    paddingVertical: PADDING_BV / 2,
     paddingHorizontal: PADDING_H,
     borderRadius: 8,
-    marginTop: LIST_MARGIN_T ,
-    borderColor: props.borderGray,
-    borderWidth: 1,
+    marginTop: LIST_MARGIN_T,
+    backgroundColor: active ? props.darkBackground : "transparent",
   },
   leftWrapper: {
     alignItems: "center",
@@ -123,7 +124,7 @@ const styles = (props,fontSizes) => StyleSheet.create({
 
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
     color: props.appWhite,
     marginRight: 6,
   },
@@ -147,7 +148,7 @@ const styles = (props,fontSizes) => StyleSheet.create({
     width: "15%",
   },
   icon: {
-    width: 22,
-    height: 22,
+    width: 16,
+    height: 16,
   },
 });

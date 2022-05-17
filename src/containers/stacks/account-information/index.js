@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { useDispatch, useSelector } from "react-redux";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import FormInput from "../../../components/form-input";
 import { getLang } from "../../../helpers/array-helper";
 import TabNavigationHeader from "../../../components/tab-navigation-header";
 import CustomButton from "../../../components/button";
-import keyboardAvoidingViewHoc from "../../../hocs/keyboardAvoidingViewHoc";
 import FormPhoneInput from "../../../components/phone-input";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import userServices from "../../../services/user-services";
@@ -15,6 +14,8 @@ import StillLogo from "../../../components/still-logo";
 import { normalizeInput } from "../../../helpers/math-helper";
 import { PADDING_H } from "../../../../utils/dimensions";
 import { useIsFocused } from "@react-navigation/native";
+import WalletInfo from "../../tabs/settings/components/wallet-info";
+import FloatingAction from "../../../components/floating-action";
 
 const inputs = [
   {
@@ -77,7 +78,7 @@ const AccountInformation = (props) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
-  const [approved, setApproved] = useState(false);
+  const [approved, setApproved] = useState(true);
   const [refCode, setRefCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [activeCountry, setActiveCountry] = useState({
@@ -94,13 +95,7 @@ const AccountInformation = (props) => {
 
   useEffect(() => {
     if (isFocused) {
-      userServices.getApproval().then((response) => {
-        if (response.IsSuccess) {
-          if (response.Data.AdminApproval) {
-            setApproved(true);
-          }
-        }
-      });
+      userServices.getApproval().then((response) => setApproved(response.IsSuccess && response.Data.AdminApproval || false));
     }
   }, [isFocused]);
 
@@ -167,6 +162,7 @@ const AccountInformation = (props) => {
     <TabNavigationHeader
       {...props}
       backAble={true}
+      isBack={true}
       options={{
         presentation: "modal",
         title: getLang(language, "ACCOUNT_INFORMATION"),
@@ -174,12 +170,12 @@ const AccountInformation = (props) => {
     />
 
 
-    <Pressable
-      // onPress={() => keyboardShown && Keyboard.dismiss()}
-      style={styles.wrapper}>
+    <View style={styles.wrapper}>
 
 
       <View style={styles.content}>
+        <WalletInfo />
+
         {
           inputs.map(input =>
             <FormInput placeholder={input.placeholder}
@@ -206,6 +202,7 @@ const AccountInformation = (props) => {
         />
 
         <StillLogo />
+
       </View>
 
       {
@@ -218,15 +215,17 @@ const AccountInformation = (props) => {
         </View>
 
       }
-    </Pressable>
+    </View>
 
+
+    <FloatingAction />
   </>;
 
 
 };
 
 
-const AccountInformationScreen = styledHigherOrderComponents(keyboardAvoidingViewHoc(AccountInformation));
+const AccountInformationScreen = styledHigherOrderComponents(AccountInformation);
 export default AccountInformationScreen;
 const styles = StyleSheet.create({
   wrapper: { flex: 1, justifyContent: "center", alignItems: "center" },
@@ -235,6 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: PADDING_H,
+    flex: 1,
   },
   buttonWrapper: {
     position: "absolute",

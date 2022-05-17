@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../helpers/array-helper";
 import { useSelector } from "react-redux";
+import { PADDING_H, TITLE_FONTSIZE } from "../../../utils/dimensions";
 
 const WalletHistoryListHeader = (props) => {
 
@@ -14,10 +15,9 @@ const WalletHistoryListHeader = (props) => {
           numberOfLines={1}
           key={header.id} style={[
           styles(activeTheme).titleText, header.options, {
-            width: `${parseInt(100 / headers.length)}%`,
+            width: `33%`,
           }]}>{getLang(language, header.title)}</Text>)
       }
-
 
     </View>
 
@@ -37,11 +37,13 @@ const styles = (props) => StyleSheet.create({
     // borderBottomWidth: 1,
     // borderBottomColor: "rgba(255,255,255,.2)",
     paddingBottom: 20,
+    paddingHorizontal: PADDING_H,
+
   },
   titleText: {
     textAlign: "left",
     fontFamily: "CircularStd-Book",
-    fontSize: 13,
+    fontSize: TITLE_FONTSIZE,
     color: props.appWhite,
     height: "100%",
     // alignItems: "center",

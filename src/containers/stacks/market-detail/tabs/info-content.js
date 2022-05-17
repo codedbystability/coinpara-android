@@ -35,7 +35,12 @@ const InfoContent = (props) => {
 
         <View style={styles(activeTheme).itemRight}>
           <Text
-            style={[styles.priceText, styles(activeTheme).price]}>{formattedNumber(info[item.key],'USD', 3)}</Text>
+            style={[styles.priceText, styles(activeTheme).price]}>
+            {
+              item.is24 ? "%" : ""
+            }
+            {formattedNumber(info[item.key], "USD", 3)}
+          </Text>
         </View>
 
       </View>
@@ -98,7 +103,7 @@ const styles = (props) => StyleSheet.create({
     paddingVertical: PADDING_V,
     paddingHorizontal: PADDING_H,
   },
-  wrapper: { flexDirection: "row", alignItems: "center", },
+  wrapper: { flexDirection: "row", alignItems: "center" },
   bigTitle: { fontFamily: "CircularStd-Bold", fontSize: 18, color: props.appWhite },
   titleContainer: {
     width: "100%",

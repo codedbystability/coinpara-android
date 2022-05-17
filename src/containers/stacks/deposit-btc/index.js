@@ -12,7 +12,6 @@ import { getLang } from "../../../helpers/array-helper";
 import Networks from "../../../components/networks";
 import ModalProvider from "../../../providers/ModalProvider";
 import { PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
-import QRCode from "react-native-qrcode-svg";
 import EmptyContainer from "../../../components/empty-container";
 import CustomButton from "../../../components/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -22,10 +21,11 @@ import QrResult from "../../../components/qr-result";
 
 const DepositBtcScreen = (props) => {
   const { wallet, showModal } = props;
-  const { activeTheme, activeThemeKey } = useSelector(state => state.globalReducer);
+  const { activeTheme } = useSelector(state => state.globalReducer);
   const [walletAddress, setWalletAddress] = useState("");
   const [visibleWalletAddress, setVisibleWalletAddress] = useState("");
   const { language } = useSelector(state => state.globalReducer);
+
   const [networks, setNetworks] = useState([]);
   const [destinationTag, setDestinationTag] = useState("");
   const [networkInstance, setNetworkInstance] = useState({});
@@ -46,12 +46,13 @@ const DepositBtcScreen = (props) => {
   useEffect(() => {
     if (wallet && wallet.gd) {
       // setFetching(true);
+      setDestinationTag("");
       setIsMeMo("");
       setIsTag("");
       setNetworks([]);
       setWalletAddress("");
       setVisibleWalletAddress("");
-      setDestinationTag("");
+      setNetworkInstance({})
       setDescriptions([
         { id: 1, text: "COIN_DEPOSIT_DESCRIPTION" },
         { id: 2, text: "COIN_DEPOSIT_MIN_DESCRIPTION" },
@@ -166,6 +167,7 @@ const DepositBtcScreen = (props) => {
 
   useEffect(() => {
     if (activeNetwork) {
+      setError("")
       setWalletAddress("");
       const theNetwork = networks.find(net => net.Id === activeNetwork);
       if (theNetwork && theNetwork.WalletAddress) {
@@ -183,6 +185,7 @@ const DepositBtcScreen = (props) => {
     if ((!activeNetwork && activeNetwork !== 0) || !wallet || !wallet.gd)
       return null;
 
+    setError(false);
     // loadingButton.current?.showLoading(true);
     setFetching(true);
     setWalletAddress("");

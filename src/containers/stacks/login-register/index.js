@@ -34,7 +34,7 @@ function LoginRegisterScreen(props) {
         <View style={styles(activeTheme).c2}>
           <Text style={styles(activeTheme).title}>{getLang(language, "NOT_AUTH_TITLE")}</Text>
 
-          <Pressable onPress={() => navigationRef.current.navigate("Markets")}>
+          <Pressable onPress={() => navigationRef.current.navigate("MarketsStack")}>
             <Text style={styles(activeTheme).continue}>{getLang(language, "CONTINUE_WITHOUT_REGISTER")}</Text>
           </Pressable>
         </View>
@@ -53,7 +53,7 @@ function LoginRegisterScreen(props) {
             filled={true}
             style={styles(activeTheme).b2}
             textStyles={[styles(activeTheme).txt, { color: "#fff" }]}
-            onPress={() => handleNavigation("RegisterEmail")} />
+            onPress={() => handleNavigation("RegisterStack")} />
 
         </View>
       </View>
@@ -115,8 +115,11 @@ const styles = props => StyleSheet.create({
   },
   press: {
     position: "absolute",
-    left: 24,
-    top: 24,
+    left: PADDING_H,
+    top: 36,
+    paddingVertical: PADDING_H * 3,
+    paddingRight: PADDING_H * 3,
+    paddingLeft: PADDING_H,
   },
   icon: {
     width: 16,

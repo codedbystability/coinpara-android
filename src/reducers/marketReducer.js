@@ -17,6 +17,7 @@ const MarketStates = {
   marketsWithKey: [],
   marketsWithFs: [],
   btcTryGd: "",
+  usdtTryGd: "",
 
   NEW: [],
   TOP_LOSERS: [],
@@ -36,10 +37,11 @@ const marketReducer = (state = MarketStates, action) => {
       const sorted = orderBy(selectMarkets, ["cp"], ["desc"]);
       const prSorted = orderBy(selectMarkets, ["pr"], ["desc"]);
       const btcTry = sorted.find(itm => itm.fs === "TRY" && itm.to === "BTC");
+      const usdtTry = sorted.find(itm => itm.fs === "TRY" && itm.to === "USDT");
 
-      const NEW = selectMarkets.filter(a => a.in === true).slice(0, 10);
-      const TOP_GAINERS = sorted.slice(0, 10);
-      const TOP_LOSERS = sorted.slice(sorted.length - 11, sorted.length - 1);
+      const NEW = selectMarkets.filter(a => a.in === true).slice(0, 7);
+      const TOP_GAINERS = sorted.slice(0, 7);
+      const TOP_LOSERS = orderBy(selectMarkets, ["cp"], ["asc"]).slice(0, 7);
 
       return {
         ...state,
@@ -59,6 +61,7 @@ const marketReducer = (state = MarketStates, action) => {
             cd: v.cd,
             in: v.in,
             if: v.if,
+            it: v.it,
             hd: v.hd,
             vd: v.vd,
             ld: v.ld,
@@ -68,6 +71,7 @@ const marketReducer = (state = MarketStates, action) => {
         TOP_GAINERS: TOP_GAINERS,
         TOP_LOSERS: TOP_LOSERS,
         btcTryGd: btcTry.gd,
+        usdtTryGd: usdtTry.gd,
 
       };
 
@@ -86,6 +90,7 @@ const marketReducer = (state = MarketStates, action) => {
           hd: v.hd,
           vd: v.vd,
           ld: v.ld,
+          it: v.it,
           svp: v.svp,
           spp: v.spp,
           fdp: v.fdp,

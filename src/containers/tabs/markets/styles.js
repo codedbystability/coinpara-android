@@ -15,17 +15,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     justifyContent: "center",
     zIndex: 99999999,
   },
-  rightActionOddWrapper: {
-    width: 60,
-    // backgroundColor: props.actionColor,
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 99999999,
-    borderBottomColor: props.borderGray,
-    borderBottomWidth: 1,
 
-  },
   evenContainer: {
     width: "100%",
     backgroundColor: props.darkBackground,
@@ -37,22 +27,17 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   oddContainer: {
     width: "100%",
-    // height: 60,
     backgroundColor: "transparent",
-    borderBottomWidth: 1,
-    borderBottomColor: props.borderGray,
     flexDirection: "row",
     paddingHorizontal: PADDING_H,
     height: LIST_ITEM_HEIGHT,
   },
   leftWrapper: {
     height: "100%",
-    width: "40%",
+    width: "35%",
     overflow: "hidden",
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "space-around",
-    // paddingHorizontal:5,
     paddingRight: 20,
   },
   leftWrapperContainer: {
@@ -67,20 +52,20 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   title: {
     color: props.appWhite,
-    fontSize: fontSizes?.TITLE_FONTSIZE - 2,
+    fontSize: fontSizes?.TITLE_FONTSIZE ,
     fontFamily: "CircularStd-Bold",
 
   },
   description: {
     color: props.secondaryText,
-    fontFamily: "CircularStd-Medium",
-    fontSize: fontSizes?.NORMAL_FONTSIZE - 2,
+    fontFamily: "CircularStd-Book",
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
 
   },
   middleWrapper: {
     top: "5%",
     height: "90%",
-    width: "30%",
+    width: "35%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -108,24 +93,29 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   negative: {
     color: props.changeRed, //   for red
-    fontSize: fontSizes?.NORMAL_FONTSIZE - 1,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     textAlign: "right",
     marginTop: 4,
   },
   positive: {
     color: props.changeGreen,
-    fontSize: fontSizes?.NORMAL_FONTSIZE - 1,
+    fontSize: fontSizes?.SUBTITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     textAlign: "right",
     marginTop: 4,
   },
   newWrapper: {
     marginRight: 2,
-    paddingHorizontal: 4,
-    borderRadius: 12,
-    paddingVertical: 3,
-    borderWidth: 1, borderColor: props.yesGreen,
+    borderWidth: 1,
+    borderColor: props.borderGray,
+    backgroundColor: props.changeGreen,
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    position: "absolute",
+    top: -10,
+    left: 0,
   },
   newText: {
     fontFamily: "CircularStd-Bold",

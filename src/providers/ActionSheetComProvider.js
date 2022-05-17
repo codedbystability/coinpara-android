@@ -9,9 +9,10 @@ const show = ({
                 options = [],
                 onAction = null,
                 animate = true,
+                oldActive = null,
               }) => {
 
-  actionSheetRef.show(title, options, onAction, animate);
+  actionSheetRef.show(title, options, onAction, animate, oldActive);
 };
 
 const hide = () => actionSheetRef.hide();

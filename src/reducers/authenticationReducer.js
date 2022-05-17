@@ -12,6 +12,7 @@ const authenticationReducer = (state = AuthenticationStates, action) => {
   switch (action.type) {
 
     case AUTHENTICATION_CONSTANTS.SET_USER_TOKEN:
+      // console.log("action.data-", action.data);
       return {
         ...state,
         token: "Bearer " + action.data,

@@ -18,7 +18,7 @@ const TimeExpiration = (props) => {
   const { activeTheme, language, keyboardShown } = useSelector(state => state.globalReducer);
 
   const handleOnPress = () => {
-    if (timeValue < 5 || timeValue > 360) {
+    if (timeValue < 5 || timeValue > 3600) {
       return DropdownAlert.show("error",
         getLang(language, "ERROR"),
         getLang(language, "TIME_SHOULD_BE_IN_5_360"));
@@ -40,6 +40,7 @@ const TimeExpiration = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
+        isBack={true}
         options={{
           presentation: "modal",
           title: getLang(language, "TIME_EXPIRATION"),

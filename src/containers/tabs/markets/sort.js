@@ -141,13 +141,13 @@ const styles = (props) => StyleSheet.create({
     color: props.secondaryText,
     fontSize: TITLE_FONTSIZE,
     letterSpacing: 0,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
   activeText: {
     color: "orange",
     fontSize: TITLE_FONTSIZE,
     letterSpacing: 0,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
 
   activeColor: {

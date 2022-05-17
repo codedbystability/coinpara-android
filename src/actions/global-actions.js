@@ -82,6 +82,14 @@ export function setLanguage(data) {
 }
 
 
+export function setLanguageKeys(data) {
+  return {
+    type: GLOBAL_CONSTANTS.SET_LANGUAGE_KEYS,
+    data: data,
+  };
+}
+
+
 export function setError(data) {
   return {
     type: GLOBAL_CONSTANTS.SET_ERROR,

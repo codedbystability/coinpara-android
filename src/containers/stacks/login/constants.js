@@ -35,6 +35,6 @@ export const inputs = [
     autoComplete: "password",
     returnKey: "done",
     autoFocus: false,
-    icon: "eye-open",
+    icon: "eye-close",
   },
 ];

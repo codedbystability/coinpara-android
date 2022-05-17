@@ -11,7 +11,7 @@ import Loading from "../../../../components/loading";
 import EmptyContainer from "../../../../components/empty-container";
 import OrdersTabHeader from "./orders-tab-header";
 import { useSelector } from "react-redux";
-import { formatMoney, formattedNumber } from "../../../../helpers/math-helper";
+import { formatMoney } from "../../../../helpers/math-helper";
 import { isIphoneX } from "../../../../../utils/devices";
 
 const MAX_ITEM_COUNT = 25;
@@ -20,7 +20,7 @@ const FULL_WIDTH = parseInt(SCREEN_WIDTH / 2 - PADDING_H);
 
 const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handleDetail }) => {
 
-  const { activeTheme } = useSelector(state => state.globalReducer);
+  const { activeUserColors,activeTheme } = useSelector(state => state.globalReducer);
   const [loading, setLoading] = useState(true);
   const [bids2, setBids2] = useState([]);
   const [asks2, setAsks2] = useState([]);
@@ -58,28 +58,20 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
   };
 
   const awesomeChildListRenderItemAsk = ({ item, index }) => {
-    // const { market, activeTheme, handleDetail, precision } = this.props;
     const newVal = parseInt(FULL_WIDTH * parseInt(item.pc) / 100);
-    // Animated.timing(asksPer[index], {
-    //   toValue: newVal,
-    //   duration: 200,
-    //   useNativeDriver: false,
-    // }).start();
-
 
     return (
       <Pressable
         onPress={() => handleDetail(item, "ask")}
-        style={styles(activeTheme).rightItemContainer} key={item.toString()}>
-        <View style={[styles(activeTheme).askBg, {
-          // width: asksPer[index],
+        style={styles(activeUserColors).rightItemContainer} key={item.toString()}>
+        <View style={[styles(activeUserColors).askBg, {
           width: newVal,
         }]} />
 
 
-        <View style={[styles(activeTheme).itemWrapper]}>
+        <View style={[styles(activeUserColors).itemWrapper]}>
           <Text numberOfLines={1}
-                style={styles(activeTheme).askPrice}>
+                style={styles(activeUserColors).askPrice}>
             {
               // formattedNumber(item.ov, "", 4)
               formatMoney(item.ov, fromPrecision)
@@ -89,7 +81,7 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
         </View>
 
         <View style={{ justifyContent: "flex-end" }}>
-          <Text numberOfLines={1} 
+          <Text numberOfLines={1}
                 style={[styles(activeTheme).text, { textAlign: "right" }]}>
             {/*{*/}
             {/*  item.fa*/}
@@ -107,7 +99,7 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
   };
 
   const awesomeChildListRenderItemBid = ({ item, index }) => {
-    // const { market, activeTheme, handleDetail, precision } = this.props;
+    // const { market, activeUserColors, handleDetail, precision } = this.props;
     const newVal = parseInt(FULL_WIDTH * parseInt(item.pc) / 100);
 
     // Animated.timing(bidsPer[index], {
@@ -121,12 +113,12 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
       <Pressable
         ref={ref => bidArr[index] = ref}
         onPress={() => handleDetail(item, "bid")}
-        style={styles(activeTheme).rightItemContainer} key={item.toString()}>
+        style={styles(activeUserColors).rightItemContainer} key={item.toString()}>
 
-        <View style={[styles(activeTheme).bidBg, {
+        <View style={[styles(activeUserColors).bidBg, {
           width: newVal,
         }]} />
-        <View style={{justifyContent: "flex-end" }}>
+        <View style={{ justifyContent: "flex-end" }}>
           <Text numberOfLines={1} style={[styles(activeTheme).text]}>
             {
               // formattedNumber(item.fa, market.fs, toPrecision)
@@ -135,11 +127,11 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
           </Text>
         </View>
 
-        <View style={[styles(activeTheme).itemWrapper]}>
+        <View style={[styles(activeUserColors).itemWrapper]}>
 
           <Text numberOfLines={1}
                 adjustsFontSizeToFit={true}
-                style={[styles(activeTheme).bidPrice, { textAlign: "right" }]}>
+                style={[styles(activeUserColors).bidPrice, { textAlign: "right" }]}>
             {
               formatMoney(item.ov, fromPrecision)
             }
@@ -155,22 +147,22 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
 
 
   return (
-    <View style={styles(activeTheme).wrapper}>
+    <View style={styles(activeUserColors).wrapper}>
 
       <OrdersTabHeader toSym={market.fs} />
 
-      <View style={styles(activeTheme).contentWrapper}>
+      <View style={styles(activeUserColors).contentWrapper}>
 
         <View style={{ width: "50%" }}>
           {
-            loading ? <ActivityIndicator color={activeTheme.secondaryText} /> :
+            loading ? <ActivityIndicator color={activeUserColors.bidText} /> :
               bids2.length >= 1 ?
                 <FlatList
                   showsVerticalScrollIndicator={false}
                   renderItem={awesomeChildListRenderItemBid}
                   keyExtractor={awesomeChildListKeyExtractorBid}
                   data={bids2}
-                  contentContainerStyle={styles(activeTheme).flatList}
+                  contentContainerStyle={styles(activeUserColors).flatList}
                   ListFooterComponent={bids2.length <= 0 && <Loading />}
                 />
                 :
@@ -183,13 +175,13 @@ const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handl
         <View style={{ width: "50%" }}>
 
           {
-            loading ? <ActivityIndicator color={activeTheme.secondaryText} /> :
+            loading ? <ActivityIndicator color={activeUserColors.bidText} /> :
               asks2.length >= 1 ?
                 <FlatList
                   showsVerticalScrollIndicator={false}
                   renderItem={awesomeChildListRenderItemAsk}
                   keyExtractor={awesomeChildListKeyExtractorAsk}
-                  contentContainerStyle={styles(activeTheme).flatList}
+                  contentContainerStyle={styles(activeUserColors).flatList}
                   ListFooterComponent={asks2.length <= 0 && <Loading />}
                   data={asks2}
                 />
@@ -308,7 +300,7 @@ const styles = (props) => StyleSheet.create({
     fontSize: NORMAL_FONTSIZE - 1,
   },
   flatList: {
-    paddingBottom: 100,
+    paddingBottom: 60,
     width: "100%",
   },
   titleContainer: {

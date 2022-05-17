@@ -11,20 +11,22 @@ import {
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     height: 120,
-    marginBottom: MARGIN_T / 2,
+    // marginBottom: MARGIN_T / 2,
   },
   headerContainer: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 0,
     paddingHorizontal: PADDING_H,
   },
   nameText: {
     fontFamily: "CircularStd-Bold",
     fontSize: BIG_TITLE_FONTSIZE,
     color: props.appWhite,
+    paddingRight: PADDING_H,
+    textAlign: "right",
   },
   infoTab: {
     width: "100%",
@@ -100,20 +102,15 @@ const styles = (props, fontSizes) => StyleSheet.create({
     // backgroundColor: "red",
   },
   item: {
-    backgroundColor: props.darkBackground,
     width: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 2))) / 5,
     height: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 6))) / 5,
-    paddingVertical: 4,
+    // paddingVertical: 4,
     alignItems: "center",
     justifyContent: "space-around",
     marginRight: 4,
     marginVertical: 4,
     borderRadius: 8,
     paddingHorizontal: 2,
-    borderWidth: 1,
-    borderColor: props.borderGray,
-    // width: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 4))) / 5,
-    // height: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 6))) / 5,
   },
   image: {
     width: SQUARE_IMAGE,
@@ -164,8 +161,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     height: 20,
     width: 18,
     backgroundColor: props.borderGray,
-    borderTopRightRadius: 8,
-    borderBottomLeftRadius: 8,
+    borderTopRightRadius: 6,
+    borderBottomLeftRadius: 6,
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: 4,
@@ -173,8 +170,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   },
   img: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   },
   imgH: {
     width: 22,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { Text, View, StyleSheet } from "react-native";
 import {
@@ -11,38 +11,38 @@ import generalServices from "../../../../services/general-services";
 import { useSelector } from "react-redux";
 import NImage from "../../../../components/image/index.tsx";
 import { useIsFocused } from "@react-navigation/native";
-import Linking from "../../../../providers/Linking";
 import PlLoading from "../../../pl-loading";
 
+const ww = SCREEN_WIDTH - (PADDING_H * 2);
 
-const HomepageSlider = (props) => {
+const  HomepageSlider = (props) => {
   const { activeLanguage } = useSelector(state => state.languageReducer);
-  const { activeTheme, fontSizes, language } = useSelector(state => state.globalReducer);
+  const { activeTheme, fontSizes } = useSelector(state => state.globalReducer);
 
   const [data, setData] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
 
 
   useEffect(() => {
-    if (isFocused && activeLanguage && Object.keys(activeLanguage).length >= 1 && activeLanguage.Id) {
+    if (activeLanguage && activeLanguage.Id) {
       getSliders();
     }
-  }, [isFocused, activeLanguage]);
+  }, [activeLanguage]);
 
   const getSliders = () => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     generalServices.getSliders(activeLanguage.Id).then((response) => {
-      if (response && response.IsSuccess) {
+      if (isFocused && response && response.IsSuccess) {
         setData(response.Data);
       }
       setLoading(false);
     });
   };
-
-  const handleOpenUrl = useCallback(async (url) => {
-    await Linking.openURL(url);
-  }, []);
 
   const _renderItem = ({ item, index }) => {
     return (
@@ -56,7 +56,7 @@ const HomepageSlider = (props) => {
                 {item.Text1.replace(/<\/?[^>]+(>|$)/g, "")}
               </Text>
 
-              <Text style={[styles(activeTheme, fontSizes).text, { fontSize: NORMAL_FONTSIZE }]}>
+              <Text style={[styles(activeTheme, fontSizes).desc]}>
                 {item.Text2.replace(/<\/?[^>]+(>|$)/g, "")}
               </Text>
 
@@ -98,50 +98,52 @@ const HomepageSlider = (props) => {
     return null;
 
 
-  const ww = SCREEN_WIDTH - (PADDING_H * 2);
   return (
+    <View style={styles(activeTheme).container}>
+      <Carousel
+        containerCustomStyle={styles(activeTheme).carousel}
+        // contentContainerCustomStyle={styles(activeTheme).car}
+        removeClippedSubviews={false}
+        enableMomentum={false}
+        disableIntervalMomentum
+        loop
+        lockScrollWhileSnapping={false}
+        data={data}
+        renderItem={_renderItem}
+        sliderWidth={ww}
+        itemWidth={ww}
+        onSnapToItem={(index) => setActiveSlide(index)}
+      />
 
-      <View style={styles(activeTheme).container}>
-        <Carousel
-          containerCustomStyle={styles(activeTheme).carousel}
-          // contentContainerCustomStyle={styles(activeTheme).car}
-          removeClippedSubviews={false}
-          enableMomentum={false}
-          disableIntervalMomentum
-          loop
-          lockScrollWhileSnapping={false}
-          data={data}
-          renderItem={_renderItem}
-          sliderWidth={ww}
-          itemWidth={ww}
-          onSnapToItem={(index) => setActiveSlide(index)}
-        />
+      {
+        data.length >= 1 && <View style={styles(activeTheme).pagination}>
+          <Pagination
+            dotsLength={data.length}
+            activeDotIndex={activeSlide}
+            dotStyle={styles(activeTheme).dots}
+            inactiveDotStyle={styles(activeTheme).inDor}
+            inactiveDotOpacity={0.6}
+            inactiveDotScale={0.6}
+          />
+        </View>
 
-        {
-          data.length >= 1 && <View style={styles(activeTheme).pagination}>
-            <Pagination
-              dotsLength={data.length}
-              activeDotIndex={activeSlide}
-              dotStyle={styles(activeTheme).dots}
-              inactiveDotStyle={styles(activeTheme).inDor}
-              inactiveDotOpacity={0.6}
-              inactiveDotScale={0.6}
-            />
-          </View>
-
-        }
-      </View>
+      }
+    </View>
   );
 
 };
 
 export default React.memo(HomepageSlider);
+
+
 const styles = (props, fontSizes) => StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
     height: 120,
     paddingHorizontal: PADDING_H,
+    paddingTop: PADDING_H / 2,
+    marginTop: PADDING_H,
   },
   wrapper: {
     borderRadius: 7,
@@ -168,6 +170,12 @@ const styles = (props, fontSizes) => StyleSheet.create({
     fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
     letterSpacing: -0.19,
     color: "#ffffff",
+  },
+  desc: {
+    fontFamily: "CircularStd-Book",
+    fontSize: fontSizes?.NORMAL_FONTSIZE,
+    letterSpacing: -0.09,
+    color: "#94AADD",
   },
   imText: {
     color: "rgb(2,123,238)",
@@ -197,17 +205,16 @@ const styles = (props, fontSizes) => StyleSheet.create({
     paddingVertical: PADDING_V,
   },
   dots: {
-    width: 22,
-    height: 8,
-    // borderRadius: 4,
+    width: 12,
+    height: 6,
     padding: 0,
     margin: 0,
     backgroundColor: props.iconActive,
   },
   inDor: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     padding: 0,
     margin: 0,
     backgroundColor: props.secondaryText,

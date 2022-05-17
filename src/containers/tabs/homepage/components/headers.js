@@ -1,25 +1,35 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import NonAuthHeader from "./nonauth-header";
-import AuthHeader from "./auth-header";
 import HomepageSlider from "./slider";
 import Shortcuts from "./shortcuts";
 import Videos from "./videos";
 import Announcements2 from "./announcements-pure";
+import WalletTotal from "../../../../components/wallet-total";
 
 
-const HomepageHeaders = ({ refreshing }) => {
-  const { authenticated } = useSelector(state => state.authenticationReducer);
-  const { activeTheme, activeThemeKey } = useSelector(state => state.globalReducer);
-
+const HomepageHeaders = (props) => {
+  const { refreshing, authenticated } = props;
   return (
     <>
-      {authenticated ? <AuthHeader refreshing={refreshing} /> :
-        <NonAuthHeader activeTheme={activeTheme} activeThemeKey={activeThemeKey} />}
+      {/*{authenticated ? <AuthHeader refreshing={refreshing} /> :*/}
+      {/*<NonAuthHeader*/}
+      {/*  navigation={navigation}*/}
+      {/*  activeTheme={activeTheme}*/}
+      {/*  language={language}*/}
+      {/*  authenticated={authenticated}*/}
+      {/*  refreshing={refreshing}*/}
+      {/*  activeThemeKey={activeThemeKey} />*/}
+      {/*}*/}
+
+      {
+        authenticated && <WalletTotal refreshing={refreshing} />
+      }
 
       <HomepageSlider />
 
-      <Videos />
+      {
+        !authenticated && <Videos />
+
+      }
 
       <Announcements2 />
 

@@ -19,11 +19,11 @@ const languageReducer = (state = AuthenticationStates, action) => {
         languages: state.languages.length >= 1 ? state.languages : action.data.languages,
         activeLanguage: action.data.activeLanguage,
         activeLanguageContent: action.data.languageContent,
-        // activeLanguage: action.data.activeLanguage,
-        // activeLanguageContent: action.data.content,
       };
 
     case LANGUAGE_CONSTANTS.SET_ACTIVE_LANGUAGE:
+      // console.log('LANGUAGE_CONSTANTS.SET_ACTIVE_LANGUAGE - ', LANGUAGE_CONSTANTS.SET_ACTIVE_LANGUAGE)
+
       return {
         ...state,
         activeLanguage: action.data,
@@ -37,7 +37,8 @@ const languageReducer = (state = AuthenticationStates, action) => {
       };
 
     case GLOBAL_CONSTANTS.UPDATE_LANGUAGE:
-      LocalStorage.setItem("language", action.activeLanguage.ISO)
+      // console.log(GLOBAL_CONSTANTS.UPDATE_LANGUAGE, action);
+      LocalStorage.setItem("language", action.activeLanguage.ISO);
 
       return {
         ...state,

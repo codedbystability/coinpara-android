@@ -31,6 +31,16 @@ class RealAnimatedTab extends React.PureComponent {
     }, 1000);
   }
 
+
+  componentDidUpdate(prevProps) {
+    //Typical usage, don't forget to compare the props
+    if (this.props.activeKey && this.props.activeKey !== prevProps.activeKey) {
+      const index = this.props.headers.findIndex(itm => itm.key === this.props.activeKey);
+      this.handleSlide(index, this.props.headers[index]).then(r => null);
+      // console.log('activeKey - ',this.props.activeKey , '---',prevProps.activeKey)
+    }
+  }
+
   handleSlide = async (i, head) => {
     let {
       translateX,
@@ -43,10 +53,6 @@ class RealAnimatedTab extends React.PureComponent {
       this.props.onChange(head.key);
     });
   };
-  // {
-  // HapticProvider.trigger();
-  // this.props.onChange(head);
-  // };
 
   getProperState = (i) => this.state[["xTab" + i]];
 
@@ -110,15 +116,15 @@ class RealAnimatedTab extends React.PureComponent {
                     justifyContent: "space-around",
                   }}>
                     <View style={{
-                      width: 22,
-                      height: 22,
-                      backgroundColor: header.colors.green,
+                      width: 16,
+                      height: 16,
+                      backgroundColor: header.colors.bidText,
                     }} />
 
                     <View style={{
-                      width: 22,
-                      height: 22,
-                      backgroundColor: header.colors.red,
+                      width: 16,
+                      height: 16,
+                      backgroundColor: header.colors.askText,
                     }} />
 
                   </View>
@@ -154,9 +160,11 @@ export default connect(mapStateToProps, null)(RealAnimatedTab);
 
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
-    height: 60,
+    height: 50,
     marginVertical: MARGIN_T / 4,
     width: "100%",
+    zIndex: 1,
+    paddingHorizontal: PADDING_H,
   },
   container: {
     width: "100%",
@@ -165,7 +173,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   c1: {
     flexDirection: "row",
-    height: 60,
+    height: 50,
   },
   cc: {
     position: "absolute",
@@ -174,7 +182,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     left: 0,
     backgroundColor: props.borderGray,
     borderBottomColor: props.activeListBg,
-    borderRadius: 4,
+    // borderRadius: 4,
   },
   first: {
     flex: 1,

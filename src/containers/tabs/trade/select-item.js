@@ -64,7 +64,7 @@ const styles = {
     letterSpacing: 0,
   },
   desc: {
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
     color: "rgb(112,122,129)",
     fontSize: 13,
     letterSpacing: 0,
@@ -75,7 +75,7 @@ const styles = {
     alignItems: "flex-end",
   },
   price: {
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
     color: "rgb(112,122,129)",
     fontSize: 14,
     letterSpacing: 0,
@@ -84,13 +84,13 @@ const styles = {
   negative: {
     color: "rgb(255,72,145)", //   for red
     fontSize: 13,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
 
   },
   positive: {
     color: "rgb(136,254,213)",
     fontSize: 13,
-    fontFamily: "CircularStd-Medium",
+    fontFamily: "CircularStd-Book",
   },
 
   image: {

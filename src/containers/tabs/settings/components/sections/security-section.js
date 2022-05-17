@@ -3,13 +3,7 @@ import NavigationListItem from "../../../../../components/navigation-list-item";
 import Passcode from "../passcode";
 import CustomList from "../../../../../components/custom-list";
 import { LIST_ITEM_HEIGHT, PADDING_H } from "../../../../../../utils/dimensions";
-import UserInfo from "../user-info";
-import WalletInfo from "../wallet-info";
-import ThemeSelector from "../theme-selector";
-import FontSizeView from "../font-size/font-size-view";
-import ColorOption from "../color-option";
-import SettingsLogout from "../settings-logout";
-import StillLogo from "../../../../../components/still-logo";
+import FloatingAction from "../../../../../components/floating-action";
 
 const items = [
 
@@ -46,7 +40,7 @@ const SecuritySection = () => {
     <>
 
       <CustomList
-
+        borderGray={'transparent'}
         data={items}
         showFooter={true}
         keyExtractor={keyExtractor}
@@ -56,6 +50,7 @@ const SecuritySection = () => {
         ListFooterComponent={<Passcode />}
       />
 
+      <FloatingAction />
 
     </>
 

@@ -8,7 +8,7 @@ import AddressImage from "./address-image";
 import { isIphoneX } from "../../../../utils/devices";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { SCREEN_HEIGHT } from "../../../../utils/dimensions";
+import { PADDING_H, SCREEN_HEIGHT } from "../../../../utils/dimensions";
 import DropdownAlert from "../../../components/shell-components/DropdownAlert/DropdownAlert";
 
 const ApproveModal = (props) => {
@@ -108,12 +108,16 @@ const ApproveModal = (props) => {
   };
 
   return (
-    <>
+    <View style={{
+      flex: 1,
+      paddingTop: PADDING_H,
+      backgroundColor: activeTheme.darkBackground,
+    }}>
       {
         renderContent()
       }
-      <DropdownAlert />
-    </>
+      {/*<DropdownAlert />*/}
+    </View>
   );
 };
 

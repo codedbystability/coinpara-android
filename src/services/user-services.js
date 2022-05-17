@@ -35,7 +35,7 @@ class UserServices extends React.Component {
   };
 
 
-  token = (instance, isToken=true) => {
+  token = (instance, isToken = true) => {
     const scope = "token";
     return postFetchInstance("API_URL", scope, instance, true, isToken);
   };
@@ -189,6 +189,8 @@ class UserServices extends React.Component {
     const scope = "transfers/removebankhistory";
     return postFetchInstance("API_URL", scope, instance);
   }
+
+
 
 
   ///api/GetQrLoginId

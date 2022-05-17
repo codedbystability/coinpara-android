@@ -61,5 +61,6 @@ const styles = (props, fontSizes) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 10,
+    zIndex: 99999,
   },
 });

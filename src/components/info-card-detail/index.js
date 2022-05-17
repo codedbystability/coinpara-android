@@ -1,7 +1,7 @@
 import React from "react";
 import {  StyleSheet, Text, View } from "react-native";
 import DynamicImage from "../dynamic-image";
-import { formattedNumber } from "../../helpers/math-helper";
+import { formatMoney } from "../../helpers/math-helper";
 import { useSelector } from "react-redux";
 import { BIG_TITLE_FONTSIZE, PADDING_H, PADDING_V, SCREEN_HEIGHT } from "../../../utils/dimensions";
 import { getLang } from "../../helpers/array-helper";
@@ -12,16 +12,16 @@ const InfoCardDetail = ({ transfer }) => {
 
   const { activeTheme, language } = useSelector(state => state.globalReducer);
 
-  const type = transfer.td === 1 ? "DEPOSIT" : "WITHDRAW";
-  const status = transfer.st === 1 ? "PENDING" : transfer.st === 2 ? "APPROVED" : transfer.st === 3 ? "CANCELLED" : "ERROR";
+  const type = transfer.Direction === 1 ? "DEPOSIT" : "WITHDRAW";
+  const status = transfer.Status === 1 ? "PENDING" : transfer.Status === 2 ? "APPROVED" : transfer.Status === 3 ? "CANCELLED" : "ERROR";
 
   const fields = [
-    { id: 1, title: type + "_NOUN", value: formattedNumber(transfer.am, transfer.cd) },
+    { id: 1, title: type + "_NOUN", value: formatMoney(transfer.Amount, 2) },
     { id: 2, title: "TYPE", value: getLang(language, status) },
     {
-      id: 3, title: "DATE", value: moment(transfer.ts).utc().format("YYYY-MM-DD HH:mm"),
+      id: 3, title: "DATE", value: moment(transfer.Timestamp).utc().format("YYYY-MM-DD HH:mm"),
     },
-    { id: 4, title: "CURRENCY", value: transfer.cd + " / " + transfer.tt },
+    { id: 4, title: "CURRENCY", value: transfer.CoinCode + " / " + transfer.CoinName },
   ];
 
   return (
@@ -31,7 +31,7 @@ const InfoCardDetail = ({ transfer }) => {
         <View style={styles(activeTheme).box}>
 
 
-          <DynamicImage market={transfer.cd} style={styles(activeTheme).img} />
+          <DynamicImage market={transfer.CoinCode} style={styles(activeTheme).img} />
 
         </View>
 

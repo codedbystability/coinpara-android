@@ -8,6 +8,7 @@ import {
 import { connect } from "react-redux";
 import { getLang } from "../../helpers/array-helper";
 import { LABEL_HEIGHT, MARGIN_T } from "../../../utils/dimensions";
+import HapticProvider from "../../providers/HapticProvider";
 
 
 const headerRefs = [];
@@ -31,11 +32,10 @@ class AnimatedTab extends React.PureComponent {
     }, 1000);
   }
 
-  handleSlide = async (i, head) => this.props.onChange(head);
-  // {
-  // HapticProvider.trigger();
-  // this.props.onChange(head);
-  // };
+  handleSlide = async (i, head) => {
+    HapticProvider.trigger();
+    this.props.onChange(head);
+  };
 
   getProperState = (i) => this.state[["xTab" + i]];
 
@@ -94,8 +94,8 @@ class AnimatedTab extends React.PureComponent {
                   <Text style={[styles(activeTheme, fontSizes, filled).headerText, {
                     color: activeTheme.appWhite,
                   }]}>
-                    {cd ? cd + " " : " "}
-                    {isBig ? getLang(language, header.title, header.title).toUpperCase() : getLang(language, header.title, header.title)}
+                    {" "}
+                    {isBig ? getLang(language, header.title).toUpperCase() : getLang(language, header.title)}
 
                   </Text>
                 </Pressable>
@@ -119,7 +119,6 @@ function mapStateToProps(state) {
 }
 
 
-
 export default connect(mapStateToProps, null)(AnimatedTab);
 
 const styles = (props, fontSizes) => StyleSheet.create({
@@ -138,23 +137,10 @@ const styles = (props, fontSizes) => StyleSheet.create({
     height: LABEL_HEIGHT + 2,
 
   },
-  cc: {
-    // position: "absolute",
-    // height: "100%",
-    // top: 0,
-    // left: 0,
-    // backgroundColor: filled ? props.activeListBg : "transparent",
-    // borderBottomWidth: filled ? 0 : 4,
-    // borderBottomColor: props.activeListBg,
-    // borderRadius: 4,
-  },
   first: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // borderBottomWidth: 1,
-    // borderWidth: filled ? 1 : 0,
-    // borderColor: props.borderGray,
     borderRadius: 4,
     borderRightWidth: 0,
     borderTopRightRadius: 0,
@@ -165,9 +151,6 @@ const styles = (props, fontSizes) => StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // borderBottomWidth: 1,
-    // borderWidth: filled ? 1 : 0,
-    // borderColor: props.borderGray,
     borderRadius: 4,
     borderLeftWidth: 0,
     borderTopLeftRadius: 0,
