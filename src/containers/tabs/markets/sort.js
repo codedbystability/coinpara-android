@@ -8,7 +8,7 @@
 
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import TinyImage from "../../../tiny-image";
@@ -139,13 +139,13 @@ const styles = (props) => StyleSheet.create({
   },
   passiveText: {
     color: props.secondaryText,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     letterSpacing: 0,
     fontFamily: "CircularStd-Book",
   },
   activeText: {
     color: "orange",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     letterSpacing: 0,
     fontFamily: "CircularStd-Book",
   },

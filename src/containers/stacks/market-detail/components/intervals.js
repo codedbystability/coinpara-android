@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { TITLE_FONTSIZE } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { intervals } from "../constants";
 import { getLang } from "../../../../helpers/array-helper";
 import TinyImage from "../../../../tiny-image";
 import HapticProvider from "../../../../providers/HapticProvider";
-import { useIsFocused } from "@react-navigation/native";
 import LocalStorage from "../../../../providers/LocalStorage";
 
 
@@ -51,7 +50,7 @@ const ChartIntervals = ({
                 }]}>
                 <Text style={[{
                   color: activeTheme.appWhite,
-                  fontSize: interval.value === activeInterval ? TITLE_FONTSIZE : TITLE_FONTSIZE - 1,
+                  fontSize: interval.value === activeInterval ? DIMENSIONS.TITLE_FONTSIZE : DIMENSIONS.TITLE_FONTSIZE - 1,
                   fontFamily: interval.value === activeInterval ? "CircularStd-Bold" : "CircularStd-Book",
                 }]}>{getLang(language, interval.title)}</Text>
               </TouchableOpacity>

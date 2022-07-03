@@ -2,18 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, Text, Pressable, FlatList, ActivityIndicator } from "react-native";
 import transferServices from "../../../services/transfer-services";
 import { useSelector } from "react-redux";
-import {
-  LIST_ITEM_HEIGHT,
-  NORMAL_FONTSIZE,
-  NORMAL_IMAGE,
-  PADDING_BV,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
-import NImage from "../../../components/image/index.tsx";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import NImage from "../../../components/page-components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
-import NativeInput from "../../../components/native-input";
-import EmptyContainer from "../../../components/empty-container";
+import NativeInput from "../../../components/page-components/native-input";
+import EmptyContainer from "../../../components/page-components/empty-container";
 import TinyImage from "../../../tiny-image";
 
 
@@ -83,11 +76,11 @@ const BankSelect = ({ handleItemSelect, handleClose, selectedBank, type = "depos
 
           <View style={styles(activeTheme).w2}>
             <Text style={styles(activeTheme).title}>
-              {item.BankName.replace(/\s/g, "")}
+              {item.BankName && item.BankName.replace(/\s/g, "")}
             </Text>
 
             <Text style={styles(activeTheme).text}>
-              {item.Iban.replace(/\s/g, "")}
+              {item.Iban && item.Iban.replace(/\s/g, "")}
             </Text>
 
           </View>
@@ -149,13 +142,13 @@ const styles = (props) => StyleSheet.create({
     backgroundColor: props.backgroundApp,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: PADDING_BV,
+    paddingTop: DIMENSIONS.PADDING_BV,
   },
   item: {
     // borderColor: props.borderGray,
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 4,
     marginVertical: 8,
     flexDirection: "row",
@@ -166,7 +159,7 @@ const styles = (props) => StyleSheet.create({
     borderColor: props.actionColor,
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     // paddingVertical: 4,
     marginVertical: 8,
     flexDirection: "row",
@@ -174,14 +167,14 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "space-between",
   },
   title: {
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
     // marginTop: 2,
   },
 
   text: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
     marginTop: 2,
@@ -191,7 +184,7 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     backgroundColor: props.backgroundApp,
-    marginBottom: PADDING_BV,
+    marginBottom: DIMENSIONS.PADDING_BV,
 
   },
   w2: {
@@ -208,7 +201,7 @@ const styles = (props) => StyleSheet.create({
   flatList: {
     // paddingBottom: 120,
     // paddingTop: isIphoneX ? 38 : 20,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     // backgroundColor: 'green',
     paddingBottom: 100,
     paddingTop: 12,
@@ -222,10 +215,10 @@ const styles = (props) => StyleSheet.create({
     width: "100%",
   },
   img: {
-    height: LIST_ITEM_HEIGHT / 2,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT / 2,
     width: 60,
-    // marginBottom: PADDING_H / 2,
-    marginRight: PADDING_H,
+    // marginBottom: DIMENSIONS.PADDING_H / 2,
+    marginRight: DIMENSIONS.PADDING_H,
   },
 
   icon: {
@@ -236,7 +229,7 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     // justifyContent: "center",
-    paddingVertical: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_H,
     // backgroundColor: "blue",
     width: "90%",
   },

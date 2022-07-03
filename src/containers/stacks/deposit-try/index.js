@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import InfoCard from "../../../components/info-card";
+import InfoCard from "../../../components/page-components/info-card";
 import BankSelect from "../bank-select";
-import SelectBankInput from "../../../components/select-bank-input";
+import SelectBankInput from "../../../components/page-components/select-bank-input";
 import TransactionDescriptions from "../transaction-descriptions";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { formattedNumber } from "../../../helpers/math-helper";
 import ModalProvider from "../../../providers/ModalProvider";
-import {
-  BIG_TITLE_FONTSIZE,
-  NORMAL_FONTSIZE,
-  PADDING_H,
-} from "../../../../utils/dimensions";
+import {  DIMENSIONS } from "../../../../utils/dimensions";
 import Clipboard from "@react-native-community/clipboard";
 import QrCreateModalize from "../deposit-btc/read-qr";
 import { replaceAll } from "../../../helpers/string-helper";
@@ -166,7 +162,7 @@ export default DepositTryScreen;
 const styles = props => StyleSheet.create({
 
   scroll: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingBottom: 60,
 
   },
@@ -176,12 +172,12 @@ const styles = props => StyleSheet.create({
     width: "100%",
   },
   title: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
   },
   desc: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
 

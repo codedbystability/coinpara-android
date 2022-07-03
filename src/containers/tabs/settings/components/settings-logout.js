@@ -8,7 +8,7 @@ import { disableInvalidToken } from "../../../../actions/auth-actions";
 import { useSelector } from "react-redux";
 import store from "../../../../reducers/createReducers";
 import TinyImage from "../../../../tiny-image";
-import { PADDING_H } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 
 const SettingsLogout = () => {
   const { activeTheme, language } = useSelector(state => state.globalReducer);
@@ -54,11 +54,11 @@ const styles = props => StyleSheet.create({
     textAlign: "center",
     fontFamily: "CircularStd-Bold",
     color: props.noRed,
-    paddingVertical: PADDING_H / 2,
+    paddingVertical: DIMENSIONS.PADDING_H / 2,
   },
   icon: {
     width: 16,
     height: 16,
-    marginRight: PADDING_H,
+    marginRight: DIMENSIONS.PADDING_H,
   },
 });

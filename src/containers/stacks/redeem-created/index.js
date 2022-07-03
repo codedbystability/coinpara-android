@@ -1,8 +1,8 @@
 import React from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { Pressable, Text, View } from "react-native";
-import InfoCardResult from "../../../components/info-card-result";
-import ExecutionDesc from "../../../components/execution-desc";
+import InfoCardResult from "../../../components/page-components/info-card-result";
+import ExecutionDesc from "../../../components/page-components/execution-desc";
 import TransactionDescriptions from "../transaction-descriptions";
 
 

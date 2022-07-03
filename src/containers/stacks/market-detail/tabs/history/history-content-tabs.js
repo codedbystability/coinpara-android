@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { TITLE_FONTSIZE } from "../../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
 import { getLang } from "../../../../../helpers/array-helper";
 
 const titles = [
@@ -47,13 +47,13 @@ const styles = (props) => StyleSheet.create({
   title: {
     width: "25%", textAlign: "left",
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
     color: props.appWhite,
   },
 
   priceText: {
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: "#ffffff",
     width: "25%",
   },

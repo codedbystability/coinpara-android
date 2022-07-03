@@ -8,17 +8,17 @@ import {
 } from "react-native";
 import SortableList from "react-native-sortable-list";
 import { useDispatch, useSelector } from "react-redux";
-import { NORMAL_FONTSIZE, PADDING_H, SCREEN_WIDTH, TITLE_FONTSIZE } from "../../../../utils/dimensions";
-import DynamicImage from "../../../components/dynamic-image";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import DynamicImage from "../../../components/page-components/dynamic-image";
 import TinyImage from "../../../tiny-image";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import Loading from "../../../providers/Loading";
 import marketServices from "../../../services/market-services";
 import { setIsFavorite } from "../../../actions/market-actions";
 import LocalStorage from "../../../providers/LocalStorage";
-import EmptyContainer from "../../../components/empty-container";
+import EmptyContainer from "../../../components/page-components/empty-container";
 import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 
 const FavSort = (props) => {
@@ -295,7 +295,7 @@ const styles = props => StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     paddingVertical: 20,
     color: "#999999",
   },
@@ -304,23 +304,23 @@ const styles = props => StyleSheet.create({
   },
 
   contentContainer: {
-    width: SCREEN_WIDTH,
-    paddingHorizontal: PADDING_H,
+    width: DIMENSIONS.SCREEN_WIDTH,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingBottom: 120,
   },
 
   row: {
     borderColor: props.borderGray,
     borderWidth: 2,
-    marginTop: PADDING_H,
+    marginTop: DIMENSIONS.PADDING_H,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: props.darkBackground,
-    padding: PADDING_H,
+    padding: DIMENSIONS.PADDING_H,
     borderRadius: 4,
     ...Platform.select({
       ios: {
-        width: SCREEN_WIDTH - PADDING_H * 2,
+        width: DIMENSIONS.SCREEN_WIDTH - DIMENSIONS.PADDING_H * 2,
         shadowColor: "rgba(0,0,0,0.2)",
         shadowOpacity: 1,
         shadowOffset: { height: 2, width: 2 },
@@ -328,7 +328,7 @@ const styles = props => StyleSheet.create({
       },
 
       android: {
-        width: SCREEN_WIDTH - PADDING_H * 2,
+        width: DIMENSIONS.SCREEN_WIDTH - DIMENSIONS.PADDING_H * 2,
         elevation: 0,
         marginHorizontal: 30,
       },
@@ -347,11 +347,11 @@ const styles = props => StyleSheet.create({
   },
 
   text: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
   },
   text2: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.secondaryText,
   },
 });

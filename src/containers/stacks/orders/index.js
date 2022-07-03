@@ -1,22 +1,22 @@
 import * as React from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import { MemoizedOrderItem } from "./item";
 import marketServices from "../../../services/market-services";
-import { PADDING_BH, PADDING_H, PADDING_V, SCREEN_HEIGHT } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
-import Loading from "../../../components/loading";
+import Loading from "../../../components/page-components/loading";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import TinyImage from "../../../tiny-image";
-import FloatingAction from "../../../components/floating-action";
-import CustomList from "../../../components/custom-list";
-import EditButton from "../../../components/edit-button";
+import FloatingAction from "../../../components/page-components/floating-action";
+import CustomList from "../../../components/page-components/custom-list";
+import EditButton from "../../../components/page-components/edit-button";
 import OrdersFilter from "./filter";
 import orderServices from "../../../services/order-services";
-import EmptyContainer from "../../../components/empty-container";
+import EmptyContainer from "../../../components/page-components/empty-container";
 
 const orderTypes = [
   { id: 1, key: 0, title: "OPEN_ORDERS", extra: "oLength", value: 0 },
@@ -27,7 +27,7 @@ class OrdersPure extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.actionRef = React.createRef();
+    this.renderEmpty = this.renderEmpty.bind(this);
     this.handleCancelAll = this.handleCancelAll.bind(this);
     this.showAction = this.showAction.bind(this);
     this.createTwoButtonAlert = this.createTwoButtonAlert.bind(this);
@@ -197,7 +197,6 @@ class OrdersPure extends React.PureComponent {
 
   handleAllOrders = () => navigationRef.current.navigate("OrderStack", {});
 
-
   awesomeChildListKeyExtractor = (_, i) => `market-tabs-index-${i}`;
 
   onEditPressed = () => this.setState({ showFilterForm: !this.state.showFilterForm });
@@ -260,6 +259,22 @@ class OrdersPure extends React.PureComponent {
 
   };
 
+  renderEmpty = () => {
+    const { from, to, language } = this.props;
+
+    return (
+      <View style={{
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: DIMENSIONS.PADDING_BH * 2,
+        minHeight: !(from && to) ? DIMENSIONS.SCREEN_HEIGHT / 1.2 : null,
+      }}>
+        <EmptyContainer icon={"empty-coins"}
+                        text={getLang(language, from && to ? "NO_ORDER_FOUND_IN_MARKET" : "NO_ORDER_FOUND")} />
+      </View>
+    );
+  };
+
   render() {
     const { from, to, activeTheme, activeThemeKey, language } = this.props;
     const { activeType, isFilter, filterData, loading, openOrders, closedOrders, showFilterForm } = this.state;
@@ -271,88 +286,68 @@ class OrdersPure extends React.PureComponent {
     return (
       <>
 
-        <View style={styles(activeTheme).wrap}>
+        <CustomList
+          contentStyle={{
+            paddingBottom: (from && to) ? 60 : 120,
+            paddingHorizontal: DIMENSIONS.PADDING_H,
+          }}
+          ListHeaderComponent={
+            <View style={styles(activeTheme).wrapper}>
+              <View style={[styles(activeTheme).types, { width: from && to ? "90%" : "100%" }]}>
+                <AnimatedTab {...{
+                  activeKey: activeType,
+                  headers: orderTypes,
+                  width: `50%`,
+                  filled: true,
+                  onChange: this.handleChangeOrderType,
+                }} />
 
-          <View style={styles(activeTheme).wrapper}>
-            <View style={[styles(activeTheme).types, { width: from && to ? "90%" : "100%" }]}>
-              <AnimatedTab {...{
-                // oLength: openOrders.length,
-                // cLength: closedOrders.length,
-                activeKey: activeType,
-                headers: orderTypes,
-                width: `50%`,
-                filled: true,
-                onChange: this.handleChangeOrderType,
-              }} />
+              </View>
+              {
+                from && to && <TouchableOpacity
+                  onPress={this.handleAllOrders}
+                  activeOpacity={.8}
+                  style={styles(activeTheme).list}>
+                  <TinyImage parent={"rest/"} name={"list-order"} style={styles(activeTheme).icon} />
+                </TouchableOpacity>
+              }
 
             </View>
-            {
-              from && to && <TouchableOpacity
-                onPress={this.handleAllOrders}
-                activeOpacity={.8}
-                style={styles(activeTheme).list}>
-                <TinyImage parent={"rest/"} name={"list-order"} style={styles(activeTheme).icon} />
-              </TouchableOpacity>
-            }
-
-          </View>
-
-          <CustomList
-            contentStyle={{
-              paddingBottom: (from && to) ? 60 : 120,
-            }}
-            borderGray={activeTheme.borderGray}
-            data={isFilter ? filterData : activeType === 0 ? openOrders : closedOrders}
-            keyExtractor={this.awesomeChildListKeyExtractor}
-            itemHeight={100}
-            renderItem={({ item, index }) => <MemoizedOrderItem
-              key={index}
-              item={item}
-              handleCancel={this.createTwoButtonAlert}
-              cancelAble={activeType === 0}
-            />}
-            renderEmpty={() => {
-              return (
-                <View style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingVertical: PADDING_BH * 2,
-                  minHeight: !(from && to) ? SCREEN_HEIGHT / 1.2 : null,
-                }}>
-                  <EmptyContainer icon={"empty-coins"}
-                                  text={getLang(language, from && to ? "NO_ORDER_FOUND_IN_MARKET" : "NO_ORDER_FOUND")} />
-                </View>
-              );
-            }}
-            onEndReached={this.onEndReached}
-            // emptyMessage={getLang(language, from && to ? "NO_ORDER_FOUND_IN_MARKET" : "NO_ORDER_FOUND")}
-          />
-
-
-          {
-            !(from && to) && <>
-
-
-              <EditButton onPress={this.onEditPressed} />
-              <FloatingAction isButton={false} />
-
-            </>
           }
-        </View>
+          borderGray={activeTheme.borderGray}
+          data={isFilter ? filterData : activeType === 0 ? openOrders : closedOrders}
+          keyExtractor={this.awesomeChildListKeyExtractor}
+          itemHeight={100}
+          renderItem={({ item, index }) => <MemoizedOrderItem
+            key={index}
+            item={item}
+            handleCancel={this.createTwoButtonAlert}
+            cancelAble={activeType === 0}
+          />}
+          renderEmpty={this.renderEmpty}
+          onEndReached={this.onEndReached}
+        />
 
 
-        <OrdersFilter {...{
-          parity: "",
-          showFilter: showFilterForm,
-          setShowFilter: this.onEditPressed,
-          activeTheme,
-          activeThemeKey,
-          language,
-          setFilterObj: this.setFilterObj,
-          handleShowFilter: this.onEditPressed,
-          handleFilterForm: this.handleFilterForm,
-        }} />
+        {
+          !(from && to) && <>
+            <OrdersFilter {...{
+              parity: "",
+              showFilter: showFilterForm,
+              setShowFilter: this.onEditPressed,
+              activeTheme,
+              activeThemeKey,
+              language,
+              setFilterObj: this.setFilterObj,
+              handleShowFilter: this.onEditPressed,
+              handleFilterForm: this.handleFilterForm,
+            }} />
 
+            <EditButton onPress={this.onEditPressed} />
+            <FloatingAction isButton={false} />
+
+          </>
+        }
       </>
 
     );
@@ -377,8 +372,7 @@ export default connect(mapStateToProps, null)(React.memo(OrdersPure));
 
 const styles = (props) => StyleSheet.create({
   wrap: {
-    // paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flex: 1,
   },
   wrapper: {
@@ -406,65 +400,3 @@ const styles = (props) => StyleSheet.create({
     height: 22,
   },
 });
-
-
-// renderOpenOrders() {
-//
-//   const { openOrders } = this.state;
-//
-//   // console.log(openOrders[0]);
-//   const { activeTheme, language, from, to } = this.props;
-//
-//   return (
-//     openOrders.length >= 1 ? <ScrollView
-//       showsVerticalScrollIndicator={false}
-//       contentContainerStyle={styles(activeTheme).scroll}>
-//
-//       {openOrders.map((history, i) => {
-//         return (
-//           <MemoizedOrderItem
-//             key={i}
-//             item={history}
-//             handleCancel={this.createTwoButtonAlert}
-//             cancelAble={true}
-//           />
-//         );
-//       })}
-//
-//     </ScrollView> : <View style={{
-//       width: SCREEN_WIDTH - (PADDING_H * 2),
-//       paddingTop: from && to ? 0 : SCREEN_WIDTH / 2,
-//     }}>
-//       <EmptyContainer icon={"empty-orders"} text={getLang(language, "NO_ORDER_FOUND")} />
-//     </View>
-//
-//   );
-// };
-
-// renderClosedOrders = () => {
-//   const { closedOrders } = this.state;
-//   const { activeTheme, language, from, to } = this.props;
-//   return (
-//     closedOrders && closedOrders.length >= 1 ? <ScrollView
-//       showsVerticalScrollIndicator={false}
-//       contentContainerStyle={styles(activeTheme).scroll}>
-//
-//       {closedOrders.map((history, i) => {
-//         return (
-//           <MemoizedOrderItem
-//             key={i}
-//             item={history}
-//             handleCancel={this.createTwoButtonAlert}
-//             cancelAble={false}
-//           />
-//         );
-//       })}
-//
-//     </ScrollView> : <View style={{
-//       width: SCREEN_WIDTH - (PADDING_H * 2),
-//       paddingTop: from && to ? 0 : SCREEN_WIDTH / 2,
-//     }}>
-//       <EmptyContainer icon={"empty-orders"} text={getLang(language, "NO_ORDER_FOUND")} />
-//     </View>
-//   );
-// };

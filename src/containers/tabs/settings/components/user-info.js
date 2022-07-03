@@ -1,9 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import {
-  PADDING_H,
-  PADDING_V,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import PlLoading from "../../../pl-loading";
 import TinyImage from "../../../../tiny-image";
@@ -50,7 +47,7 @@ export default React.memo(UserInfo);
 const styles = (props, fontSizes) => StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderRadius: 6,
     justifyContent: "center",
     paddingVertical: 8,
@@ -84,6 +81,6 @@ const styles = (props, fontSizes) => StyleSheet.create({
   icon: {
     width: 20,
     height: 20,
-    marginRight: PADDING_H,
+    marginRight: DIMENSIONS.PADDING_H,
   },
 });

@@ -79,6 +79,9 @@ const fractionAndFormat = (parts, digits) => {
 };
 
 export function formattedNumber(number, currency, precision) {
+  if (number && number.toString().includes("e")) {
+    return 0;
+  }
   if (parseFloat(number) <= 0) {
     return "0,0000";
   }

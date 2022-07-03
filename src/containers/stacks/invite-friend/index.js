@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import {  ScrollView, StyleSheet, View } from "react-native";
 import InviteContent from "./invite-content";
 import ReferralAccounts from "./referral-accounts";
 import ReferralLinks from "./links";
@@ -8,16 +8,16 @@ import GenerateLinkContent from "./generate-link-content";
 import { useSelector } from "react-redux";
 import userServices from "../../../services/user-services";
 import Clipboard from "@react-native-community/clipboard";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { PADDING_BV, PADDING_H } from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import QrCreateModalize from "../deposit-btc/read-qr";
 import Share from "react-native-share";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import ModalProvider from "../../../providers/ModalProvider";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import { headers, options, percentages } from "./constants";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 
 const InviteFriends = (props) => {
@@ -66,7 +66,7 @@ const InviteFriends = (props) => {
         contentContainerStyle={styles.wrapper}
       >
 
-        <View style={{ paddingHorizontal: PADDING_H }}>
+        <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H }}>
           <AnimatedTab {...{
             activeKey: activeHeaderKey,
             headers: headers,
@@ -106,7 +106,7 @@ export default InviteFriendsScreen;
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: PADDING_BV,
+    paddingVertical: DIMENSIONS.PADDING_BV,
     // paddingTop: 60,
   },
 });

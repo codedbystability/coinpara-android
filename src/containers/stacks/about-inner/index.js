@@ -12,12 +12,12 @@ import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponen
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import generalServices from "../../../services/general-services";
-import { PADDING_H } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import LinksSection from "../../tabs/settings/components/sections/links";
-import Loading from "../../../components/loading";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import Loading from "../../../components/page-components/loading";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 const AboutInner = (props) => {
 
@@ -159,5 +159,5 @@ export default SettingsScreen;
 
 const styles = props => StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: props.backgroundApp, paddingTop: 12 },
-  scroll: { paddingHorizontal: PADDING_H, paddingTop: 12, paddingBottom: 120 },
+  scroll: { paddingHorizontal: DIMENSIONS.PADDING_H, paddingTop: 12, paddingBottom: 120 },
 });

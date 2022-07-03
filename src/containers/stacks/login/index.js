@@ -9,18 +9,18 @@ import {
   Text,
   View,
 } from "react-native";
-import CustomButton from "../../../components/button";
-import FormInput from "../../../components/form-input";
+import CustomButton from "../../../components/page-components/button";
+import FormInput from "../../../components/page-components/form-input";
 import userServices from "../../../services/user-services";
 import { useDispatch, useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { MIDDLE_IMAGE, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import LocalStorage from "../../../providers/LocalStorage";
-import Checkbox from "../../../components/checkbox";
-import Validation from "../../../components/validation";
+import Checkbox from "../../../components/page-components/checkbox";
+import Validation from "../../../components/page-components/validation";
 import { setUser, setUserVerifyType } from "../../../actions/auth-actions";
 import { useIsFocused } from "@react-navigation/native";
 import { inputs } from "./constants";
@@ -28,7 +28,9 @@ import { validateEmail } from "../../../helpers/string-helper";
 import ReactNativeBiometrics from "react-native-biometrics";
 import ModalProvider from "../../../providers/ModalProvider";
 import LockScreen from "../lock-screen";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import Recaptcha from "react-native-recaptcha-that-works";
+import TinyImage from "../../../tiny-image";
 
 let refRow = [];
 const Login = (props) => {
@@ -251,13 +253,14 @@ const Login = (props) => {
   return (
     <>
       <TabNavigationHeader{...props} backAble={true}
-                          headerRight={
-                            <View style={styles(activeTheme).icon}>
-                              <Checkbox />
-                            </View>
-                          }
                           options={{ title: getLang(language, "LOGIN") }}
       />
+
+      <View
+        style={styles(activeTheme).hC}>
+        <Checkbox />
+
+      </View>
 
       <KeyboardAvoidingView
         behavior={"padding"}
@@ -266,11 +269,15 @@ const Login = (props) => {
         <Image resizeMode={"contain"}
                source={{ uri: "https://images.coinpara.com/files/mobile-assets/logo.png" }}
                style={{
-                 width: MIDDLE_IMAGE,
-                 height: MIDDLE_IMAGE,
+                 width: DIMENSIONS.MIDDLE_IMAGE,
+                 height: DIMENSIONS.MIDDLE_IMAGE,
                  tintColor: activeTheme.appWhite,
                  marginBottom: 40,
                }} />
+
+
+
+
 
 
         <View style={styles(activeTheme).wrapper}>
@@ -297,7 +304,7 @@ const Login = (props) => {
         </View>
 
 
-        <Pressable style={{ paddingHorizontal: PADDING_H, alignItems: "flex-end", width: "100%" }}
+        <Pressable style={{ paddingHorizontal: DIMENSIONS.PADDING_H, alignItems: "flex-end", width: "100%" }}
                    onPress={handleForgotPassword}>
           <Text style={styles(activeTheme).forgot}>
             {getLang(language, "FORGOT_PASSWORD")}
@@ -334,6 +341,14 @@ const Login = (props) => {
                   iconType={userAuthType === 2 ? "phone" : "email"}
       />
 
+      <InputAccessory
+        handleStep={handleStep}
+        stepAble={true}
+        mailProviders={mailProviders}
+        onPress={(val) => setEmail(email + val)}
+      />
+
+
       <Recaptcha
         ref={recaptcha}
         siteKey="6LcWV-keAAAAAK7a3VaNJRQiL7ciwPzMD05H8Jza"
@@ -354,7 +369,7 @@ const Login = (props) => {
             <Text style={{
               color: "rgba(255,255,255,.6)",
               fontFamily: "CircularStd-Book",
-              fontSize: TITLE_FONTSIZE,
+              fontSize: DIMENSIONS.TITLE_FONTSIZE,
               paddingHorizontal: 20,
               marginTop: 16,
             }}>
@@ -383,7 +398,7 @@ const styles = (props) => StyleSheet.create({
   wrapper: {
     width: "100%",
     justifyContent: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   buttonWrapper: {
     position: "absolute",
@@ -404,7 +419,7 @@ const styles = (props) => StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 4,
   },
-  bottom: { paddingHorizontal: PADDING_H, paddingVertical: PADDING_V, alignItems: "center", width: "100%" },
+  bottom: { paddingHorizontal: DIMENSIONS.PADDING_H, paddingVertical: DIMENSIONS.PADDING_V, alignItems: "center", width: "100%" },
   noAcc: {
     marginVertical: 12,
     fontFamily: "CircularStd-Book",
@@ -414,5 +429,15 @@ const styles = (props) => StyleSheet.create({
     marginVertical: 8,
     fontFamily: "CircularStd-Book",
     color: props.changeRed,
+  },
+  hC: {
+    position: "absolute",
+    right: 20,
+    top: 80,
+    zIndex: 999999,
+    alignItems: "center",
+    justifyContent: "space-around",
+    borderRadius: 12,
+    padding: 6,
   },
 });

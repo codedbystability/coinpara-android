@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { StyleSheet, View } from "react-native";
-import InfoCard from "../../../components/info-card";
-import CustomButton from "../../../components/button";
+import InfoCard from "../../../components/page-components/info-card";
+import CustomButton from "../../../components/page-components/button";
 import { useSelector } from "react-redux";
 import transferServices from "../../../services/transfer-services";
-import EmptyContainer from "../../../components/empty-container";
-import WalletHistoryListHeader from "../../../components/wallet-history-list/header";
+import EmptyContainer from "../../../components/page-components/empty-container";
+import WalletHistoryListHeader from "../../../components/page-components/wallet-history-list/header";
 import { historyTypes, withdrawHeaders } from "./constants";
-import { LIST_ITEM_HEIGHT, PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
-import RenderTransferWithdrawItem from "../../../components/wallet-history-list/withdraw-item";
+import RenderTransferWithdrawItem from "../../../components/page-components/wallet-history-list/withdraw-item";
 import { navigationRef } from "../../../providers/RootNavigation";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import AnimatedTab from "../../../components/animated-tab";
-import EditButton from "../../../components/edit-button";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import AnimatedTab from "../../../components/page-components/animated-tab";
+import EditButton from "../../../components/page-components/edit-button";
 import WalletHistoryFilter from "./filter";
-import CustomList from "../../../components/custom-list";
+import CustomList from "../../../components/page-components/custom-list";
 import moment from "moment";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 
 const WalletHistory = (props) => {
@@ -55,7 +55,6 @@ const WalletHistory = (props) => {
   useEffect(() => {
     if (activeHistory) {
       setPage(1);
-      setNoMore(false);
       setFilterObj({
         ...filterObj,
         type: activeHistory === "deposit" ? "1" : "-1",
@@ -64,6 +63,7 @@ const WalletHistory = (props) => {
         status: "",
         coinId: props.route.params && props.route.params.wallet && props.route.params.coinId || "",
       });
+      setNoMore(false);
     }
   }, [activeHistory]);
 
@@ -86,12 +86,17 @@ const WalletHistory = (props) => {
   useEffect(() => {
     setTimeout(() => {
       if (page && filterObj && filterObj.type) {
+
+        if (filterObj.coinId && filterObj.activeParity) {
+          console.log(wallets[0]);
+          setWallet(wallets.find(wall => wall.cd === filterObj.activeParity));
+        }
+
         setActiveHistory(filterObj.type === "1" ? "deposit" : "withdraw");
         handleFilter(filterObj, page === 1);
       }
     }, 500);
   }, [page, filterObj]);
-
 
   const handleDepositWithdraw = (type) => navigationRef.current.navigate("Transfer", {
     wallet,
@@ -99,14 +104,11 @@ const WalletHistory = (props) => {
     coinType: ["TRY", "EUR", "USD"].includes(wallet.cd) ? "price" : "crypto",
   });
 
-
   const handleChangeTradeType = (item) => setActiveHistory(item.key);
 
   const handleShowFilter = () => setShowFilter(!showFilter);
 
-
   const handleFilterForm = (obj) => {
-    console.log(obj);
     setPage(1);
     setFilterObj(obj);
   };
@@ -116,6 +118,7 @@ const WalletHistory = (props) => {
     const myUrl = `https://apiv2.coinpara.com/api/transfers/search?RowLimit=20&PageNumber=${page}&coinId=${obj.coinId}&StatusList=${obj.status}&DirectionList=${obj.type}&DateFrom=${obj.from}&DateTo=${obj.to}`;
 
     transferServices.search(myUrl).then((response) => {
+      console.log(obj);
       if (response.IsSuccess) {
         if (!response.Data || response.Data.length <= 0) {
           if (obj.type === "1") {
@@ -127,9 +130,11 @@ const WalletHistory = (props) => {
         }
 
         if (obj.type === "1") {
-          setDeposits(isNew ? response.Data : [...deposits, ...response.Data]);
+          // setDeposits(isNew ? response.Data : [...deposits, ...response.Data]);
+          setItemTransfers(isNew ? response.Data : [...deposits, ...response.Data]);
         } else {
-          setWithdraws(isNew ? response.Data : [...withdraws, ...response.Data]);
+          // setWithdraws(isNew ? response.Data : [...withdraws, ...response.Data]);
+          setItemTransfers(isNew ? response.Data : [...withdraws, ...response.Data]);
         }
       }
     });
@@ -157,13 +162,17 @@ const WalletHistory = (props) => {
 
           {
             wallet &&
-            <InfoCard handleButton={(type) => handleDepositWithdraw(type)} showButtons={true} wallet={wallet} />
+            <View style={{
+              paddingHorizontal: DIMENSIONS.PADDING_H,
+            }}>
+              <InfoCard handleButton={(type) => handleDepositWithdraw(type)} showButtons={true} wallet={wallet} />
+            </View>
 
           }
 
           {
             !loading && <View style={{
-              paddingVertical: 20, paddingHorizontal: PADDING_H,
+              paddingVertical: 20, paddingHorizontal: DIMENSIONS.PADDING_H,
             }}>
               <AnimatedTab {...{
                 activeKey: activeHistory,
@@ -178,7 +187,7 @@ const WalletHistory = (props) => {
 
           {
             itemTransfers.length <= 0 ? <View style={{
-                paddingTop: SCREEN_WIDTH / 2,
+                paddingTop: DIMENSIONS.SCREEN_WIDTH / 2,
               }}>
                 <EmptyContainer icon={"empty-wallet"} text={getLang(language, "NO_DATA_FOUND")} />
               </View> :
@@ -197,7 +206,7 @@ const WalletHistory = (props) => {
                   style={{ backgroundColor: activeTheme.backgroundApp }}
                   data={itemTransfers}
                   keyExtractor={item => item.TransferGuid}
-                  itemHeight={LIST_ITEM_HEIGHT}
+                  itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
                   renderItem={({ item, index }) => <RenderTransferWithdrawItem{...{ item, index }} />}
                   onEndReached={onEndReached}
                 />
@@ -249,10 +258,10 @@ const WalletHistory = (props) => {
       }} />
 
 
-      <FloatingAction />
+      <FloatingAction isButton={true} />
 
 
-      <EditButton onPress={handleShowFilter} />
+      <EditButton isButton={true} onPress={handleShowFilter} />
 
     </>
 
@@ -295,7 +304,7 @@ const styles = (props) => StyleSheet.create({
   },
   flat: {
     paddingVertical: 20,
-    paddingBottom: 80,
+    paddingBottom: 120,
 
 
   },

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { StyleSheet, View } from "react-native";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
 import userServices from "../../../services/user-services";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import FormPhoneInput from "../../../components/phone-input";
+import FormPhoneInput from "../../../components/page-components/phone-input";
 import { normalizeInput } from "../../../helpers/math-helper";
 import { phoneInputRegex } from "../../../helpers/string-helper";
+import InputAccessory from "../../../components/page-components/input-accessory";
 
 
 const SetPasswords = (props) => {
@@ -112,7 +113,6 @@ const SetPasswords = (props) => {
       "Phone": hasPhone ? "" : validPhone,
     };
 
-    console.log(instance);
     userServices.setPassword(instance).then((response) => {
       if (response.IsSuccess) {
         DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "YOUR_PASSWORD_CHANGED"));
@@ -169,6 +169,13 @@ const SetPasswords = (props) => {
       <CustomButton text={getLang(language, "CONTINUE")}
                     filled={true}
                     onPress={handlePress} />
+      <InputAccessory
+        handleStep={null}
+        onPress={null}
+        stepAble={false}
+        mailProviders={[]}
+      />
+
 
     </>
   );

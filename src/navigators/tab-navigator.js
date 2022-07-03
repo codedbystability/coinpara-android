@@ -3,7 +3,7 @@ import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom
 import TradeScreen from "../containers/tabs/trade";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import { useSelector } from "react-redux";
-import { NORMAL_FONTSIZE } from "../../utils/dimensions";
+import { DIMENSIONS } from "../../utils/dimensions";
 import { getLang } from "../helpers/array-helper";
 import { isIphoneX } from "../../utils/devices";
 import TinyImage from "../tiny-image";
@@ -156,12 +156,12 @@ export default StackTabNav;
 const styles = (props, focused) => StyleSheet.create({
   text: {
     color: focused ? props.tabActive : props.borderGray,
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     fontFamily: "CircularStd-Book",
   },
   activeText: {
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     fontFamily: "CircularStd-Book",
   },
   tabStyle: {

@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { isIphoneX } from "../../../../utils/devices";
-import { BIG_TITLE_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const styles = (props) => StyleSheet.create({
   modal: {
@@ -9,7 +9,7 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "center",
     margin: 0,
     paddingBottom: isIphoneX ? 40 : 20,
-    paddingHorizontal: PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H * 2,
     zIndex: 9999,
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
@@ -21,7 +21,7 @@ const styles = (props) => StyleSheet.create({
     fontFamily: "CircularStd-Bold",
   },
   modalText: {
-    fontSize: BIG_TITLE_FONTSIZE + 2,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 2,
     color: props.appWhite,
     textAlign: "center",
     marginBottom: 10,
@@ -42,13 +42,13 @@ const styles = (props) => StyleSheet.create({
   },
   text: {
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     textAlign: "left",
   },
   cancel: {
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.noRed,
   },
   buttonText: {

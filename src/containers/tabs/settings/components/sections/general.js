@@ -9,9 +9,9 @@ import { Modal, StyleSheet, Text, NativeModules, View, TouchableOpacity } from "
 import TinyImage from "../../../../../tiny-image";
 import { getLang } from "../../../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { LIST_MARGIN_T, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../../../../../utils/dimensions";
-import NavigationListItem from "../../../../../components/navigation-list-item";
-import NImage from "../../../../../components/image/index.tsx";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
+import NavigationListItem from "../../../../../components/page-components/navigation-list-item";
+import NImage from "../../../../../components/page-components/image/index.tsx";
 import Loading from "../../../../../providers/Loading";
 import LocalStorage from "../../../../../providers/LocalStorage";
 
@@ -24,14 +24,6 @@ const item = {
 };
 
 
-// const navItem = {
-//   id: 2,
-//   key: "CHANGE_APP_ICON",
-//   type: "modal",
-//   page: null,
-//   image: "app-icon",
-// };
-
 const icons = [
   { id: 2, key: "CLASSIC_LOGO", image: "iconclassic.png", action: "classic" },
   { id: 3, key: "BLACK_LOGO", image: "iconblack.png", action: "black" },
@@ -39,7 +31,7 @@ const icons = [
 ];
 const GeneralSection = (props) => {
 
-  const {authenticated} = props
+  const { authenticated } = props;
   const { activeTheme, language } = useSelector(state => state.globalReducer);
   const [showModal, setShowModal] = useState(false);
   const [activeIcon, setActiveIcon] = useState("classic");
@@ -82,9 +74,6 @@ const GeneralSection = (props) => {
       <ColorOption />
 
       <LanguageItem item={item} />
-      {/*<NavigationListItem*/}
-      {/*  onAction={onAction}*/}
-      {/*  item={navItem} isStatic={false} />*/}
 
       {
         authenticated && <>
@@ -93,7 +82,6 @@ const GeneralSection = (props) => {
           <ScreenSaver />
         </>
       }
-
 
 
       <Modal
@@ -158,10 +146,10 @@ export default React.memo(GeneralSection);
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    marginTop: LIST_MARGIN_T,
+    marginTop: DIMENSIONS.LIST_MARGIN_T,
     flexDirection: "row",
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderRadius: 8,
     backgroundColor: props.darkBackground,
     borderWidth: 1,
@@ -177,7 +165,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: fontSizes?.BIG_TITLE_FONTSIZE,
+    fontSize: fontSizes?.BIG_DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     backgroundColor: "red",
   },
@@ -192,7 +180,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     marginTop: 2,
     // marginBottom: 16,
     fontSize: fontSizes?.NORMAL_FONTSIZE - 2,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   icon: {
@@ -208,20 +196,20 @@ const styles = (props, fontSizes) => StyleSheet.create({
   headerText: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
 
   txt: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
 
   dismissButton: {
     position: "absolute",
     top: 12,
     right: 12,
-    padding: PADDING_V,
+    padding: DIMENSIONS.PADDING_V,
   },
   i1: {
     borderRadius: 8,
@@ -247,7 +235,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   w1: {
     height: "40%",
     marginTop: "auto",
-    paddingTop: PADDING_V * 2,
+    paddingTop: DIMENSIONS.PADDING_V * 2,
     backgroundColor: props.darkBackground,
     alignItems: "center",
     borderTopWidth: 12,

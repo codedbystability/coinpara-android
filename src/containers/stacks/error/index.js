@@ -2,8 +2,8 @@ import React  from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { BIG_TITLE_FONTSIZE, MIDDLE_IMAGE } from "../../../../utils/dimensions";
-import NImage from "../../../components/image/index.tsx";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import NImage from "../../../components/page-components/image/index.tsx";
 
 const Error = ({ text = "" }) => {
   const { activeTheme } = useSelector(state => state.globalReducer);
@@ -14,7 +14,7 @@ const Error = ({ text = "" }) => {
       <NImage
         useFastImage={true}
         source={{ uri: "https://images.coinpara.com/files/mobile-assets/maintenance.png" }}
-        style={{ width: MIDDLE_IMAGE, height: MIDDLE_IMAGE, tintColor: activeTheme.appWhite, marginBottom: 40 }}
+        style={{ width: DIMENSIONS.MIDDLE_IMAGE, height: DIMENSIONS.MIDDLE_IMAGE, tintColor: activeTheme.appWhite, marginBottom: 40 }}
         resizeMode={"contain"} />
 
       <Text style={{
@@ -23,7 +23,7 @@ const Error = ({ text = "" }) => {
         width: "90%",
         textAlign: "center",
         color: activeTheme.appWhite,
-        fontSize:BIG_TITLE_FONTSIZE
+        fontSize:DIMENSIONS.BIG_TITLE_FONTSIZE
       }}>
         {
           text

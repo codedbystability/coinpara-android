@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { formatMoney, formattedNumber } from "../../../../helpers/math-helper";
-import {
-  MARGIN_T,
-  PADDING_V,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { getLang } from "../../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { getTRYMarket } from "../../../../selectors/wallet-selector";
@@ -134,12 +131,12 @@ const styles = (props, fontSizes) => StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 6,
     justifyContent: "center",
-    paddingVertical: PADDING_V,
-    marginTop: MARGIN_T,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    marginTop: DIMENSIONS.MARGIN_T,
     backgroundColor: props.darkBackground,
     borderWidth: 1,
     borderColor: props.borderGray,
-    marginBottom: MARGIN_T
+    marginBottom: DIMENSIONS.MARGIN_T,
   },
 
   shadow: {},

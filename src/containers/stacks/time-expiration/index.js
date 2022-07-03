@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
-import CustomButton from "../../../components/button";
-import FormInput from "../../../components/form-input";
+import CustomButton from "../../../components/page-components/button";
+import FormInput from "../../../components/page-components/form-input";
 import keyboardAvoidingViewHoc from "../../../hocs/keyboardAvoidingViewHoc";
 import { useSelector } from "react-redux";
 import userServices from "../../../services/user-services";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 
 
 const TimeExpiration = (props) => {

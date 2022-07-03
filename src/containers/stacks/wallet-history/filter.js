@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../../helpers/array-helper";
-import RadioOptions from "../../../components/radio-options";
 import TinyImage from "../../../tiny-image";
 import {
   BIG_TITLE_FONTSIZE, INPUT_HEIGHT, NORMAL_FONTSIZE,
@@ -9,13 +8,12 @@ import {
   TITLE_FONTSIZE,
 } from "../../../../utils/dimensions";
 import DatePicker from "react-native-date-picker";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import moment from "moment";
 import ModalProvider from "../../../providers/ModalProvider";
-import MarketSelect from "../../../components/market-select";
-import { replaceAll } from "../../../helpers/string-helper";
-import DynamicImage from "../../../components/dynamic-image";
-import AnimatedTab from "../../../components/animated-tab";
+import MarketSelect from "../../../components/page-components/market-select";
+import DynamicImage from "../../../components/page-components/dynamic-image";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 
 const statusOptions = [
   { id: 1, key: "", title: "ALL" },
@@ -91,6 +89,7 @@ const WalletHistoryFilter = (props) => {
       type: activeTransactionType,
       status: activeStatus,
       coinId: selectedItem.Id || "",
+      activeParity,
     };
     handleFilterForm(obj);
     setShowFilter(false);
@@ -133,7 +132,7 @@ const WalletHistoryFilter = (props) => {
       onRequestClose={() => setShowFilter(false)}>
       <View style={{
         flex: 1,
-        backgroundColor: replaceAll(activeTheme.darkBackground, "1)", "0.7)"),
+        backgroundColor: "rgba(0,0,0, 0.7)",
       }}>
         <View
           style={styles(activeTheme).modalView}>

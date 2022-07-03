@@ -6,6 +6,12 @@ export const items = [
   { id: 5, title: "VOLUME_CHANGE", is24: "1D", value: "42,33%", key: "PercentChange24H" },
   { id: 6, title: "VOLUME_CHANGE", is24: "1W", value: "42,33%", key: "PercentChange07D" },
   { id: 7, title: "VOLUME_CHANGE", is24: "1M", value: "42,33%", key: "PercentChange30D" },
+
+
+  { id: 8, title: "PRICE_CHANGE", is24: "1H", value: "0.032051", key: "PriceChange01H" },
+  { id: 9, title: "PRICE_CHANGE", is24: "1W", value: "42,33%", key: "PriceChange07D" },
+  { id: 10, title: "PRICE_CHANGE", is24: "1D", value: "42,33%", key: "PriceChange24H" },
+  { id: 11, title: "PRICE_CHANGE", is24: "1M", value: "42,33%", key: "PriceChange30D" },
 ];
 
 export const secondItems = [

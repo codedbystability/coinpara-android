@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
 import userServices from "../../../services/user-services";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import InputAccessory from "../../../components/page-components/input-accessory";
 
 const inputs = [
   {
@@ -148,6 +149,7 @@ const ChangePassword = (props) => {
                          value={getInputValue(input.key)}
                          icon={icon}
                          onIconPressed={() => handleSetIcon(input)}
+                         inputAccessoryViewID={"inputAccessoryViewIDCh"}
                          keyboardType={input.keyboardType}
                          autoComplete={input.autoComplete}
                          returnKey={input.returnKey}
@@ -164,7 +166,12 @@ const ChangePassword = (props) => {
       <CustomButton text={getLang(language, "CHANGE_PASSWORD")}
                     filled={true}
                     onPress={handlePress} />
-
+      <InputAccessory
+        handleStep={null}
+        onPress={null}
+        stepAble={false}
+        mailProviders={[]}
+      />
     </>
 
   );

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Pressable, FlatList, Image, Keyboard } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE,
-  MARGIN_T, MIDDLE_IMAGE,
-  PADDING_H,
-  SCREEN_WIDTH,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { useSelector } from "react-redux";
 import LocalStorage from "../../../providers/LocalStorage";
@@ -235,8 +229,8 @@ const LockScreen2 = (props) => {
               uri: "https://images.coinpara.com/files/mobile-assets/logo.png",
             }}
             style={{
-              width: MIDDLE_IMAGE,
-              height: MIDDLE_IMAGE,
+              width: DIMENSIONS.MIDDLE_IMAGE,
+              height: DIMENSIONS.MIDDLE_IMAGE,
               tintColor: activeTheme.appWhite,
             }}
             resizeMode={"contain"} />
@@ -287,37 +281,37 @@ export default LockScreen;
 const styles = props => StyleSheet.create({
   title: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
-    // marginBottom: PADDING_H,
+    // marginBottom: DIMENSIONS.PADDING_H,
   },
   desc: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
     color: props.appWhite,
-    marginBottom: PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H,
     textAlign: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     lineHeight: 24,
-    marginVertical: MARGIN_T,
+    marginVertical: DIMENSIONS.MARGIN_T,
   },
   valueWrap1: {
     flex: .3,
     alignItems: "center",
     justifyContent: "space-around",
     width: "100%",
-    paddingTop: PADDING_H * 6,
+    paddingTop: DIMENSIONS.PADDING_H * 6,
 
   },
   val: {
     flexDirection: "row",
-    width: SCREEN_WIDTH / 3,
+    width: DIMENSIONS.SCREEN_WIDTH / 3,
     alignItems: "center",
     justifyContent: "space-around",
-    marginVertical: MARGIN_T * 2,
+    marginVertical: DIMENSIONS.MARGIN_T * 2,
   },
   valueWrap: {
-    marginBottom: PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H,
     width: 18,
     height: 18,
     borderRadius: 9,
@@ -346,12 +340,12 @@ const styles = props => StyleSheet.create({
   },
   number: {
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE + 1,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 1,
     color: props.appWhite,
   },
   alpha: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.secondaryText,
   },
   numberWrap: {
@@ -360,8 +354,8 @@ const styles = props => StyleSheet.create({
     borderRadius: 35,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: PADDING_H,
-    marginHorizontal: PADDING_H * 2,
+    marginVertical: DIMENSIONS.PADDING_H,
+    marginHorizontal: DIMENSIONS.PADDING_H * 2,
     borderWidth: 1,
     borderColor: props.borderGray,
   },
@@ -371,8 +365,8 @@ const styles = props => StyleSheet.create({
     borderRadius: 35,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: PADDING_H,
-    marginHorizontal: PADDING_H * 2,
+    marginVertical: DIMENSIONS.PADDING_H,
+    marginHorizontal: DIMENSIONS.PADDING_H * 2,
   },
   dismissButton: {
     position: "absolute",

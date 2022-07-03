@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import {
-  NORMAL_FONTSIZE,
-  PADDING_H,
-  PADDING_V,
-  SCREEN_WIDTH,
-  TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
-import Loading from "../../../../components/loading";
-import EmptyContainer from "../../../../components/empty-container";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
+import Loading from "../../../../components/page-components/loading";
+import EmptyContainer from "../../../../components/page-components/empty-container";
 import OrdersTabHeader from "./orders-tab-header";
 import { useSelector } from "react-redux";
 import { formatMoney } from "../../../../helpers/math-helper";
@@ -16,11 +10,11 @@ import { isIphoneX } from "../../../../../utils/devices";
 
 const MAX_ITEM_COUNT = 25;
 const bidArr = [];
-const FULL_WIDTH = parseInt(SCREEN_WIDTH / 2 - PADDING_H);
+const FULL_WIDTH = parseInt(DIMENSIONS.SCREEN_WIDTH / 2 - DIMENSIONS.PADDING_H);
 
 const MarketContent = ({ bids1, asks1, market, toPrecision, fromPrecision, handleDetail }) => {
 
-  const { activeUserColors,activeTheme } = useSelector(state => state.globalReducer);
+  const { activeUserColors, activeTheme } = useSelector(state => state.globalReducer);
   const [loading, setLoading] = useState(true);
   const [bids2, setBids2] = useState([]);
   const [asks2, setAsks2] = useState([]);
@@ -203,12 +197,12 @@ export default React.memo(MarketContent);
 const styles = (props) => StyleSheet.create({
   wrapper: {
     flex: 1,
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   priceText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   amountText: {
     fontFamily: "CircularStd-Book",
@@ -219,7 +213,7 @@ const styles = (props) => StyleSheet.create({
   },
   redText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     textAlign: "center",
     color: "#fd4850",
   },
@@ -285,19 +279,19 @@ const styles = (props) => StyleSheet.create({
     textAlign: "left",
     paddingLeft: 2,
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   bidPrice: {
     color: props.bidText,
     textAlign: "left",
     paddingRight: 2,
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   text: {
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
   },
   flatList: {
     paddingBottom: 60,

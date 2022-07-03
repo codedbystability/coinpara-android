@@ -5,9 +5,9 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import Loading from "../../../providers/Loading";
 import { getLang } from "../../../helpers/array-helper";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import FloatingAction from "../../../components/floating-action";
-import { NORMAL_FONTSIZE, PADDING_H, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import FloatingAction from "../../../components/page-components/floating-action";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import TinyImage from "../../../tiny-image";
 import ModalProvider from "../../../providers/ModalProvider";
 import SupportCenterFilterScreen from "../support-center/filter";
@@ -112,7 +112,7 @@ const Static = (props) => {
 
         {
           isStatic ? <View style={{
-            paddingHorizontal: PADDING_H,
+            paddingHorizontal: DIMENSIONS.PADDING_H,
           }}>
             <Pressable
               onPress={handleShowFilter}
@@ -162,16 +162,16 @@ const styles = (props) => StyleSheet.create({
     height: 36,
     backgroundColor: props.darkBackground,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
     alignItems: "center",
     width: "100%",
     flexDirection: "row",
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
   },
   searchIcon: { paddingHorizontal: 10 },
   icon: { width: 18, height: 18 },
   t1: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     textAlign: "center",

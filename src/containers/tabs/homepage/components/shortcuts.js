@@ -12,7 +12,7 @@ import HapticProvider from "../../../../providers/HapticProvider";
 import TinyImage from "../../../../tiny-image";
 import userServices from "../../../../services/user-services";
 import ModalProvider from "../../../../providers/ModalProvider";
-import MarketSelect from "../../../../components/market-select";
+import MarketSelect from "../../../../components/page-components/market-select";
 import { selectSortByMarket } from "../../../../selectors/wallet-selector";
 
 

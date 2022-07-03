@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
-import CustomButton from "../../../components/button";
-import NImage from "../../../components/image/index.tsx";
+import CustomButton from "../../../components/page-components/button";
+import NImage from "../../../components/page-components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { MARGIN_T, PADDING_H, SCREEN_WIDTH, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import moment from "moment";
 import TinyImage from "../../../tiny-image";
 
@@ -72,22 +72,22 @@ const SelfieVideo = ({ image, handleShowAction, language, handleClearImage }) =>
 
 const styles = props => StyleSheet.create({
   scrollView: {
-    paddingTop: PADDING_H * 2,
-    paddingHorizontal: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   title: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   desc: {
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   imageTitle: {
     color: "rgb(255,255,255)",
@@ -112,7 +112,7 @@ const styles = props => StyleSheet.create({
     height: 220,
     marginLeft: 12,
     width: "100%",
-    marginTop: MARGIN_T,
+    marginTop: DIMENSIONS.MARGIN_T,
   },
   buttonWrapper: {
     position: "absolute",
@@ -132,7 +132,7 @@ const styles = props => StyleSheet.create({
     position: "absolute",
     // right: 20,
     top: 5,
-    left: SCREEN_WIDTH / 2 - 60 + 100,
+    left: DIMENSIONS.SCREEN_WIDTH / 2 - 60 + 100,
   },
   icon:{
     width:18,

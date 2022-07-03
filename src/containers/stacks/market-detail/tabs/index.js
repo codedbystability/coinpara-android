@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import MarketContent from "./market-content";
-import NeedAuthentication from "../../../../components/need-authentication";
+import NeedAuthentication from "../../../../components/page-components/need-authentication";
 import { isIphoneX } from "../../../../../utils/devices";
 import HistoryContentIndex from "./history";
 import WalletContent from "./wallet-content";
@@ -14,13 +14,11 @@ import { useIsFocused } from "@react-navigation/native";
 import { View } from "react-native";
 
 
-// const FancyButton = React.forwardRef((props, ref) => (
-
 const MarketDetailTabsIndex = forwardRef((props, ref) => {
 
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
-  const { activeTab, market, handleDetail, gd } = props;
+  const { activeTab, market, handleDetail,marketInfo } = props;
   const { connection } = useSelector(state => state.globalReducer);
   const { authenticated } = useSelector(state => state.authenticationReducer);
   const [info, setInfo] = useState({});
@@ -40,9 +38,8 @@ const MarketDetailTabsIndex = forwardRef((props, ref) => {
     }),
   );
 
-
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && Object.keys(market).length >= 1) {
       if (connection && connection.connectionState === "Connected") {
         connectMarket();
       }
@@ -54,8 +51,7 @@ const MarketDetailTabsIndex = forwardRef((props, ref) => {
         }
       };
     }
-  }, [connection, isFocused, gd]);
-
+  }, [connection, isFocused, market]);
 
   const tryToStopConnection = () => {
     connection.off("notifyOrderDashBoard");
@@ -106,8 +102,8 @@ const MarketDetailTabsIndex = forwardRef((props, ref) => {
         return <MarketContent
           asks1={asks}
           bids1={bids}
-          fromPrecision={market.spp || 6}
-          toPrecision={market.svp || 6}
+          fromPrecision={marketInfo.ShowPricePrecision || 6}
+          toPrecision={marketInfo.ShowVolumePrecision || 6}
           handleDetail={handleDetail}
           market={market}
         />;
@@ -159,6 +155,7 @@ const MarketDetailTabsIndex = forwardRef((props, ref) => {
       }
     });
   };
+
 
 
   return (

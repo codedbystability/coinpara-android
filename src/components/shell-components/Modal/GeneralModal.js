@@ -3,7 +3,7 @@ import ModalProvider, { setModalRef } from "../../../providers/ModalProvider";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import HapticProvider from "../../../providers/HapticProvider";
-import { PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import TinyImage from "../../../tiny-image";
 import { setNonUser } from "../../../actions/auth-actions";
 
@@ -59,7 +59,8 @@ const GeneralModal = forwardRef((props, ref) => {
            onRequestClose={onHide}
            statusBarTranslucent
     >
-      <View style={{ zIndex: 999, flex: 1, backgroundColor: activeTheme.backgroundApp, paddingTop: PADDING_H }}>
+      <View
+        style={{ zIndex: 999, flex: 1, backgroundColor: activeTheme.backgroundApp, paddingTop: DIMENSIONS.PADDING_H }}>
         {
           content
         }
@@ -86,7 +87,7 @@ const CustomActionSheetComp = () => {
 export default CustomActionSheetComp;
 
 
-const ww = SCREEN_WIDTH * 0.2;
+const ww = DIMENSIONS.SCREEN_WIDTH * 0.2;
 
 const styles = () => StyleSheet.create({
   dismissButton: {
@@ -97,7 +98,7 @@ const styles = () => StyleSheet.create({
     width: ww,
     height: ww,
     borderRadius: ww / 2,
-    left: SCREEN_WIDTH / 2 - ww/2,
+    left: DIMENSIONS.SCREEN_WIDTH / 2 - ww / 2,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999999,

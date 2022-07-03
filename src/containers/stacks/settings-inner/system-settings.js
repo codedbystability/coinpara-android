@@ -1,23 +1,15 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import * as React from "react";
 import { ScrollView, View, StyleSheet, Pressable, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { PADDING_H } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import GeneralSection from "../../tabs/settings/components/sections/general";
 import { useEffect, useState } from "react";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import generalServices from "../../../services/general-services";
 import { setActiveTheme, setClassicColors, setColorOption, setFontSize } from "../../../actions/global-actions";
 import LocalStorage from "../../../providers/LocalStorage";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 const SystemSettingsScreen = (props) => {
 
@@ -93,7 +85,7 @@ export default React.memo(SystemSettingsScreen);
 const styles = props => StyleSheet.create({
   wrapper: {
     flex: 1, backgroundColor: props.backgroundApp,
-    paddingHorizontal: PADDING_H, paddingVertical: 40,
+    paddingHorizontal: DIMENSIONS.PADDING_H, paddingVertical: 40,
   },
   wrapper2: {
     marginTop: 60,

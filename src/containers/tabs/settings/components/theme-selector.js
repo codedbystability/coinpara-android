@@ -1,11 +1,11 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { setActiveTheme, setClassicColors } from "../../../../actions/global-actions";
+import { setActiveTheme, setClassicColors, setIconColor } from "../../../../actions/global-actions";
 import { useDispatch, useSelector } from "react-redux";
 import generalServices from "../../../../services/general-services";
 import { getLang } from "../../../../helpers/array-helper";
 import DropdownAlert from "../../../../providers/DropdownAlert";
-import { BIG_TITLE_FONTSIZE, LIST_MARGIN_T, PADDING_H } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import ActionSheetComProvider from "../../../../providers/ActionSheetComProvider";
 import HapticProvider from "../../../../providers/HapticProvider";
 import LocalStorage from "../../../../providers/LocalStorage";
@@ -25,7 +25,6 @@ const themes = [
     title: "LIGHT",
   },
 ];
-
 let showAction = false;
 let selectedThemeKey = "";
 
@@ -52,10 +51,10 @@ const ThemeSelector = () => {
   const handleColorChange = (theme) => {
     generalServices.getColors(theme).then((response) => {
       if (response && response.IsSuccess) {
-
+        console.log("response.IconColor - ", response.IconColor);
+        dispatch(setIconColor(response.IconColor));
         LocalStorage.setObject("classicColorsL", response.Data);
         LocalStorage.setItem("classicColorsIcon", response.IconColor);
-
         dispatch(setClassicColors(response.Data));
         LocalStorage.setItem("activeTheme", theme);
         dispatch(setActiveTheme(theme, response.IconColor));
@@ -112,7 +111,7 @@ export default React.memo(ThemeSelector);
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    paddingTop: LIST_MARGIN_T,
+    paddingTop: DIMENSIONS.LIST_MARGIN_T,
     // paddingHorizontal: PADDING_H,
   },
   item: {

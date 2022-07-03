@@ -2,7 +2,6 @@ import React from "react";
 
 import ProfileScreen from "../containers/stacks/profile";
 import ChangePasswordScreen from "../containers/stacks/change-password";
-import AccountActivitiesScreen from "../containers/stacks/account-activities";
 import TimeExpirationScreen from "../containers/stacks/time-expiration";
 import AccountApproveScreen from "../containers/stacks/account-approve";
 import InviteFriendsScreen from "../containers/stacks/invite-friend";
@@ -39,7 +38,6 @@ import HelpCenterScreen from "../containers/stacks/help-center";
 import StoreHelpRequestScreen from "../containers/stacks/help-center/store";
 import SupportCenterScreen from "../containers/stacks/support-center";
 import SupportCenterInnerScreen from "../containers/stacks/support-center/inner";
-import moment from "moment";
 import HelpCenterDetailScreen from "../containers/stacks/help-center/detail";
 
 
@@ -111,6 +109,7 @@ const RegisterItems = [
       // presentation: "transparentModal",
     },
   },
+
 
   {
     id: 8, name: "RegisterAdditional",
@@ -305,15 +304,6 @@ export const drawerItems = [
     },
   },
 
-
-  {
-    id: 5, name: "AccountActivities", component: AccountActivitiesScreen, options: {
-      title: "AccountActivities",
-      ...TransitionPresets.SlideFromRightIOS,
-      header: () => null,
-
-    },
-  },
   {
     id: 20, name: "UserLogs", component: UserLogsScreen, options: {
       title: "",
@@ -327,8 +317,6 @@ export const drawerItems = [
     id: 36, name: "SettingsSecurity", component: SecuritySettingsStack, options: {
       title: "",
       header: () => null,
-
-      // ...TransitionPresets.ModalSlideFromBottomIOS,
     },
   },
 
@@ -336,8 +324,6 @@ export const drawerItems = [
     id: 36, name: "SettingsSystem", component: SystemSettingsScreen, options: {
       title: "",
       header: () => null,
-
-      // ...TransitionPresets.ModalSlideFromBottomIOS,
     },
   },
 

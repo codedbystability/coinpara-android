@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import {
-  LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
-import CustomList from "../../../components/custom-list";
-import NavigationListItem from "../../../components/navigation-list-item";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import CustomList from "../../../components/page-components/custom-list";
+import NavigationListItem from "../../../components/page-components/navigation-list-item";
 import TinyImage from "../../../tiny-image";
 import generalServices from "../../../services/general-services";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 import { navigationRef } from "../../../providers/RootNavigation";
 import ModalProvider from "../../../providers/ModalProvider";
 import SupportCenterFilterScreen from "./filter";
@@ -141,10 +137,8 @@ const SupportCenter = props => {
   const [loading, setLoading] = useState(true);
   const [topItems, setTopItems] = useState([]);
   const [allSubItems, setAllSubItems] = useState([]);
-  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-
 
     if (activeLanguage && activeLanguage.Id) {
       generalServices.getHelpCenterContent(activeLanguage.Id, true).then((response) => {
@@ -155,7 +149,7 @@ const SupportCenter = props => {
           return stat;
         }));
 
-        setTimeout(() => setTops(statics1), 500);
+        setTops(statics1);
         setLoading(false);
       });
     }
@@ -176,14 +170,21 @@ const SupportCenter = props => {
       case 4:
         return "moneys";
       default:
-        return "lock";
+        return "lock2";
     }
   };
 
   const setTops = (statics1) => {
     const allSubs = [];
     statics1.map(itm => itm.items.map(ii => allSubs.push(ii)));
-    if (statics1[0].items.length >= 1) {
+
+    let theItem;
+    for (let i = 0; i < statics1.length; i++) {
+      if (statics1[i].items && statics1[i].items.length >= 1) {
+        theItem = statics1[i];
+      }
+    }
+    if (theItem) {
       const myItems = statics1.filter((itm, i) => i <= 5).map(stat => stat.items[0]).filter((itm, i) => i <= 5);
       myItems.map((item, i) => {
         item.image = getIcon(i);
@@ -192,15 +193,13 @@ const SupportCenter = props => {
       setTopItems(myItems);
     }
 
+
     setAllSubItems(allSubs);
   };
 
   const keyExtractor = (_, i) => `support-center-index-${i}`;
 
-  const handleShowFilter = () => {
-    setSearchText("");
-    ModalProvider.show(() => <SupportCenterFilterScreen data={allSubItems} />);
-  };
+  const handleShowFilter = () => ModalProvider.show(() => <SupportCenterFilterScreen data={allSubItems} />);
 
 
   const handleOnPress = (item) => {
@@ -216,7 +215,7 @@ const SupportCenter = props => {
       url: item.url,
       content: item.Description,
       param: null,
-      isSupport: true,
+      isStatic: true,
       allStatics: allSubItems,
     });
   };
@@ -232,7 +231,7 @@ const SupportCenter = props => {
         <TinyImage parent={"faq/"} name={item.image} style={styles(activeTheme).img1} />
 
         <Text style={[styles(activeTheme).t1, {
-          fontSize: NORMAL_FONTSIZE - 2,
+          fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
         }]}>{getLang(language, item.Title)}</Text>
       </TouchableOpacity>
     );
@@ -243,7 +242,7 @@ const SupportCenter = props => {
       <TabNavigationHeader
         {...props}
         backAble={true}
-        isBack={true}
+        isBack={false}
         options={{ title: getLang(language, "HELP_CENTER") }}
       />
 
@@ -269,7 +268,7 @@ const SupportCenter = props => {
             </Pressable>
 
 
-            <View style={{ marginTop: PADDING_H * 2 }}>
+            <View style={{ marginTop: DIMENSIONS.PADDING_H * 2 }}>
               <Text style={styles(activeTheme).t2}>{getLang(language, "FREQUENTLY_ASKED_QUESTIONS")}</Text>
 
               <Text style={styles(activeTheme).d1}>
@@ -288,7 +287,7 @@ const SupportCenter = props => {
 
           </>
         }
-        itemHeight={LIST_ITEM_HEIGHT}
+        itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
         renderItem={({ item }) => <NavigationListItem isStatic={false}
                                                       isWrap={true}
                                                       key={item.id}
@@ -359,7 +358,7 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     flex: 1,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
   },
   img1: {
     width: 18,
@@ -367,27 +366,27 @@ const styles = (props) => StyleSheet.create({
     marginBottom: 8,
   },
   t1: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
   },
   l1: {
-    paddingTop: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
     paddingBottom: 120,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   d1: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: NORMAL_FONTSIZE - 2,
-    marginTop: PADDING_H,
-    marginBottom: PADDING_H * 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
+    marginTop: DIMENSIONS.PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H * 2,
   },
   t2: {
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
 
 
@@ -395,7 +394,7 @@ const styles = (props) => StyleSheet.create({
     height: 36,
     backgroundColor: props.darkBackground,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
     alignItems: "center",
     width: "100%",
     flexDirection: "row",

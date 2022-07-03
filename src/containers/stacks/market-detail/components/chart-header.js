@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
-import { BIG_TITLE_FONTSIZE, TITLE_FONTSIZE } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { formatMoney, nFormatter } from "../../../../helpers/math-helper";
 import { getLang } from "../../../../helpers/array-helper";
@@ -70,9 +70,8 @@ const ChartHeader2 = ({ precision, gd }) => {
         }
 
         <View style={{ flexDirection: "row" }}>
-          {/*<Text style={[styles(activeTheme).cd, { color: parseInt(market.cp) >= 0 ? activeTheme.bidText : activeTheme.askText }]}>{formattedNumber(market.cp, market.fs, precision)} %</Text>*/}
           <Text
-            style={[styles(activeTheme).cd, { color: parseInt(market.cp) >= 0 ? activeTheme.bidText : activeTheme.askText }]}>{market.cp.toFixed(2)} %</Text>
+            style={[styles(activeTheme).cd, { color: parseFloat(market.cp) >= 0 ? activeTheme.bidText : activeTheme.askText }]}>{market.cp.toFixed(2)} %</Text>
 
           {/*<Text style={styles(activeTheme).cdb}>{formattedNumber(market.cd, market.fs, precision)}</Text>*/}
           <Text style={styles(activeTheme).cdb}> {
@@ -124,17 +123,17 @@ const styles = (props) => StyleSheet.create({
     paddingHorizontal: 12,
   },
   cd: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     marginRight: 20,
   },
   pr: {
-    fontSize: BIG_TITLE_FONTSIZE + 4,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 4,
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
   },
   cdb: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
   },
@@ -156,13 +155,13 @@ const styles = (props) => StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "left",
   },
   val: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
   itm: {

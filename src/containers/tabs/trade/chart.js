@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { HEADER_HEIGHT, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { WebView } from "react-native-webview";
 import { View } from "react-native";
 import { rgbaToHex } from "../../../helpers/color-helper";
 import { useSelector } from "react-redux";
-import { isIphoneX } from "../../../../utils/devices";
 
 const BASE_CHART_URL = "https://fullchart.coinpara.com/";
 
@@ -47,8 +46,8 @@ const TradeChart = ({ to, fs, gd, cp }) => {
 
   return (
     <View style={{
-      width: SCREEN_WIDTH,
-      height: (SCREEN_HEIGHT - HEADER_HEIGHT) / 4,
+      width: DIMENSIONS.SCREEN_WIDTH,
+      height: (DIMENSIONS.SCREEN_HEIGHT - DIMENSIONS.HEADER_HEIGHT) / 4,
       overflow: "hidden",
       zIndex: 99,
       // backgroundColor:'red'

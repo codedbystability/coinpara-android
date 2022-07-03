@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationListItem from "../../../../../components/navigation-list-item";
+import NavigationListItem from "../../../../../components/page-components/navigation-list-item";
 
 
 const LinksSection = (props) => {

@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { Animated, Image, KeyboardAvoidingView, StyleSheet, View, Easing, Text } from "react-native";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
-import keyboardAvoidingViewHoc from "../../../hocs/keyboardAvoidingViewHoc";
+import { Animated, Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
 import { useSelector } from "react-redux";
 import userServices from "../../../services/user-services";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { MIDDLE_IMAGE, PADDING_H } from "../../../../utils/dimensions";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { passwordInputs } from "./constants";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import { inputs } from "../login/constants";
 
 
@@ -23,8 +23,10 @@ const RegisterPassword = (props) => {
 
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  // let score = 0;
   const [score, setScore] = useState(0);
+  const [icon, setIcon] = useState("eye-open");
+  const [focusedIndex, setFocusedIndex] = useState(0);
+
   const {
     email = "",
     name = "",
@@ -35,13 +37,10 @@ const RegisterPassword = (props) => {
     birthdate = "",
     nationality = "",
   } = props.route && props.route.params;
-  // } = props;
-
 
   useEffect(() => {
     checkPassword(password);
   }, [password]);
-
 
   useEffect(() => {
     Animated.spring(widthAnim, {
@@ -51,7 +50,6 @@ const RegisterPassword = (props) => {
       tension: 4,
     }).start();
   }, [score]);
-
 
   const handleStep = (key) => {
     if (key === "next" && focusedIndex < inputs.length - 1) {
@@ -91,7 +89,6 @@ const RegisterPassword = (props) => {
       BirthDate: birthdate,
     };
 
-    console.log(instance);
     userServices.register(instance).then((response) => {
       if (response && response.IsSuccess) {
         DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "REGISTERED_SUCCESSFULLY"));
@@ -100,7 +97,7 @@ const RegisterPassword = (props) => {
             email,
             password,
           });
-        }, 1000);
+        }, 500);
       }
     }).catch(err => console.log("err -", err));
   };
@@ -113,12 +110,9 @@ const RegisterPassword = (props) => {
     }
   };
 
-  const [icon, setIcon] = useState("eye-open");
-  const [focusedIndex, setFocusedIndex] = useState(0);
-  const onIconPressed = () => setIcon(icon === "eye-open" ? "eye-close" : "eye-open");
+   const onIconPressed = () => setIcon(icon === "eye-open" ? "eye-close" : "eye-open");
 
   const parentOnFocus = (index) => setFocusedIndex(index);
-
 
   const checkPassword = (pass) => {
 
@@ -127,14 +121,12 @@ const RegisterPassword = (props) => {
 
     let result = 0;
 
-    // award every unique letter until 5 repetitions
     let letters = {};
     for (let i = 0; i < pass.length; i++) {
       letters[pass[i]] = (letters[pass[i]] || 0) + 1;
       result += 5.0 / letters[pass[i]];
     }
 
-    // bonus points for mixing it up
     let variations = {
       digits: /\d/.test(pass),
       lower: /[a-z]/.test(pass),
@@ -147,17 +139,7 @@ const RegisterPassword = (props) => {
       variationCount += (variations[check] === true) ? 1 : 0;
     }
     result += (variationCount - 1) * 10;
-    // result = parseInt(score) / 100;
-
     setScore(parseInt(result) / 100);
-    // Animated.timing(widthAnim, {
-    //   toValue: score,
-    //   duration: 200,
-    //   easing: Easing.linear,
-    //   useNativeDriver: false,
-    // }).start();
-    //
-    // return score;
   };
 
   return (
@@ -171,10 +153,7 @@ const RegisterPassword = (props) => {
 
       <KeyboardAvoidingView behavior={"padding"} style={styles(activeTheme).wrap}>
 
-        {/*<View style={styles(activeTheme).wrap}>*/}
-
-
-        <View style={{ paddingHorizontal: PADDING_H, width: "100%", alignItems: "center" }}>
+        <View style={styles(activeTheme).w1}>
           <Image
             source={{
               uri: "https://images.coinpara.com/files/mobile-assets/logo.png",
@@ -201,14 +180,7 @@ const RegisterPassword = (props) => {
           }
 
           {
-            password ? <View style={{
-              width: "100%",
-              height: 12,
-              backgroundColor: "transparent",
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: activeTheme.borderGray,
-            }}>
+            password ? <View style={styles(activeTheme).p1}>
 
               <Animated.View style={{
                 width: widthAnim.interpolate({
@@ -221,7 +193,6 @@ const RegisterPassword = (props) => {
                 }),
                 height: "100%",
                 borderRadius: 12,
-
               }}>
 
               </Animated.View>
@@ -233,15 +204,21 @@ const RegisterPassword = (props) => {
 
 
         <View style={styles(activeTheme).btn}>
-
           <CustomButton text={"Continue"}
                         filled={true}
                         onPress={handleLogin} />
 
         </View>
-        {/*</View>*/}
+
       </KeyboardAvoidingView>
 
+
+      <InputAccessory
+        handleStep={handleStep}
+        stepAble={true}
+        mailProviders={[]}
+        onPress={null}
+      />
     </>
 
   );
@@ -257,11 +234,20 @@ const styles = props => StyleSheet.create({
   container: {
     flex: 1,
   },
-  img: { width: MIDDLE_IMAGE, height: MIDDLE_IMAGE, tintColor: props.appWhite, marginBottom: 40 },
+  img: { width: DIMENSIONS.MIDDLE_IMAGE, height: DIMENSIONS.MIDDLE_IMAGE, tintColor: props.appWhite, marginBottom: 40 },
   btn: {
     position: "absolute",
     bottom: 0,
     width: "100%",
   },
+  p1: {
+    width: "100%",
+    height: 12,
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: props.borderGray,
+  },
 
+  w1: { paddingHorizontal: DIMENSIONS.PADDING_H, width: "100%", alignItems: "center" },
 });

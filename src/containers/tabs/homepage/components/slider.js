@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { Text, View, StyleSheet } from "react-native";
-import {
-  NORMAL_FONTSIZE,
-  PADDING_H,
-  PADDING_V,
-  SCREEN_WIDTH,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import generalServices from "../../../../services/general-services";
 import { useSelector } from "react-redux";
-import NImage from "../../../../components/image/index.tsx";
+import NImage from "../../../../components/page-components/image/index.tsx";
 import { useIsFocused } from "@react-navigation/native";
 import PlLoading from "../../../pl-loading";
 
-const ww = SCREEN_WIDTH - (PADDING_H * 2);
+const ww = DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2);
 
-const  HomepageSlider = (props) => {
+const HomepageSlider = (props) => {
   const { activeLanguage } = useSelector(state => state.languageReducer);
   const { activeTheme, fontSizes } = useSelector(state => state.globalReducer);
 
@@ -51,7 +46,7 @@ const  HomepageSlider = (props) => {
         <View style={styles(activeTheme).linear}>
 
           <View style={styles(activeTheme).content}>
-            <View style={{ width: "70%", paddingVertical: PADDING_V, justifyContent: "space-between" }}>
+            <View style={{ width: "70%", paddingVertical: DIMENSIONS.PADDING_V, justifyContent: "space-between" }}>
               <Text style={styles(activeTheme, fontSizes).text}>
                 {item.Text1.replace(/<\/?[^>]+(>|$)/g, "")}
               </Text>
@@ -141,9 +136,9 @@ const styles = (props, fontSizes) => StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 120,
-    paddingHorizontal: PADDING_H,
-    paddingTop: PADDING_H / 2,
-    marginTop: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H / 2,
+    marginTop: DIMENSIONS.PADDING_H,
   },
   wrapper: {
     borderRadius: 7,
@@ -162,7 +157,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     height: "100%",
     justifyContent: "space-around",
     overflow: "visible",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flexDirection: "row",
   },
   text: {
@@ -182,7 +177,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     fontFamily: "CircularStd-Bold",
   },
   buttonWrapper: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "#fff",
@@ -202,7 +197,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     borderRadius: 8,
     width: "30%",
     height: "100%",
-    paddingVertical: PADDING_V,
+    paddingVertical: DIMENSIONS.PADDING_V,
   },
   dots: {
     width: 12,
@@ -245,6 +240,6 @@ const styles = (props, fontSizes) => StyleSheet.create({
   car: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 });

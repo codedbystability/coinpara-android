@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
-import CustomButton from "../../../components/button";
-import UploadedValidItem from "../../../components/uploaded-image";
-import NImage from "../../../components/image/index.tsx";
+import CustomButton from "../../../components/page-components/button";
+import UploadedValidItem from "../../../components/page-components/uploaded-image";
+import NImage from "../../../components/page-components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { apiPostWithTokenAndImage } from "../../../services/fetch-instance";
-import LocalStorage from "../../../providers/LocalStorage";
 import DropdownAlert from "../../../providers/DropdownAlert";
 
 
@@ -142,22 +141,22 @@ export default AddressImage;
 const styles = props => StyleSheet.create({
 
   scrollView: {
-    paddingTop: PADDING_H * 2,
-    paddingHorizontal: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   title: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   desc: {
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   imageTitle: {
     color: props.appWhite,

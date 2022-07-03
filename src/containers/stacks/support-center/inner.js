@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import {
   PADDING_H,
 } from "../../../../utils/dimensions";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 import LinksSection from "../../tabs/settings/components/sections/links";
 import { navigationRef } from "../../../providers/RootNavigation";
 
@@ -33,7 +33,7 @@ const SupportCenterInner = props => {
       url: item.url,
       content: item.Description,
       param: null,
-      isSupport: true,
+      isStatic: true,
       allStatics: allStatics,
     });
   };

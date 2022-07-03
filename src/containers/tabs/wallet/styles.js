@@ -1,11 +1,5 @@
 import { StyleSheet } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE, LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
-  PADDING_H,
-  PADDING_V,
-  SCREEN_HEIGHT, SCREEN_WIDTH,
-  SUBTITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const styles = (props, fontSizes) => StyleSheet.create({
   container: {
@@ -94,7 +88,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     backgroundColor: props.darkBackground,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     overflow: "hidden",
     zIndex: 9999999999,
   },
@@ -146,8 +140,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     justifyContent: "space-between",
     borderRadius: 8,
     marginBottom: 8,
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   sheetSortItem: {
@@ -197,8 +191,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
 
   head: {
     backgroundColor: props.actionColor,
-    paddingVertical: PADDING_V * 2,
-    paddingHorizontal: PADDING_H * 2,
+    paddingVertical: DIMENSIONS.PADDING_V * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H * 2,
     justifyContent: "space-between",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -216,19 +210,19 @@ const styles = (props, fontSizes) => StyleSheet.create({
   wrap: {
 
     backgroundColor: props.darkBackground,
-    minHeight: SCREEN_HEIGHT / 1.6,
-    height: SCREEN_HEIGHT / 1.6,
+    minHeight: DIMENSIONS.SCREEN_HEIGHT / 1.6,
+    height: DIMENSIONS.SCREEN_HEIGHT / 1.6,
   },
   wrap1: {
-    width: SCREEN_WIDTH,
-    paddingVertical: PADDING_H * 2,
+    width: DIMENSIONS.SCREEN_WIDTH,
+    paddingVertical: DIMENSIONS.PADDING_H * 2,
   },
   cont: {
     backgroundColor: props.rowBlue,
-    paddingHorizontal: PADDING_H,
-    height: SCREEN_HEIGHT / 1.5,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    height: DIMENSIONS.SCREEN_HEIGHT / 1.5,
   },
-  left:{
+  left: {
     flex: 1,
     alignItems: "flex-end",
     justifyContent: "center",
@@ -255,23 +249,23 @@ const styles = (props, fontSizes) => StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-    width: SCREEN_WIDTH,
+    width: DIMENSIONS.SCREEN_WIDTH,
     zIndex: 9999,
   },
   loadL: {
     position: "absolute",
-    bottom: SCREEN_HEIGHT / 4,
+    bottom: DIMENSIONS.SCREEN_HEIGHT / 4,
     left: 0,
-    width: SCREEN_WIDTH,
+    width: DIMENSIONS.SCREEN_WIDTH,
     zIndex: 9999,
     backgroundColor: "red",
   },
-  wrap3: { flex: 1, backgroundColor: props.backgroundApp, paddingTop: PADDING_H },
+  wrap3: { flex: 1, backgroundColor: props.backgroundApp, paddingTop: DIMENSIONS.PADDING_H },
 
   actionText: {
     fontFamily: "CircularStd-Book",
     color: props.buttonWhite,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     marginTop: 6,
     textAlign: "center",
     width: 80,
@@ -280,7 +274,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     // alignItems: "center",
     justifyContent: "center",
     minWidth: 80,
-    height: LIST_ITEM_HEIGHT,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
     // paddingLeft: 30,
   },
 });

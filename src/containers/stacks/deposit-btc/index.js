@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import BigInput from "../../../components/big-input";
-import InfoCard from "../../../components/info-card";
+import BigInput from "../../../components/page-components/big-input";
+import InfoCard from "../../../components/page-components/info-card";
 import TransactionDescriptions from "../transaction-descriptions";
 import { useSelector } from "react-redux";
 import walletServices from "../../../services/wallet-services";
@@ -9,14 +9,14 @@ import Clipboard from "@react-native-community/clipboard";
 import QrCreateModalize from "./read-qr";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
-import Networks from "../../../components/networks";
+import Networks from "../../../components/page-components/networks";
 import ModalProvider from "../../../providers/ModalProvider";
-import { PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
-import EmptyContainer from "../../../components/empty-container";
-import CustomButton from "../../../components/button";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import EmptyContainer from "../../../components/page-components/empty-container";
+import CustomButton from "../../../components/page-components/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import PulseAnimation from "../../../components/pulse";
-import QrResult from "../../../components/qr-result";
+import PulseAnimation from "../../../components/page-components/pulse";
+import QrResult from "../../../components/page-components/qr-result";
 
 
 const DepositBtcScreen = (props) => {
@@ -288,7 +288,7 @@ const DepositBtcScreen = (props) => {
               error ?
                 <EmptyContainer
                   text={getLang(language, "AN_UNKNOWN_ERROR_OCCURED")} /> : visibleWalletAddress && !fetching ?
-                  <QrResult value={visibleWalletAddress} size={(SCREEN_WIDTH / 2) - (PADDING_H * 2)} />
+                  <QrResult value={visibleWalletAddress} size={(DIMENSIONS.SCREEN_WIDTH / 2) - (DIMENSIONS.PADDING_H * 2)} />
                   : fetching && <PulseAnimation market={wallet.cd} />
 
             }
@@ -333,18 +333,18 @@ export default DepositBtcScreen;
 
 const styles = StyleSheet.create({
   scroll: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingBottom: 100,
   },
   container: {
     flex: 1,
   },
   qr: {
-    paddingVertical: PADDING_H * 2,
+    paddingVertical: DIMENSIONS.PADDING_H * 2,
     marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
-    minHeight: (SCREEN_WIDTH / 2) - (PADDING_H * 2),
+    minHeight: (DIMENSIONS.SCREEN_WIDTH / 2) - (DIMENSIONS.PADDING_H * 2),
   },
 
 });

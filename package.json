@@ -1,6 +1,8 @@
 {
   "name": "coinpara",
-  "version": "3.2.1",
+  "version": "3.2.2",
+  "build": "48",
+  "fetchTime": "1652682520",
   "private": true,
   "scripts": {
     "android": "source ~/.bash_profile && npx react-native run-android",

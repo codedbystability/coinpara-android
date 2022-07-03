@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
-  Animated,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { BIG_TITLE_FONTSIZE, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { getLang } from "../../../../helpers/array-helper";
 import { formatMoney } from "../../../../helpers/math-helper";
 import TinyImage from "../../../../tiny-image";
@@ -28,6 +27,8 @@ const ModalizeBottom = (props) => {
     fromWallet,
     toWallet,
   } = props;
+
+
   return (
     <View style={[styles(activeTheme).bottomContainer, {}]}>
 
@@ -90,17 +91,14 @@ export default ModalizeBottom;
 
 const styles = (props) => StyleSheet.create({
   bottomContainer: {
-    // position: "absolute",
-    // height: 100
     flex: isIphoneX ? .35 : .1,
-    paddingHorizontal: PADDING_H,
-
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   bottomDescContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: PADDING_V,
+    marginBottom: DIMENSIONS.PADDING_V,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -163,9 +161,6 @@ const styles = (props) => StyleSheet.create({
     color: "#fff",
     overflow: "hidden",
     flexWrap: "wrap",
-    // flex: 1,
-    // flexDirection: "row",
-    // backgroundColor: "orange",
     flexShrink: 1,
   },
   inputSecondLabel: {
@@ -185,15 +180,13 @@ const styles = (props) => StyleSheet.create({
 
   buttonText: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE + 2,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 2,
     textAlign: "center",
-    // color: props.appWhite,
     color: "#fff",
   },
   descText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE + 1,
-    // lineHeight: 24,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE + 1,
     color: props.secondaryText,
   },
 });

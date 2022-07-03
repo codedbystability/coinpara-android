@@ -11,6 +11,15 @@ export function setColorOption(data) {
   };
 }
 
+export function setIconColor(data) {
+  return {
+    type: GLOBAL_CONSTANTS.SET_ICON_COLOR,
+    data: data,
+  };
+}
+
+
+
 export function setFontSize(data) {
   return {
     type: GLOBAL_CONSTANTS.SET_FONT_SIZE,

@@ -3,7 +3,7 @@ import HomepageSlider from "./slider";
 import Shortcuts from "./shortcuts";
 import Videos from "./videos";
 import Announcements2 from "./announcements-pure";
-import WalletTotal from "../../../../components/wallet-total";
+import WalletTotal from "../../../../components/page-components/wallet-total";
 
 
 const HomepageHeaders = (props) => {

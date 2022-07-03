@@ -8,7 +8,7 @@
 
 import React from "react";
 import { View, Text, Pressable } from "react-native";
-import DynamicImage from "../../../components/dynamic-image";
+import DynamicImage from "../../../components/page-components/dynamic-image";
 
 const TradeSelectItem = (props) => {
   const { item, handleItemSelect } = props;

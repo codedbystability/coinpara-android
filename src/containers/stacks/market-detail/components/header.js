@@ -1,7 +1,7 @@
-import React  from "react";
+import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { HEADER_HEIGHT, HEADER_TITLE_FONTSIZE, NORMAL_IMAGE, PADDING_H } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import TinyImage from "../../../../tiny-image";
 
 
@@ -16,7 +16,7 @@ const MarketDetailHeader = (props) => {
   return (
     <View
       style={[styles(activeTheme).container, {
-        height: HEADER_HEIGHT,
+        height: DIMENSIONS.HEADER_HEIGHT,
         backgroundColor: activeTheme.darkBackground,
       }]}>
 
@@ -77,8 +77,8 @@ const styles = (props) => StyleSheet.create({
     height: 22,
   },
   alert: {
-    width: NORMAL_IMAGE * 0.6,
-    height: NORMAL_IMAGE * 0.6,
+    width: DIMENSIONS.NORMAL_IMAGE * 0.6,
+    height: DIMENSIONS.NORMAL_IMAGE * 0.6,
     tintColor: props.appWhite,
   },
   padding: { padding: 10 },
@@ -94,7 +94,7 @@ const styles = (props) => StyleSheet.create({
     left: 0,
     bottom: 0,
     paddingVertical: 10,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     alignItems: "flex-end",
     justifyContent: "center",
   },
@@ -109,7 +109,7 @@ const styles = (props) => StyleSheet.create({
   title: {
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
-    fontSize: HEADER_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.HEADER_TITLE_FONTSIZE,
     marginLeft: 10,
   },
 });

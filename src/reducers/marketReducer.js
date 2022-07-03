@@ -40,8 +40,8 @@ const marketReducer = (state = MarketStates, action) => {
       const usdtTry = sorted.find(itm => itm.fs === "TRY" && itm.to === "USDT");
 
       const NEW = selectMarkets.filter(a => a.in === true).slice(0, 7);
-      const TOP_GAINERS = sorted.slice(0, 7);
-      const TOP_LOSERS = orderBy(selectMarkets, ["cp"], ["asc"]).slice(0, 7);
+      const TOP_GAINERS = sorted.filter(ii => ii.fs === "TRY").slice(0, 7);
+      const TOP_LOSERS = orderBy(selectMarkets.filter(ii => ii.fs === "TRY"), ["cp"], ["asc"]).slice(0, 7);
 
       return {
         ...state,

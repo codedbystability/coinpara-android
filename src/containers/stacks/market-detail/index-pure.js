@@ -8,30 +8,27 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import marketServices from "../../../services/market-services";
-import { NORMAL_IMAGE, PADDING_H } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import {
   setIsFavorite,
   setLatestTicker,
   setSelectedMarketGuid,
 } from "../../../actions/market-actions";
-import Loading from "../../../components/loading";
+import Loading from "../../../components/page-components/loading";
 import AnimatedSheet from "./components/animated-sheet";
 import ChartHeader from "./components/chart-header";
 import MarketDetailChart from "./components/chart";
 import ChartIntervals from "./components/intervals";
-import DropdownAlert from "../../../providers/DropdownAlert";
-import { getLang } from "../../../helpers/array-helper";
 import MarketDetailHeader from "./components/header";
 import { navigationRef } from "../../../providers/RootNavigation";
 import MarketDetailTabsIndex from "./tabs/index";
 import Orientation from "react-native-orientation";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import { tabs } from "./constants";
-import LinearBackground from "../../../components/linear-background";
 import LocalStorage from "../../../providers/LocalStorage";
 import IdleTimerManager from "react-native-idle-timer";
 import ModalProvider from "../../../providers/ModalProvider";
-import MarketSelectDetail from "../../../components/market-select-detail";
+import MarketSelectDetail from "../../../components/page-components/market-select-detail";
 import HapticProvider from "../../../providers/HapticProvider";
 import * as Animatable from "react-native-animatable";
 
@@ -53,7 +50,6 @@ class MarketDetailPure extends React.PureComponent {
     this.setActiveInterval = this.setActiveInterval.bind(this);
     this.setActiveChart = this.setActiveChart.bind(this);
     this.handleShowMarketList = this.handleShowMarketList.bind(this);
-    // this.handleCoinSelected = this.handleCoinSelected.bind(this);
     this.state = {
       activeTab: "market",
       activeInterval: "60",
@@ -140,7 +136,7 @@ class MarketDetailPure extends React.PureComponent {
   }
 
   handleHeaderAction(type) {
-    const { authenticated, language } = this.props;
+    const { authenticated } = this.props;
     const { market } = this.state;
     if (type === "alert") {
       return navigationRef.current.navigate("CreateAlarm", {
@@ -148,7 +144,7 @@ class MarketDetailPure extends React.PureComponent {
       });
     } else if (type === "favorite") {
       if (!authenticated) {
-        return DropdownAlert.show("warning", getLang(language, "ERROR"), getLang(language, "PLEASE_SIGNIN_OR_CREATE_ACCOUNT"));
+        return
       }
       if (market.if) {
         return this.removeFav(market);
@@ -214,9 +210,6 @@ class MarketDetailPure extends React.PureComponent {
   }
 
   handleCoinSelected(item) {
-    //{"fi": 1, "fn": "Türk Lirası", "fs": "TRY",
-    // "gd": "011e5996-a638-4de9-b463-178b4071583b", "if": false, "in": false, "it": false, "ix": false,
-    // "mi": 435, "sk": "Aragon - ANT", "ti": 32, "tn": "Aragon", "to": "ANT"}
     const { dispatch, marketsWithKey } = this.props;
 
     const marketKey = Object.keys(marketsWithKey).find(key => marketsWithKey[key].gd === item.gd);
@@ -289,78 +282,71 @@ class MarketDetailPure extends React.PureComponent {
           ...this.props,
         }} />
 
-        <LinearBackground>
+
+        <View style={{ height: "40%", backgroundColor: activeTheme.darkBackground }}>
+
+          <ChartHeader{...{
+            precision: market.fdp,
+            gd: market.gd,
+          }} />
+
+          <View style={styles(activeTheme).chartWrapper}>
+            <MarketDetailChart
+              market={market}
+              type={activeChart}
+              interval={activeInterval}
+            />
+          </View>
+
+          <ChartIntervals {...{
+            fullscreen,
+            setFullscreen,
+            activeInterval,
+            activeChart,
+            activeTheme,
+            setActiveChart,
+            setActiveInterval,
+          }} />
+        </View>
 
 
-          <View style={{ height: "40%", backgroundColor: activeTheme.darkBackground }}>
+        <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H, marginVertical: DIMENSIONS.PADDING_H }}>
+          <AnimatedTab {...{
+            filled: true,
+            activeKey: activeTab,
+            headers: tabs,
+            width: "20%",
+            onChange: handleChangeTab,
+          }} />
+        </View>
 
-            <ChartHeader{...{
-              precision: market.fdp,
-              gd: market.gd,
-            }} />
+        <MarketDetailTabsIndex
+          {...{
+            ref: this.contentRef,
+            activeTab,
+            market,
+            marketInfo,
+            handleDetail,
+          }} />
 
-            <View style={styles(activeTheme).chartWrapper}>
-              <MarketDetailChart
-                market={market}
-                type={activeChart}
-                interval={activeInterval}
+        {
+          showOrderForm &&
+          <KeyboardAvoidingView
+            keyboardVerticalOffset={40}
+            behavior={"padding"}>
+            <Animatable.View easing={"ease"} animation={"fadeInUp"}>
+              <AnimatedSheet
+                {...{
+                  market,
+                  marketInfo,
+                  selectedOrder,
+                  selectedType,
+                  getLastTickerParent: () => this.contentRef.current?.getLatestTicker(),
+                }}
               />
-            </View>
-
-            <ChartIntervals {...{
-              fullscreen,
-              setFullscreen,
-              activeInterval,
-              activeChart,
-              activeTheme,
-              setActiveChart,
-              setActiveInterval,
-            }} />
-          </View>
-
-
-          <View style={{ paddingHorizontal: PADDING_H, marginVertical: PADDING_H }}>
-            <AnimatedTab {...{
-              filled: true,
-              activeKey: activeTab,
-              headers: tabs,
-              width: "20%",
-              onChange: handleChangeTab,
-            }} />
-          </View>
-
-          <MarketDetailTabsIndex
-            // ref={node => this.contentRef = node}
-            // ref={this.contentRef}
-            {...{
-              ref: this.contentRef,
-              activeTab,
-              market,
-              gd: market.gd,
-              handleDetail,
-            }} />
-
-          {
-            showOrderForm &&
-            <KeyboardAvoidingView
-              keyboardVerticalOffset={40}
-              behavior={"padding"}>
-              <Animatable.View easing={"ease"} animation={"fadeInUp"}>
-                <AnimatedSheet
-                  {...{
-                    market,
-                    marketInfo,
-                    selectedOrder,
-                    selectedType,
-                    getLastTickerParent: () => this.contentRef.current?.getLatestTicker(),
-                  }}
-                />
-              </Animatable.View>
-            </KeyboardAvoidingView>
-          }
-
-
-        </LinearBackground>
+            </Animatable.View>
+          </KeyboardAvoidingView>
+        }
 
       </View>
     );
@@ -374,9 +360,6 @@ function mapStateToProps(state) {
     user: state.authenticationReducer.user,
     authenticated: state.authenticationReducer.authenticated,
     activeTheme: state.globalReducer.activeTheme,
-    activeThemeKey: state.globalReducer.activeThemeKey,
-    language: state.globalReducer.language,
-    connection: state.globalReducer.connection,
   };
 }
 
@@ -422,8 +405,8 @@ const styles = (props) => StyleSheet.create({
   },
 
   alert: {
-    width: NORMAL_IMAGE * 0.6,
-    height: NORMAL_IMAGE * 0.6,
+    width: DIMENSIONS.NORMAL_IMAGE * 0.6,
+    height: DIMENSIONS.NORMAL_IMAGE * 0.6,
     tintColor: props.appWhite,
   },
   chartWrapper: {

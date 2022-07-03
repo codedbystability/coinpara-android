@@ -1,12 +1,12 @@
 import * as React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import DynamicImage from "../../../components/dynamic-image";
+import DynamicImage from "../../../components/page-components/dynamic-image";
 import { getLang } from "../../../helpers/array-helper";
 import { useState } from "react";
 import ModalProvider from "../../../providers/ModalProvider";
-import MarketSelect from "../../../components/market-select";
+import MarketSelect from "../../../components/page-components/market-select";
 import { useSelector } from "react-redux";
-import { SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import HapticProvider from "../../../providers/HapticProvider";
 import TinyImage from "../../../tiny-image";
 
@@ -86,7 +86,7 @@ const styles = (props) => StyleSheet.create({
   },
   selectContainer: {
     height: 50,
-    width: SCREEN_WIDTH / 3,
+    width: DIMENSIONS.SCREEN_WIDTH / 3,
     borderRadius: 25,
     borderWidth: 1,
     borderColor: props.actionColor,

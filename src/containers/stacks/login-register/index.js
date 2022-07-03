@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, ImageBackground, Text, Pressable, StyleSheet } from "react-native";
-import CustomButton from "../../../components/button";
-import { PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import CustomButton from "../../../components/page-components/button";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { navigationRef } from "../../../providers/RootNavigation";
@@ -66,7 +66,7 @@ export default React.memo(styledHigherOrderComponents(LoginRegisterScreen));
 const styles = props => StyleSheet.create({
   wrapper: {
     flex: 1,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     justifyContent: "flex-end",
   },
   c1: { flex: isIphoneX ? .6 : .7, justifyContent: "space-around", alignItems: "center" },
@@ -80,7 +80,7 @@ const styles = props => StyleSheet.create({
   },
   continue: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     textAlign: "center",
     color: props.appWhite,
     marginVertical: 20,
@@ -115,11 +115,11 @@ const styles = props => StyleSheet.create({
   },
   press: {
     position: "absolute",
-    left: PADDING_H,
+    left: DIMENSIONS.PADDING_H,
     top: 36,
-    paddingVertical: PADDING_H * 3,
-    paddingRight: PADDING_H * 3,
-    paddingLeft: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_H * 3,
+    paddingRight: DIMENSIONS.PADDING_H * 3,
+    paddingLeft: DIMENSIONS.PADDING_H,
   },
   icon: {
     width: 16,

@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import {
+  ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView, Modal,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
 import userServices from "../../../services/user-services";
 import { useSelector } from "react-redux";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { MIDDLE_IMAGE, NORMAL_FONTSIZE, PADDING_H } from "../../../../utils/dimensions";
-import Validation from "../../../components/validation";
-import CustomCheckbox from "../../../components/custom-checkbox";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import Validation from "../../../components/page-components/validation";
+import CustomCheckbox from "../../../components/page-components/custom-checkbox";
 import Linking from "../../../providers/Linking";
 import Intercom from "@intercom/intercom-react-native";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import { validateEmail } from "../../../helpers/string-helper";
 import TinyImage from "../../../tiny-image";
+import { WebView } from "react-native-webview";
 
 const inputs = [
   {
@@ -42,6 +45,8 @@ const inputs = [
 const RegisterEmail = (props) => {
 
   const [email, setEmail] = useState("");
+  const [webViewURL, setWebViewURL] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const [mailProviders, setMailProviders] = useState([]);
   const [otpId, setOtpId] = useState("");
@@ -93,8 +98,6 @@ const RegisterEmail = (props) => {
 
   const handleSendOtp = () => {
 
-    return navigationRef.current.navigate("RegisterAdditional");
-
     if (!agreementConfirmed) {
       return DropdownAlert.show("error", getLang(language, "ERROR"), getLang(language, "PLEASE_CONFIRM_AGGREEMENTS"));
     }
@@ -125,22 +128,27 @@ const RegisterEmail = (props) => {
     let url = null;
     switch (action) {
       case "V1":
-        url = "https://alpha.coinpara.com/yasal/kvk-aydinlatma-metni";
+        url = "https://coinpara.com/yasal/kvk-aydinlatma-metni";
         break;
       case "V2":
-        url = "https://alpha.coinpara.com/yasal/kullanici-sozlesmesi";
+        url = "https://coinpara.com/yasal/kullanici-sozlesmesi";
         break;
       case "V3":
-        url = "https://alpha.coinpara.com/yasal/gizlilik-sozlesmesi";
+        url = "https://coinpara.com/yasal/gizlilik-sozlesmesi";
         break;
       case "V4":
-        url = "https://alpha.coinpara.com/yasal/cerez-politikasi";
+        url = "https://coinpara.com/yasal/cerez-politikasi";
         break;
     }
 
+
     if (url) {
-      Linking.openURL(url).then(r => null);
+      setIsLoaded(false);
+      setWebViewURL(url);
+
+      // Linking.openURL(url).then(r => null);
     }
+
 
   };
 
@@ -156,7 +164,7 @@ const RegisterEmail = (props) => {
     const v4 = getLang(language, "COOKIE_POLICY");
 
     return <Text style={{
-      paddingRight: PADDING_H,
+      paddingRight: DIMENSIONS.PADDING_H,
       width: "44%",
     }}>
       <Text style={[styles(activeTheme).descText, {}]}>
@@ -282,7 +290,12 @@ const RegisterEmail = (props) => {
 
         <Image
           source={{ uri: "https://images.coinpara.com/files/mobile-assets/logo.png" }}
-          style={{ width: MIDDLE_IMAGE, height: MIDDLE_IMAGE, tintColor: activeTheme.appWhite, marginBottom: 40 }}
+          style={{
+            width: DIMENSIONS.MIDDLE_IMAGE,
+            height: DIMENSIONS.MIDDLE_IMAGE,
+            tintColor: activeTheme.appWhite,
+            marginBottom: 40,
+          }}
           resizeMode={"contain"} />
 
 
@@ -305,6 +318,7 @@ const RegisterEmail = (props) => {
 
           <View style={{
             width: "100%",
+            paddingVertical: DIMENSIONS.PADDING_H * 2,
           }}>
             <CustomCheckbox
               {...{
@@ -351,6 +365,63 @@ const RegisterEmail = (props) => {
       />
 
 
+      <InputAccessory
+        handleStep={null}
+        onPress={(val) => setEmail(email + val)}
+        stepAble={false}
+        mailProviders={mailProviders}
+      />
+
+
+      <Modal visible={webViewURL !== null}
+             transparent={true}
+             animationType="slide"
+             presentationStyle={"overFullScreen"}
+             onRequestClose={() => {
+               setWebViewURL(null);
+               setIsLoaded(false);
+             }}
+             style={{
+               flex: 1,
+               backgroundColor: activeTheme.backgroundApp,
+             }}
+      >
+
+
+        <WebView
+          javaScriptEnabled={true}
+          onLoadEnd={() =>
+            setTimeout(() => {
+              setIsLoaded(true);
+            }, 500)
+          }
+          userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          source={{ uri: webViewURL }}
+          style={{
+            flex: 1,
+            backgroundColor: activeTheme.backgroundApp,
+          }}
+
+        />
+
+        {
+          !isLoaded && <ActivityIndicator
+            color={activeTheme.backgroundApp}
+            style={{ position: "absolute", top: DIMENSIONS.SCREEN_HEIGHT / 2, left: DIMENSIONS.SCREEN_WIDTH / 2 }}
+            size="large"
+          />
+        }
+
+
+        <Pressable style={styles(activeTheme).dismissButton} onPress={() => {
+          setWebViewURL(null);
+          setIsLoaded(false);
+        }}>
+          <TinyImage parent={"rest/"} name={"cancel"} style={styles(activeTheme).icon} />
+        </Pressable>
+
+      </Modal>
+
     </>
   );
 
@@ -372,7 +443,7 @@ const styles = (props) => StyleSheet.create({
   wrapper: {
     width: "100%",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   buttonWrapper: {
     position: "absolute",
@@ -382,7 +453,7 @@ const styles = (props) => StyleSheet.create({
 
   descText: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: props.secondaryText,
     // textDecorationLine: "none",
     lineHeight: 24,
@@ -391,7 +462,7 @@ const styles = (props) => StyleSheet.create({
 
   linkText: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.appWhite,
     textDecorationLine: "underline",
     lineHeight: 24,
@@ -404,7 +475,7 @@ const styles = (props) => StyleSheet.create({
 
   text: {
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     marginTop: 8,
     fontFamily: "CircularStd-Book",
   },
@@ -423,5 +494,15 @@ const styles = (props) => StyleSheet.create({
   icon: {
     width: 24,
     height: 24,
+  },
+  dismissButton: {
+    fontFamily: "CircularStd-Bold",
+    position: "absolute",
+    top: DIMENSIONS.PADDING_H * 4,
+    right: DIMENSIONS.PADDING_H,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 999999,
+    padding: DIMENSIONS.PADDING_H * 1.4,
   },
 });

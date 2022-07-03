@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../hocs/styledHigherOrderComponents";
 import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import TabNavigationHeader from "../../components/tab-navigation-header";
+import TabNavigationHeader from "../../components/page-components/tab-navigation-header";
 import { getLang } from "../../helpers/array-helper";
-import FormInput from "../../components/form-input";
-import CustomButton from "../../components/button";
+import FormInput from "../../components/page-components/form-input";
+import CustomButton from "../../components/page-components/button";
 import { useSelector } from "react-redux";
 import userServices from "../../services/user-services";
-import { MIDDLE_IMAGE, PADDING_H } from "../../../utils/dimensions";
+import { DIMENSIONS } from "../../../utils/dimensions";
 import DropdownAlert from "../../providers/DropdownAlert";
-import Validation from "../../components/validation";
+import Validation from "../../components/page-components/validation";
 import { navigationRef } from "../../providers/RootNavigation";
 import LocalStorage from "../../providers/LocalStorage";
+import InputAccessory from "../../components/page-components/input-accessory";
 
 
-const inputs = [
-  {
-    id: 1,
-    key: "email",
-    value: "",
-    type: "text",
-    keyboardType: "email-address",
-    placeholder: "YOUR_EMAIL_ADDRESS",
-    autoComplete: "email",
-    returnKey: "next",
-    autoFocus: true,
-  },
-];
+const input = {
+  id: 1,
+  key: "email",
+  value: "",
+  type: "text",
+  keyboardType: "email-address",
+  placeholder: "YOUR_EMAIL_ADDRESS",
+  autoComplete: "email",
+  returnKey: "next",
+  autoFocus: true,
+};
 const ForgotPassword = (props) => {
 
 
@@ -131,23 +130,25 @@ const ForgotPassword = (props) => {
           source={{
             uri: "https://images.coinpara.com/files/mobile-assets/logo.png",
           }}
-          style={{ width: MIDDLE_IMAGE, height: MIDDLE_IMAGE, tintColor: activeTheme.appWhite, marginBottom: 40 }}
+          style={{
+            width: DIMENSIONS.MIDDLE_IMAGE,
+            height: DIMENSIONS.MIDDLE_IMAGE,
+            tintColor: activeTheme.appWhite,
+            marginBottom: 40,
+          }}
           resizeMode={"contain"} />
 
         <View style={styles.wrapper}>
-          {
-            inputs.map(input => <FormInput placeholder={input.placeholder}
-                                           inputKey={input.key}
-                                           key={input.key}
-                                           value={input.key === "email" ? email : phone}
-                                           keyboardType={input.keyboardType}
-                                           autoComplete={input.autoComplete}
-                                           returnKey={input.returnKey}
-                                           autoFocus={input.autoFocus}
-                                           autoCapitalize={"none"}
-                                           type={input.type}
-                                           onChange={(value) => handleSetText(input.key, value)} />)
-          }
+          <FormInput placeholder={input.placeholder}
+                     inputKey={input.key}
+                     value={email}
+                     keyboardType={input.keyboardType}
+                     autoComplete={input.autoComplete}
+                     returnKey={input.returnKey}
+                     autoFocus={input.autoFocus}
+                     autoCapitalize={"none"}
+                     type={input.type}
+                     onChange={(value) => handleSetText(input.key, value)} />
 
 
         </View>
@@ -174,6 +175,14 @@ const ForgotPassword = (props) => {
                   onResult={handleSuccessValidation}
       />
 
+      <InputAccessory
+        handleStep={null}
+        onPress={(val) => setEmail(email + val)}
+        stepAble={false}
+        mailProviders={mailProviders}
+      />
+
+
     </>
 
   );
@@ -193,7 +202,7 @@ const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
     justifyContent: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   buttonWrapper: {
     position: "absolute",

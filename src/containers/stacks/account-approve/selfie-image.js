@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Image, ActivityIndicator } from "react-native";
-import CustomButton from "../../../components/button";
-import UploadedValidItem from "../../../components/uploaded-image";
-import NImage from "../../../components/image/index.tsx";
+import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
+import CustomButton from "../../../components/page-components/button";
+import UploadedValidItem from "../../../components/page-components/uploaded-image";
+import NImage from "../../../components/page-components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { MARGIN_T, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { apiPostWithTokenAndImage } from "../../../services/fetch-instance";
 import DropdownAlert from "../../../providers/DropdownAlert";
 
@@ -133,22 +133,22 @@ const SelfieImage = ({ handleShowAction, image, language, handleClearImage }) =>
 
 const styles = (props) => StyleSheet.create({
   scrollView: {
-    paddingTop: PADDING_H * 2,
-    paddingHorizontal: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   title: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   desc: {
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   imageTitle: {
     color: "rgb(255,255,255)",
@@ -173,7 +173,7 @@ const styles = (props) => StyleSheet.create({
     height: 220,
     marginLeft: 12,
     width: "100%",
-    marginTop: MARGIN_T,
+    marginTop: DIMENSIONS.MARGIN_T,
   },
   buttonWrapper: {
     flexDirection: "row",

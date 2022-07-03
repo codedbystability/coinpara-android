@@ -13,12 +13,12 @@ import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
-import { MARGIN_T, MIDDLE_IMAGE, PADDING_H, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import ScanQrSvg from "../../../components/page-components/svg-icons/ScanQrSvg";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import NImage from "../../../components/image/index.tsx";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import NImage from "../../../components/page-components/image/index.tsx";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import TinyImage from "../../../tiny-image";
 
 const ScanScreen2 = (props) => {
@@ -115,7 +115,7 @@ const ScanScreen2 = (props) => {
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: activeTheme.darkBackground,
-              paddingHorizontal: PADDING_H,
+              paddingHorizontal: DIMENSIONS.PADDING_H,
             }}>
 
               <NImage
@@ -203,7 +203,7 @@ export default ScanScreen;
 
 const maskRowHeight = 180;
 const maskColWidth = 180;
-const ww = SCREEN_WIDTH * 0.1;
+const ww = DIMENSIONS.SCREEN_WIDTH * 0.1;
 
 const styles = StyleSheet.create({
   container: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: maskRowHeight / 2,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   titleWw: {
     color: "#fff",
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "absolute",
     bottom: maskRowHeight - 60,
-    left: SCREEN_WIDTH / 2 - 30,
+    left: DIMENSIONS.SCREEN_WIDTH / 2 - 30,
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -295,14 +295,14 @@ const styles = StyleSheet.create({
     height: 28,
   },
   warn: {
-    width: MIDDLE_IMAGE,
-    height: MIDDLE_IMAGE,
-    marginBottom: MARGIN_T,
+    width: DIMENSIONS.MIDDLE_IMAGE,
+    height: DIMENSIONS.MIDDLE_IMAGE,
+    marginBottom: DIMENSIONS.MARGIN_T,
   },
   notA: {
     fontSize: 14,
     fontFamily: "CircularStd-Book",
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
     textAlign: "center",
   },
 });

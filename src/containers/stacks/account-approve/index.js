@@ -1,22 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { Alert, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import ApproveModal from "./approve-modal";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import { useSelector } from "react-redux";
 import userServices from "../../../services/user-services";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import {
-  BIG_LIST_MARGIN_T,
-  BIG_TITLE_FONTSIZE,
-  NORMAL_FONTSIZE,
-  PADDING_BH,
-  PADDING_BV,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
 
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
@@ -24,9 +16,8 @@ import { items, options, optionsVideo } from "./constants";
 import { isIphoneX } from "../../../../utils/devices";
 import ActionSheetComp from "../../../components/shell-components/ActionSheet/ActionSheetComp";
 import TinyImage from "../../../tiny-image";
-import { navigationRef } from "../../../providers/RootNavigation";
-import NImage from "../../../components/image/index.tsx";
-import FloatingAction from "../../../components/floating-action";
+import NImage from "../../../components/page-components/image/index.tsx";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 const AccountApprove = (props) => {
 
@@ -494,7 +485,7 @@ const AccountApprove = (props) => {
 
       </Modal>
 
-      <FloatingAction />
+      <FloatingAction isButton={true}/>
 
     </>
   );
@@ -512,7 +503,7 @@ const styles = (props) => StyleSheet.create({
   contentWrapper: {
     flex: 1,
     paddingVertical: 18,
-    paddingHorizontal: PADDING_BH,
+    paddingHorizontal: DIMENSIONS.PADDING_BH,
     justifyContent: "space-between",
     // backgroundColor: "red",
   },
@@ -525,7 +516,7 @@ const styles = (props) => StyleSheet.create({
     // flex: 1
   },
   desc: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     textAlign: "center",
     fontFamily: "CircularStd-Book",
@@ -537,13 +528,13 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     // backgroundColr:'red',
     // minHeight: 80,
-    paddingVertical: PADDING_BV,
-    paddingHorizontal: PADDING_BH,
+    paddingVertical: DIMENSIONS.PADDING_BV,
+    paddingHorizontal: DIMENSIONS.PADDING_BH,
     borderRadius: 10,
     backgroundColor: props.darkBackground,
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: isIphoneX ? BIG_LIST_MARGIN_T * 1.6 : BIG_LIST_MARGIN_T,
+    marginTop: isIphoneX ? DIMENSIONS.BIG_LIST_MARGIN_T * 1.6 : DIMENSIONS.BIG_LIST_MARGIN_T,
 
   },
   warnCircle: {
@@ -557,14 +548,14 @@ const styles = (props) => StyleSheet.create({
   },
   activeListItem: {
     minHeight: 80,
-    paddingVertical: PADDING_BV,
-    paddingHorizontal: PADDING_BH,
+    paddingVertical: DIMENSIONS.PADDING_BV,
+    paddingHorizontal: DIMENSIONS.PADDING_BH,
     borderRadius: 10,
     backgroundColor: props.actionColor,
     alignItems: "center",
     // justifyContent: "space-around",
     flexDirection: "row",
-    marginTop: BIG_LIST_MARGIN_T,
+    marginTop: DIMENSIONS.BIG_LIST_MARGIN_T,
 
 
   },
@@ -575,18 +566,18 @@ const styles = (props) => StyleSheet.create({
   },
   title: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
   },
   warnText: {
     fontFamily: "CircularStd-Bold",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.noRed,
-    marginTop: PADDING_H,
+    marginTop: DIMENSIONS.PADDING_H,
   },
   description: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.secondaryText,
     width: "90%",
   },

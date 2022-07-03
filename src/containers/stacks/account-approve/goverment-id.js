@@ -1,17 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
 
-import CustomButton from "../../../components/button";
-import UploadedValidItem from "../../../components/uploaded-image";
-import {
-  BIG_IMAGE,
-  LIST_MARGIN_T,
-  MARGIN_T,
-  NORMAL_FONTSIZE,
-  PADDING_BV, PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
-import NImage from "../../../components/image/index.tsx";
+import CustomButton from "../../../components/page-components/button";
+import UploadedValidItem from "../../../components/page-components/uploaded-image";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import NImage from "../../../components/page-components/image/index.tsx";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { apiPostWithTokenAndImage } from "../../../services/fetch-instance";
@@ -110,13 +103,13 @@ const GovernmentIdStep = ({ handleShowAction, language, identityFrontImage, iden
     });
 
 
-    apiPostWithTokenAndImage( "https://apiv2.coinpara.com/api/" + param, formData).then((response) => {
+    apiPostWithTokenAndImage("https://apiv2.coinpara.com/api/" + param, formData).then((response) => {
       if (!response || !response.IsSuccess) {
         param === "user/UserIdCopyUpdate" ? setFirstFetching(false) : setSecondFetching(false);
         return;
       }
-        param === "user/UserIdCopyUpdate" ? setFirstFetching(null) : setSecondFetching(null);
-        DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "UPLOADED_SUCCESSFULLY"));
+      param === "user/UserIdCopyUpdate" ? setFirstFetching(null) : setSecondFetching(null);
+      DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "UPLOADED_SUCCESSFULLY"));
     });
   };
 
@@ -244,8 +237,8 @@ const GovernmentIdStep = ({ handleShowAction, language, identityFrontImage, iden
 const styles = (props) => StyleSheet.create({
 
   scrollView: {
-    paddingTop: PADDING_H * 2,
-    paddingHorizontal: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     // paddingBottom: 60,
   },
 
@@ -253,28 +246,28 @@ const styles = (props) => StyleSheet.create({
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   desc: {
-    marginVertical: PADDING_H,
+    marginVertical: DIMENSIONS.PADDING_H,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   imageTitle: {
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
     marginVertical: 20,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
   imageDesc: {
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
-    marginVertical: MARGIN_T,
-    fontSize: NORMAL_FONTSIZE,
+    marginVertical: DIMENSIONS.MARGIN_T,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
   line: {
     height: 1,
@@ -282,9 +275,9 @@ const styles = (props) => StyleSheet.create({
     backgroundColor: props.appWhite,
   },
   image: {
-    height: BIG_IMAGE,
+    height: DIMENSIONS.BIG_IMAGE,
     width: "auto",
-    marginTop: LIST_MARGIN_T,
+    marginTop: DIMENSIONS.MARGIN_T,
   },
 
 });

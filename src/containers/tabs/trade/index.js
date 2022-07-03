@@ -9,27 +9,22 @@ import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponen
 import { useEffect, useState } from "react";
 import TradeSelect from "./select";
 import { useSelector } from "react-redux";
-import CustomButton from "../../../components/button";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import {
-  BIG_TITLE_FONTSIZE,
-  NORMAL_FONTSIZE,
-  PADDING_H,
-  SCREEN_WIDTH,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import CustomButton from "../../../components/page-components/button";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { formatMoney } from "../../../helpers/math-helper";
 import marketServices from "../../../services/market-services";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import PercentageSelect from "../../../components/percentage-select";
+import PercentageSelect from "../../../components/page-components/percentage-select";
 import { percentages, tradeTypes } from "./constants";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import store from "../../../reducers/createReducers";
-import DynamicImage from "../../../components/dynamic-image";
+import DynamicImage from "../../../components/page-components/dynamic-image";
 import { replaceAll } from "../../../helpers/string-helper";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import TradeChart from "./chart";
 import TinyImage from "../../../tiny-image";
 
@@ -175,7 +170,6 @@ const Trade = (props) => {
     }
 
 
-
     if (activeType === "buy" && amount > userFromWallet.wb) {
       return ActionSheetComProvider.show({
         title: getLang(language, "NOT_ENOUGH_BALANCE_DO_YOU_WANT_TO_DEPOSIT"),
@@ -286,13 +280,16 @@ const Trade = (props) => {
             <TradeSelect {...{ selectedMarket, handleSelect, activeType }} />
           </View>
 
-          <View style={[styles(activeTheme).wrapper, { paddingTop: PADDING_H / 2 }]}>
+          <View style={[styles(activeTheme).wrapper, { paddingTop: DIMENSIONS.PADDING_H / 2 }]}>
 
             {
               selectedMarket && Object.keys(selectedMarket).length >= 1 &&
               <View style={{ flexDirection: "row", alignItems: "center" }}>
 
-                <Text style={[styles(activeTheme).text, { fontSize: BIG_TITLE_FONTSIZE + 4, marginRight: 4 }]}>
+                <Text style={[styles(activeTheme).text, {
+                  fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 4,
+                  marginRight: 4,
+                }]}>
                   {selectedMarket && Object.keys(selectedMarket).length >= 1 && formatMoney(selectedMarket.pr, info.FromCoinDecimalPoints)}
                   {
                     "  "
@@ -359,7 +356,7 @@ const Trade = (props) => {
 
 
             {
-              authenticated && <View style={{ width: "100%", paddingVertical: PADDING_H / 2 }}>
+              authenticated && <View style={{ width: "100%", paddingVertical: DIMENSIONS.PADDING_H / 2 }}>
                 <PercentageSelect percentages={percentages}
                                   handlePress={(item) => handleSetPercentage(item)}
                                   activePercentage={activePercentage} />
@@ -427,6 +424,9 @@ const Trade = (props) => {
 
 
       </View>
+      <InputAccessory
+        tabBarShown={true}
+      />
 
     </>
   );
@@ -437,12 +437,12 @@ export default React.memo(TradeScreen);
 const styles = (props) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    paddingHorizontal: PADDING_H * 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H * 2,
     justifyContent: "center",
     alignItems: "center",
   },
   selectContainer: {
-    width: SCREEN_WIDTH / 3,
+    width: DIMENSIONS.SCREEN_WIDTH / 3,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 20,
@@ -454,7 +454,7 @@ const styles = (props) => StyleSheet.create({
   },
   text: {
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
   image: {
@@ -472,7 +472,7 @@ const styles = (props) => StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     marginRight: 8,
 
     // marginLeft: 12,
@@ -482,7 +482,7 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 4,
   },
   textInput: {
@@ -542,18 +542,18 @@ const styles = (props) => StyleSheet.create({
     // backgroundColor: "red",
   },
   upW: {
-    // paddingHorizontal: PADDING_H, paddingVertical: isIphoneX ? PADDING_V * 2 : 0
+    // paddingHorizontal: DIMENSIONS.PADDING_H, paddingVertical: isIphoneX ? PADDING_V * 2 : 0
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: PADDING_H,
-    paddingVertical: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_H,
   },
   txt: {
     color: props.secondaryText,
     marginLeft: -10,
     marginTop: 4,
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
   icon: {
     width: 12,

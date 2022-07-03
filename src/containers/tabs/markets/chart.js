@@ -1,10 +1,9 @@
 import React from "react";
-import {  View } from "react-native";
-import { LIST_ITEM_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { SvgUri } from "react-native-svg";
 
 const CHART_BASE_URI = "https://minichart.coinpara.com/";
-const width = parseInt(SCREEN_WIDTH * 0.3);
+const width = parseInt(DIMENSIONS.SCREEN_WIDTH * 0.3);
 
 
 class MarketChart extends React.PureComponent {
@@ -28,7 +27,7 @@ class MarketChart extends React.PureComponent {
     return (
         <SvgUri
           width={width}
-          height={LIST_ITEM_HEIGHT}
+          height={DIMENSIONS.LIST_ITEM_HEIGHT}
           uri={`${CHART_BASE_URI}${market.fs}-${market.to}.svg`}
         />
     );

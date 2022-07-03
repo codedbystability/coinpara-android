@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import {
-  INPUT_HEIGHT,
-  LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
-import CustomList from "../../../components/custom-list";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import CustomList from "../../../components/page-components/custom-list";
 import TinyImage from "../../../tiny-image";
 import generalServices from "../../../services/general-services";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import moment from "moment";
 import { navigationRef } from "../../../providers/RootNavigation";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 import Intercom from "@intercom/intercom-react-native";
 
 
@@ -72,6 +67,7 @@ const HelpCenter = props => {
       item,
     });
   };
+
   const renderRequestItem = (item) => {
     return (
       <TouchableOpacity
@@ -137,7 +133,29 @@ const HelpCenter = props => {
             <TinyImage parent={"rest/"} name={"c-right"} style={styles(activeTheme).icon} />
           </View>
         </View>
+        <View style={{
+          flexDirection: "row",
+        }}>
+          {
+            item.Attachments && item.Attachments.length >= 1 ? item.Attachments.map(img => (
 
+              <View style={{
+                // width: SCREEN_WIDTH / 4,
+                // height: SCREEN_WIDTH / 6,
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 8,
+              }}>
+                <Image
+                  resizeMethod={"scale"}
+                  useFastImage={true}
+                  source={{ uri: img }} style={styles(activeTheme).image} resizeMode={"contain"} />
+
+
+              </View>
+            )) : null
+          }
+        </View>
 
         <View style={{
           flexDirection: "row",
@@ -161,7 +179,7 @@ const HelpCenter = props => {
       <TabNavigationHeader
         {...props}
         backAble={true}
-        isBack={true}
+        isBack={false}
         options={{ title: getLang(language, "SUPPORT_CENTER") }}
       />
 
@@ -173,9 +191,7 @@ const HelpCenter = props => {
         keyExtractor={keyExtractor}
         stickyHeaderIndices={[0]}
         ListHeaderComponent={
-          <View style={{
-            backgroundColor: activeTheme.backgroundApp,
-          }}>
+          <View style={{ backgroundColor: activeTheme.backgroundApp }}>
 
             <AnimatedTab {...{
               activeKey: activeHeaderKey,
@@ -187,7 +203,7 @@ const HelpCenter = props => {
 
           </View>
         }
-        itemHeight={LIST_ITEM_HEIGHT}
+        itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
         renderItem={({ item }) => renderRequestItem(item)}
         onEndReached={null}
         iconKey={"empty-orders"}
@@ -195,28 +211,12 @@ const HelpCenter = props => {
 
       />
 
-      <View style={{
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        // height: INPUT_HEIGHT,
-        flexDirection: "row",
-        // paddingBottom: 10,
-        backgroundColor: activeTheme.backgroundApp,
-        minHeight: INPUT_HEIGHT + 6,
-
-      }}>
+      <View style={styles(activeTheme).w4}>
 
         <TouchableOpacity
           onPress={() => handleNavigation("CONTACT_SUPPORT")}
           activeOpacity={.8}
-          style={{
-            height: "100%",
-            width: "40%",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: activeTheme.darkBackground,
-          }}>
+          style={styles(activeTheme).ww}>
 
           <TinyImage parent={"settings/"} name={"support"}
                      style={styles(activeTheme).icon} />
@@ -230,13 +230,7 @@ const HelpCenter = props => {
         <TouchableOpacity
           activeOpacity={.8}
           onPress={() => handleNavigation("CREATE_SUPPORT_REQUEST")}
-          style={{
-            height: "100%",
-            width: "60%",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: activeTheme.actionColor,
-          }}>
+          style={styles(activeTheme).b1}>
 
           <TinyImage parent={"rest/"} name={"tick-active"}
                      style={styles(activeTheme).icon} />
@@ -280,7 +274,7 @@ const styles = (props) => StyleSheet.create({
     height: 16,
   },
   bT: {
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     marginTop: 4,
@@ -300,23 +294,23 @@ const styles = (props) => StyleSheet.create({
     // height: 80,
     marginVertical: 6,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 8,
   },
   id: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE - 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
   },
   idT: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: NORMAL_FONTSIZE - 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
   },
   msg: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
 
   },
   img1: {
@@ -325,25 +319,52 @@ const styles = (props) => StyleSheet.create({
     marginBottom: 8,
   },
   t1: {
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
   },
   l1: {
-    paddingTop: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
     paddingBottom: 120,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   d1: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: NORMAL_FONTSIZE - 2,
-    marginTop: PADDING_H,
-    marginBottom: PADDING_H * 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
+    marginTop: DIMENSIONS.PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H * 2,
   },
   t2: {
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
+  },
+  image: {
+    width: 40,
+    height: 40,
+  },
+
+  ww: {
+    height: "100%",
+    width: "40%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: props.darkBackground,
+  },
+  w4: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    flexDirection: "row",
+    backgroundColor: props.backgroundApp,
+    minHeight: DIMENSIONS.INPUT_HEIGHT + 6,
+  },
+  b1: {
+    height: "100%",
+    width: "60%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: props.actionColor,
   },
 });

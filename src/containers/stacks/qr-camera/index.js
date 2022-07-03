@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 import { RNCamera } from "react-native-camera";
-import { SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
-const CAM_VIEW_HEIGHT = SCREEN_WIDTH * 1.5;
-const CAM_VIEW_WIDTH = SCREEN_WIDTH;
+const CAM_VIEW_HEIGHT = DIMENSIONS.SCREEN_WIDTH * 1.5;
+const CAM_VIEW_WIDTH = DIMENSIONS.SCREEN_WIDTH;
 
 const leftMargin = 100;
 const topMargin = 50;

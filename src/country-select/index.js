@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import * as Animatable from "react-native-animatable";
-import { BIG_TITLE_FONTSIZE, PADDING_H, PADDING_V } from "../../utils/dimensions";
+import { DIMENSIONS } from "../../utils/dimensions";
 import { getLang } from "../helpers/array-helper";
-import NativeInput from "../components/native-input";
+import NativeInput from "../components/page-components/native-input";
 import ModalProvider from "../providers/ModalProvider";
 import TinyImage from "../tiny-image";
-import NImage from "../components/image/index.tsx";
+import NImage from "../components/page-components/image/index.tsx";
 
 const itemToShow = 80;
 const CountrySelect = (props) => {
   const { handleSelectCountry, activeCountry, showPhone = true } = props;
-
-
   const [countries, setCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -56,7 +54,7 @@ const CountrySelect = (props) => {
             onPress={() => handleSelectCountry(item)}
             style={[styles(activeTheme).item, { borderBottomColor: activeCountry.code === item.code ? activeTheme.actionColor : activeTheme.borderGray }]}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={{ marginRight: PADDING_H }}>
+              <View style={{ marginRight: DIMENSIONS.PADDING_H }}>
                 <NImage
                   style={{
                     width: 20,
@@ -135,8 +133,7 @@ const CountrySelect = (props) => {
   );
 };
 
-export default CountrySelect;
-
+export default React.memo(CountrySelect);
 
 const styles = (props) => StyleSheet.create({
   container: {
@@ -171,7 +168,7 @@ const styles = (props) => StyleSheet.create({
   close: {
     position: "absolute",
     right: 20,
-    top: PADDING_V,
+    top: DIMENSIONS.PADDING_V,
     padding: 8,
     // marginVertical: 12,
   },
@@ -182,11 +179,11 @@ const styles = (props) => StyleSheet.create({
   },
 
   ttt: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
     textAlign: "center",
-    marginBottom: PADDING_V,
+    marginBottom: DIMENSIONS.PADDING_V,
   },
   icon: {
     width: 16,

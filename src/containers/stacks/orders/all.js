@@ -2,8 +2,7 @@ import React from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import OrdersPure from "./index";
 import { View } from "react-native";
-import { PADDING_BV } from "../../../../utils/dimensions";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 
@@ -17,7 +16,7 @@ const AllOrders = (props) => {
       <TabNavigationHeader
         {...props}
         backAble={true}
-        isBack={true}
+        isBack={false}
         options={{
           presentation: "modal",
           title: getLang(language, "MY_ORDERS"),

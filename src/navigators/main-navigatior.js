@@ -36,7 +36,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import DrawerContent from "./drawer-content";
 import { drawerItems } from "./stack-items";
 import StackTabNav from "./tab-navigator";
-import RegisterAdditional from "../containers/stacks/register/register-additional";
 import DeviceProvider from "../providers/DeviceProvider";
 
 const Drawer = createDrawerNavigator();
@@ -206,7 +205,6 @@ const MainNavigator = ({ walkThroughSeen }) => {
   }, [user, userToken]);
 
   useEffect(() => {
-    // LocalStorage.clearAll();
 
     const expireDate = LocalStorage.getItem("expireDate");
     const refreshToken = LocalStorage.getItem("refresh_token");
@@ -492,6 +490,8 @@ const MainNavigator = ({ walkThroughSeen }) => {
       }).then(response => {
         if (response && response.Id) {
           dispatch(setUser(response));
+        } else {
+          onFailPasscode();
         }
       }).catch(err => console.log("err -> ", err));
 

@@ -1,14 +1,14 @@
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { NORMAL_FONTSIZE, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../../../../../utils/dimensions";
-import EmptyContainer from "../../../../../components/empty-container";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
+import EmptyContainer from "../../../../../components/page-components/empty-container";
 import moment from "moment";
-import { formatMoney, formattedNumber } from "../../../../../helpers/math-helper";
+import { formatMoney } from "../../../../../helpers/math-helper";
 import { useSelector } from "react-redux";
 
 const HistoryContent = ({ history, fdp, tdp }) => {
 
-  const { activeTheme,activeUserColors } = useSelector(state => state.globalReducer);
+  const { activeTheme, activeUserColors } = useSelector(state => state.globalReducer);
   const awesomeChildListRenderItem =
     ({ item }) => {
 
@@ -36,7 +36,7 @@ const HistoryContent = ({ history, fdp, tdp }) => {
             style={[styles(activeTheme).priceText, {
               textAlign: "right",
               width: "25%",
-              // fontSize: NORMAL_FONTSIZE - 1,
+              // fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
               color: activeTheme.secondaryText,
             }]}>{
             // moment(stillUtc).local().format("HH:mm:ss")
@@ -61,7 +61,7 @@ const HistoryContent = ({ history, fdp, tdp }) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               backgroundColor: "transparent",
-              paddingBottom:60
+              paddingBottom: 60,
             }}
             renderItem={awesomeChildListRenderItem}
             keyExtractor={awesomeChildListKeyExtractor}
@@ -91,7 +91,7 @@ const styles = (props) => StyleSheet.create({
   title: {
     width: "25%", textAlign: "left",
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
     color: props.appWhite,
     paddingHorizontal: 6,
   },
@@ -99,7 +99,7 @@ const styles = (props) => StyleSheet.create({
   priceText: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
 
 

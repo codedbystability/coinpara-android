@@ -1,26 +1,20 @@
 import React from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import PureItem from "../markets/item-pure";
 import HomepageHeaders from "./components/headers";
-import {
-  BIG_TITLE_FONTSIZE,
-  HEADER_HEIGHT,
-  LIST_ITEM_HEIGHT,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { tabs } from "./constant";
-import AnimatedTab from "../../../components/animated-tab";
-import VersionModal from "../../../components/version-modal";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import AnimatedTab from "../../../components/page-components/animated-tab";
+import VersionModal from "../../../components/page-components/version-modal";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
-import { DrawerActions } from "@react-navigation/native";
 import TinyImage from "../../../tiny-image";
 import { navigationRef } from "../../../providers/RootNavigation";
 import ModalProvider from "../../../providers/ModalProvider";
-import MarketSelectDetail from "../../../components/market-select-detail";
+import MarketSelectDetail from "../../../components/page-components/market-select-detail";
+import CustomList from "../../../components/page-components/custom-list";
 
 
 class Homepage extends React.PureComponent {
@@ -28,6 +22,9 @@ class Homepage extends React.PureComponent {
     super(props);
     this.handleMarketSelect = this.handleMarketSelect.bind(this);
     this.handleNavigation = this.handleNavigation.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.getHeader = this.getHeader.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.state = {
       refreshing: false,
       activeTab: "TOP_GAINERS",
@@ -38,9 +35,13 @@ class Homepage extends React.PureComponent {
     };
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ showModal: true });
+    }, 2500);
+  }
 
   handleTabChange = (tab) => {
-
     this.setState(prevState => {
       return {
         ...prevState,
@@ -57,24 +58,15 @@ class Homepage extends React.PureComponent {
 
   awesomeChildListKeyExtractor = (_, i) => `market-tabs-index-${i}`;
 
-  getItemLayout = (data, index) => ({ length: LIST_ITEM_HEIGHT, offset: LIST_ITEM_HEIGHT * index, index });
-
   handleRefresh = () => {
     this.setState({
       refreshing: true,
     }, () => {
       setTimeout(() => {
         this.setState({ refreshing: false });
-      }, 1000);
+      }, 500);
     });
   };
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({ showModal: true });
-    }, 2500);
-  }
-
 
   handleNavigation = (type) => navigationRef.current?.navigate(type);
 
@@ -89,6 +81,74 @@ class Homepage extends React.PureComponent {
       handleSelect={this.handleCoinSelected} />, true);
   };
 
+  onScroll(event) {
+    const { nativeEvent } = event;
+    const { contentOffset } = nativeEvent;
+    const { y } = contentOffset;
+    this.setState({
+      offsetY: y,
+    });
+  }
+
+  getHeader() {
+    const {
+      language,
+      activeTheme,
+      authenticated,
+    } = this.props;
+
+
+    return (
+      <View style={styles(activeTheme).wrapper}>
+        <View style={styles(activeTheme).content}>
+
+          <View style={[styles(activeTheme).header2, {
+            width: authenticated ? "80%" : "90%",
+          }]}>
+
+
+            <Pressable
+              onPress={this.handleMarketSelect}
+              style={[styles(activeTheme).input, {
+                width: authenticated ? "88%" : "90%",
+              }]}>
+              <View style={styles(activeTheme).searchIcon}>
+                <TinyImage parent={"rest/"} name={"search"} style={styles(activeTheme).icon2} />
+              </View>
+              <Text style={styles(activeTheme).txt}>
+                {getLang(language, "SEARCH")}
+              </Text>
+            </Pressable>
+          </View>
+
+
+          <View style={[styles(activeTheme).inn, {
+            width: authenticated ? "20%" : "10%",
+          }]}>
+
+            <Pressable
+              style={{ padding: 5 }}
+              onPress={() => this.handleNavigation(authenticated ? "AccountInformation" : "LoginRegister")}>
+              <TinyImage style={styles(activeTheme).icon} parent={"rest/"} name={"user"} />
+            </Pressable>
+
+            {
+              authenticated &&
+              <Pressable onPress={() => this.handleNavigation("ScanScreen")}
+                         style={{ padding: 5 }}>
+                <TinyImage style={styles(activeTheme).icon} parent={"rest/"} name={"qr-login"} />
+              </Pressable>
+            }
+
+
+          </View>
+
+        </View>
+
+
+      </View>
+    );
+  }
 
   render() {
     const {
@@ -96,8 +156,6 @@ class Homepage extends React.PureComponent {
       TOP_LOSERS,
       NEW,
       navigation,
-      language,
-      activeTheme,
       authenticated,
     } = this.props;
     const {
@@ -106,88 +164,42 @@ class Homepage extends React.PureComponent {
       showModal,
     } = this.state;
 
+
     const ruledMarkets = activeTab === "TOP_GAINERS" ? TOP_GAINERS : activeTab === "TOP_LOSERS" ? TOP_LOSERS : NEW;
     const {
       handleTabChange,
       awesomeChildListRenderItem,
       awesomeChildListKeyExtractor,
-      getItemLayout,
-      handleRefresh,
+      getHeader,
     } = this;
 
     return (
-      <View style={{
-        paddingTop: 12,
-        flex: 1,
-      }}>
+      <>
+
         <TabNavigationHeader
           {...this.props}
           backAble={true}
           options={{
             presentation: "modal",
-            title: () => {
-              return (
-                <View style={styles(activeTheme).wrapper}>
-                  <View style={styles(activeTheme).content}>
-
-                    <View style={{
-                      width: authenticated ? "80%" : "90%",
-                      height: "100%",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      flexDirection: "row",
-                    }}>
-
-
-                      <Pressable
-                        onPress={this.handleMarketSelect}
-                        style={[styles(activeTheme).input, {
-                          width: authenticated ? "88%" : "90%",
-                        }]}>
-                        <View style={styles(activeTheme).searchIcon}>
-                          <TinyImage parent={"rest/"} name={"search"} style={styles(activeTheme).icon2} />
-                        </View>
-                        <Text style={styles(activeTheme).txt}>
-                          {getLang(language, "SEARCH")}
-                        </Text>
-                      </Pressable>
-                    </View>
-
-
-                    <View style={[styles(activeTheme).inn, {
-                      width: authenticated ? "20%" : "10%",
-
-                    }]}>
-
-                      <Pressable
-                        style={{ padding: 5 }}
-                        onPress={() => this.handleNavigation(authenticated ? "AccountInformation" : "LoginRegister")}>
-                        <TinyImage style={styles(activeTheme).icon} parent={"rest/"} name={"user"} />
-                      </Pressable>
-
-                      {
-                        authenticated &&
-                        <Pressable onPress={() => this.handleNavigation("ScanScreen")}
-                                   style={{ padding: 5 }}>
-                          <TinyImage style={styles(activeTheme).icon} parent={"rest/"} name={"qr-login"} />
-                        </Pressable>
-                      }
-
-
-                    </View>
-
-                  </View>
-
-
-                </View>
-              );
-            },
+            title: getHeader,
           }}
         />
-        <FlatList
+
+
+        <CustomList
+          contentStyle={{
+            marginTop: DIMENSIONS.PADDING_H,
+          }}
+          borderGray={"transparent"}
+          data={ruledMarkets}
+          renderItem={awesomeChildListRenderItem}
+          keyExtractor={awesomeChildListKeyExtractor}
+          showFooter={false}
+          itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
+          onEndReached={null}
           refreshControl={<RefreshControl
             refreshing={refreshing}
-            onRefresh={handleRefresh}
+            onRefresh={this.handleRefresh}
             tintColor={"#bdbdbd"}
           />}
           ListHeaderComponent={
@@ -200,7 +212,7 @@ class Homepage extends React.PureComponent {
                 }}
               />
 
-              <View style={{ paddingHorizontal: PADDING_H }}>
+              <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H }}>
                 <AnimatedTab {...{
                   activeKey: activeTab,
                   headers: tabs,
@@ -211,18 +223,15 @@ class Homepage extends React.PureComponent {
               </View>
             </>
           }
-          showsVerticalScrollIndicator={false}
-          data={ruledMarkets}
-          renderItem={awesomeChildListRenderItem}
-          keyExtractor={awesomeChildListKeyExtractor}
-          getItemLayout={getItemLayout}
         />
+
         {
           showModal && <VersionModal />
         }
-      </View>
-
+      </>
     );
+
+
   }
 }
 
@@ -245,20 +254,26 @@ const styles = (props) => StyleSheet.create({
     width: "100%",
     height: "100%",
     justifyContent: "flex-end",
-    // backgroundColor: "blue",
-    // marginTop: PADDING_H,
   },
   content: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center",
+    alignItems: "flex-end",
     paddingTop: 10,
-    paddingHorizontal: PADDING_H,
+    height: DIMENSIONS.HEADER_HEIGHT,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+  },
+  header2: {
+    height: "100%",
+    alignItems: "flex-end",
+    paddingBottom: 2,
+    justifyContent: "flex-end",
+    flexDirection: "row",
   },
   welcome: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
   },
   inner: {
@@ -287,13 +302,13 @@ const styles = (props) => StyleSheet.create({
     height: 28,
     backgroundColor: props.darkBackground,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
     alignItems: "center",
     flexDirection: "row",
   },
   txt: {
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
   searchIcon: { paddingHorizontal: 10 },

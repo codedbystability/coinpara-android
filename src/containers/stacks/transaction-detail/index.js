@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { View } from "react-native";
 import TransactionDescriptions from "../transaction-descriptions";
-import InfoCardDetail from "../../../components/info-card-detail";
-import Loading from "../../../components/loading";
+import InfoCardDetail from "../../../components/page-components/info-card-detail";
+import Loading from "../../../components/page-components/loading";
 import Clipboard from "@react-native-community/clipboard";
 import { useSelector } from "react-redux";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { formatMoney, formattedNumber } from "../../../helpers/math-helper";
 import moment from "moment";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { PADDING_H } from "../../../../utils/dimensions";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 
 const TransactionDetail = (props) => {

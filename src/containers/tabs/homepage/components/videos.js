@@ -8,11 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import {
-  BIG_TITLE_FONTSIZE, PADDING_H,
-  PADDING_V,
-  TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { isIphoneX } from "../../../../../utils/devices";
 import { useSelector } from "react-redux";
 import constantServices from "../../../../services/constant-services";
@@ -20,7 +16,7 @@ import ModalProvider from "../../../../providers/ModalProvider";
 import VideosPlaceholder from "./videos-placeholder";
 import HapticProvider from "../../../../providers/HapticProvider";
 import TinyImage from "../../../../tiny-image";
-import NImage from "../../../../components/image/index.tsx";
+import NImage from "../../../../components/page-components/image/index.tsx";
 import { useIsFocused } from "@react-navigation/native";
 
 
@@ -88,6 +84,7 @@ const Videos = () => {
           <ActivityIndicator
             color={activeTheme.secondaryText}
             style={styles(activeTheme).loading}
+            size="small"
           />
         )}
         <WebView
@@ -126,7 +123,7 @@ const styles = (props) => StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 10,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   item: {
     width: 168,
@@ -149,7 +146,7 @@ const styles = (props) => StyleSheet.create({
   },
   text: {
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     width: "80%",
   },
@@ -160,7 +157,7 @@ const styles = (props) => StyleSheet.create({
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
   },
   titleWrapper: {
@@ -194,7 +191,7 @@ const styles = (props) => StyleSheet.create({
     paddingTop: 50,
   },
   close: {
-    marginTop: PADDING_V,
+    marginTop: DIMENSIONS.PADDING_V,
     alignItems: "center",
     justifyContent: "center",
   },

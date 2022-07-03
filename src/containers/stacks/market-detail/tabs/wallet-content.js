@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { NORMAL_FONTSIZE, PADDING_H, PADDING_V, TITLE_FONTSIZE } from "../../../../../utils/dimensions";
-import Loading from "../../../../components/loading";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
+import Loading from "../../../../components/page-components/loading";
 import { getLang } from "../../../../helpers/array-helper";
 import { navigationRef } from "../../../../providers/RootNavigation";
 import { formatMoney } from "../../../../helpers/math-helper";
@@ -40,8 +40,8 @@ const WalletContent = (props) => {
 
   return (
     <ScrollView contentContainerStyle={{
-      paddingVertical: PADDING_V,
-      paddingHorizontal: PADDING_H,
+      paddingVertical: DIMENSIONS.PADDING_V,
+      paddingHorizontal: DIMENSIONS.PADDING_H,
     }}>
 
       <View style={styles(activeTheme).titleContainer}>
@@ -77,7 +77,7 @@ const WalletContent = (props) => {
                   }]}>{wallet.cd}</Text>
                 <Text style={[styles(activeTheme).priceText, {
                   textAlign: "right", width: "35%", color: activeTheme.appWhite,
-                }]}>{formatMoney(wallet.wb,wallet.dp)}</Text>
+                }]}>{formatMoney(wallet.wb, wallet.dp)}</Text>
                 <View style={styles(activeTheme).buttonContainer}>
                   <Pressable
                     onPress={() => handleNavigation("deposit", wallet)}
@@ -126,21 +126,21 @@ const styles = (props) => StyleSheet.create({
   title: {
     textAlign: "left",
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
     color: props.appWhite,
     paddingHorizontal: 6,
   },
 
   priceText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: "#ffffff",
     width: "15%",
   },
 
   text: {
     fontFamily: "CircularStd-Bold",
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     textAlign: "center",
     color: "#ffffff",
   },
@@ -150,8 +150,8 @@ const styles = (props) => StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
-    width:'40%',
-    paddingVertical: PADDING_V / 2,
+    width: "40%",
+    paddingVertical: DIMENSIONS.PADDING_V / 2,
   },
 
   buttonContainer: {

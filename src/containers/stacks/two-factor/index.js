@@ -7,25 +7,17 @@ import {
   Text,
   View,
 } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE, DRAW_VIEW,
-  MARGIN_T,
-  NORMAL_FONTSIZE,
-  NORMAL_IMAGE,
-  PADDING_H,
-  PADDING_V,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { useDispatch, useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import userServices from "../../../services/user-services";
-import FormInput from "../../../components/form-input";
+import FormInput from "../../../components/page-components/form-input";
 import Clipboard from "@react-native-community/clipboard";
-import BigInput from "../../../components/big-input";
+import BigInput from "../../../components/page-components/big-input";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import QrCreateModalize from "../deposit-btc/read-qr";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import ModalProvider from "../../../providers/ModalProvider";
 import { replaceAll } from "../../../helpers/string-helper";
 import { setUserVerifyType } from "../../../actions/auth-actions";
@@ -297,12 +289,12 @@ export default TwoFactorAuthenticationScreen;
 
 const styles = (props) => StyleSheet.create({
   container: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingBottom: 120,
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     lineHeight: 23,
     letterSpacing: 0,
     color: props.borderGray,
@@ -310,54 +302,54 @@ const styles = (props) => StyleSheet.create({
   },
   desc: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     lineHeight: 21,
     color: props.borderGray,
   },
   drawView: {
-    height: DRAW_VIEW,
+    height: DIMENSIONS.DRAW_VIEW,
     width: "100%",
     borderRadius: 12,
     backgroundColor: props.darkBackground,
-    marginVertical: MARGIN_T,
+    marginVertical: DIMENSIONS.MARGIN_T,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   drawInner: {
-    paddingVertical: PADDING_V,
+    paddingVertical: DIMENSIONS.PADDING_V,
     height: "100%",
     justifyContent: "space-around",
   },
   firstText: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE + 2,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 2,
     color: "#ffffff",
   },
   secondText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     lineHeight: 21,
     color: "#707a81",
   },
   thirdText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     lineHeight: 21,
     color: "#fff",
   },
   item: {
-    marginVertical: MARGIN_T,
+    marginVertical: DIMENSIONS.MARGIN_T,
   },
   image: {
-    width: NORMAL_IMAGE,
-    height: NORMAL_IMAGE,
+    width: DIMENSIONS.NORMAL_IMAGE,
+    height: DIMENSIONS.NORMAL_IMAGE,
   },
   desc2: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     lineHeight: 23,
     letterSpacing: 0,
     textAlign: "center",

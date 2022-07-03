@@ -1,17 +1,10 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE, HEADER_HEIGHT,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
+import { StyleSheet } from "react-native";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { navigationRef } from "../../../../providers/RootNavigation";
-import TinyImage from "../../../../tiny-image";
-import { DrawerActions } from "@react-navigation/native";
-import { getLang } from "../../../../helpers/array-helper";
 import ModalProvider from "../../../../providers/ModalProvider";
-import MarketSelectDetail from "../../../../components/market-select-detail";
-import WalletTotal from "../../../../components/wallet-total";
+import MarketSelectDetail from "../../../../components/page-components/market-select-detail";
+import WalletTotal from "../../../../components/page-components/wallet-total";
 
 class NonAuthHeader extends React.PureComponent {
 
@@ -54,9 +47,9 @@ export default NonAuthHeader;
 const styles = (props) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    height: HEADER_HEIGHT,
+    height: DIMENSIONS.HEADER_HEIGHT,
     justifyContent: "flex-end",
-    // marginTop: PADDING_H,
+    // marginTop: DIMENSIONS.PADDING_H,
   },
   content: {
     width: "100%",
@@ -64,11 +57,11 @@ const styles = (props) => StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     paddingTop: 10,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   welcome: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
   },
   inner: {
@@ -97,13 +90,13 @@ const styles = (props) => StyleSheet.create({
     height: 32,
     backgroundColor: props.darkBackground,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
     alignItems: "center",
     flexDirection: "row",
   },
   txt: {
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
   searchIcon: { paddingHorizontal: 10 },

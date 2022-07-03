@@ -1,13 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import BigInput from "../../../components/big-input";
-import {
-  BIG_TITLE_FONTSIZE,
-  INPUT_HEIGHT,
-  MARGIN_T,
-  PADDING_BIG,
-  PADDING_H,
-} from "../../../../utils/dimensions";
+import BigInput from "../../../components/page-components/big-input";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 
@@ -60,24 +54,24 @@ const styles = (props) => StyleSheet.create({
 
   wrapper: {
     width: "100%",
-    paddingVertical: PADDING_BIG,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_BIG,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
 
   },
 
   title: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE + 2,
-    marginBottom: MARGIN_T,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 2,
+    marginBottom: DIMENSIONS.MARGIN_T,
   },
 
   desc: {
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE,
-    marginBottom: MARGIN_T/2,
-    lineHeight:24,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
+    marginBottom: DIMENSIONS.MARGIN_T / 2,
+    lineHeight: 24,
   },
 
   contentWrapper: {
@@ -85,20 +79,20 @@ const styles = (props) => StyleSheet.create({
   },
 
   fieldWrapper: {
-    height: INPUT_HEIGHT,
+    height: DIMENSIONS.INPUT_HEIGHT,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: props.borderGray,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: MARGIN_T,
+    marginTop: DIMENSIONS.MARGIN_T,
   },
 
   textValue: {
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     fontWeight: "normal",
     fontStyle: "normal",
     lineHeight: 24,
@@ -108,7 +102,7 @@ const styles = (props) => StyleSheet.create({
 
   textPlaceholder: {
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     fontWeight: "normal",
     fontStyle: "normal",
     lineHeight: 24,
@@ -117,8 +111,8 @@ const styles = (props) => StyleSheet.create({
     color: props.secondaryText,
   },
   img: {
-    maxWidth: INPUT_HEIGHT,
-    maxHeight: INPUT_HEIGHT,
+    maxWidth: DIMENSIONS.INPUT_HEIGHT,
+    maxHeight: DIMENSIONS.INPUT_HEIGHT,
   },
   bigField: {
     width: "30%",

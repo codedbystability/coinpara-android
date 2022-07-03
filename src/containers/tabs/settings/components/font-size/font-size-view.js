@@ -13,16 +13,13 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import TinyImage from "../../../../../tiny-image";
-import {
-  PADDING_H,
-  SCREEN_WIDTH,
-} from "../../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
 import { useDispatch, useSelector } from "react-redux";
 import { getLang } from "../../../../../helpers/array-helper";
 import { setFontSize } from "../../../../../actions/global-actions";
 import LocalStorage from "../../../../../providers/LocalStorage";
 
-const BUTTON_WIDTH = SCREEN_WIDTH - (PADDING_H * 2);
+const BUTTON_WIDTH = DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2);
 const INITIAL_COUNT = 11;
 const MIN_COUNT = 9;
 const MAX_COUNT = 15;
@@ -140,13 +137,13 @@ const FontSizeView = () => {
     }}>
       <Text
         style={[styles(activeTheme, fontSizes).title, {
-          paddingLeft: PADDING_H,
+          paddingLeft: DIMENSIONS.PADDING_H,
         }]}>{getLang(language, "YOU_CAN_CUSTOMIZE_FONTSIZE")}</Text>
 
       <View style={{
         flex: 1,
         alignItems: "center",
-        paddingHorizontal: PADDING_H,
+        paddingHorizontal: DIMENSIONS.PADDING_H,
 
       }}>
 
@@ -212,7 +209,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     flexDirection: "row",
-    marginVertical: PADDING_H / 2,
+    marginVertical: DIMENSIONS.PADDING_H / 2,
 
   },
   countText: {

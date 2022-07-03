@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet, View } from "react-native";
-import FormInput from "../../../components/form-input";
+import FormInput from "../../../components/page-components/form-input";
 import { getLang } from "../../../helpers/array-helper";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import CustomButton from "../../../components/button";
-import FormPhoneInput from "../../../components/phone-input";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import CustomButton from "../../../components/page-components/button";
+import FormPhoneInput from "../../../components/page-components/phone-input";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import userServices from "../../../services/user-services";
 import { updateUserField } from "../../../actions/auth-actions";
-import StillLogo from "../../../components/still-logo";
+import StillLogo from "../../../components/page-components/still-logo";
 import { normalizeInput } from "../../../helpers/math-helper";
-import { PADDING_H } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { useIsFocused } from "@react-navigation/native";
 import WalletInfo from "../../tabs/settings/components/wallet-info";
-import FloatingAction from "../../../components/floating-action";
+import InputAccessory from "../../../components/page-components/input-accessory";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 const inputs = [
   {
@@ -203,6 +204,13 @@ const AccountInformation = (props) => {
 
         <StillLogo />
 
+        <InputAccessory
+          handleStep={null}
+          tabBarShown={true}
+          stepAble={false}
+          mailProviders={[]}
+          onPress={null}
+        />
       </View>
 
       {
@@ -218,7 +226,7 @@ const AccountInformation = (props) => {
     </View>
 
 
-    <FloatingAction />
+    <FloatingAction isButton={true} />
   </>;
 
 
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flex: 1,
   },
   buttonWrapper: {

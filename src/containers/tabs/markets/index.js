@@ -3,8 +3,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
-  Animated,
   Pressable,
   Text,
   ActivityIndicator,
@@ -13,27 +11,27 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ListSort from "./sort";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { useDispatch, useSelector } from "react-redux";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { LIST_ITEM_HEIGHT, NORMAL_FONTSIZE, PADDING_H } from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import PureItem from "./item-pure";
 import { getLang } from "../../../helpers/array-helper";
-import AnimatedTab from "../../../components/animated-tab";
+import AnimatedTab from "../../../components/page-components/animated-tab";
 import { orderBy } from "lodash";
 import LocalStorage from "../../../providers/LocalStorage";
 import { useIsFocused } from "@react-navigation/native";
-import CustomList from "../../../components/custom-list";
+import CustomList from "../../../components/page-components/custom-list";
 import TinyImage from "../../../tiny-image";
-import Loading from "../../../components/loading";
-import EditButton from "../../../components/edit-button";
+import Loading from "../../../components/page-components/loading";
+import EditButton from "../../../components/page-components/edit-button";
 import Swipeable from "react-native-swipeable";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import marketServices from "../../../services/market-services";
 import { setIsFavorite } from "../../../actions/market-actions";
 import ModalProvider from "../../../providers/ModalProvider";
 import { navigationRef } from "../../../providers/RootNavigation";
-import MarketSelectDetail from "../../../components/market-select-detail";
+import MarketSelectDetail from "../../../components/page-components/market-select-detail";
 
-let currentlyOpenSwipeable = null;
+let currentlyOpenSwipeable = null, isFavDone = false;
 const itemToShow = 12;
 const NORMAL_HEAD = [
   { id: 1, key: "ALL", title: "ALL" },
@@ -79,14 +77,11 @@ const Market = (props) => {
   const [sortDirection, setSortDirection] = useState("desc");
   const { language, activeTheme } = useSelector(state => state.globalReducer);
   const { authenticated } = useSelector(state => state.authenticationReducer);
-  const { marketsWithKey, marketCount, coinList } = useSelector(state => state.marketReducer);
+  const { marketsWithKey, marketCount } = useSelector(state => state.marketReducer);
   const [allAvailable, setAllAvailable] = useState([]);
-  // const [searchText, setSearchText] = useState("");
-  // const [showTypes, setShowTypes] = useState(true);
   const [headers, setHeaders] = useState([]);
   const [activeType, setActiveType] = useState("TRY");
   const [showData, setShowData] = useState([]);
-  // const [localMarkets, setLocalMarkets] = useState([]);
   const [page, setPage] = useState(1);
   const [moreLoading, setMoreLoading] = useState(false);
   const [favSorted, setFavSorted] = useState(false);
@@ -99,18 +94,14 @@ const Market = (props) => {
     setShowData(listedData.slice(0, itemToShow * page));
   }, [allAvailable, page, sortType, sortDirection]);
 
-
   useEffect(() => {
     setAll(Object.values(marketsWithKey));
   }, [marketCount]);
 
-
   useEffect(() => {
     if (isFocused) {
       if (showLoading) {
-        setTimeout(() => {
-          setShowLoading(false);
-        }, 500);
+        setTimeout(() => setShowLoading(false), 500);
       }
       if (activeType === "TRY" || activeType === "USDT") {
         const dd = all.filter(itm => itm.fs === activeType);
@@ -121,6 +112,13 @@ const Market = (props) => {
         setAllAvailable(all);
       }
 
+      if (!isFavDone && authenticated) {
+        const dd = all.filter(itm => itm.if === true);
+        if (dd.length >= 1) {
+          isFavDone = true;
+          setActiveType("FAVORITE");
+        }
+      }
     }
   }, [activeType, all]);
 
@@ -131,52 +129,14 @@ const Market = (props) => {
 
   useEffect(() => {
     setHeaders(authenticated ? AUTH_HEAD : NORMAL_HEAD);
-  }, [authenticated]);
 
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     let locals = LocalStorage.getArray("marketsLocal");
-  //
-  //     if (locals && locals.length >= 1) {
-  //       locals = locals.map(item => {
-  //         item.value = item.to;
-  //         item.id = item.gd;
-  //         return item;
-  //       });
-  //     } else {
-  //
-  //
-  //       let allCoins;
-  //
-  //       if (coinList.length >= 1) {
-  //         allCoins = coinList.filter(itm => itm.isTrending === true && itm.Code !== "TRY");
-  //       } else {
-  //         marketServices.getListCoins(false).then((response) => {
-  //           if (response && response.IsSuccess) {
-  //             allCoins = response.Data.filter(itm => itm.isTrending === true && itm.Code !== "TRY");
-  //           }
-  //         });
-  //       }
-  //       const slicedTrendings = allCoins.slice(0, 5);
-  //
-  //       locals = slicedTrendings.map(item => {
-  //         item.value = item.Code;
-  //         item.id = item.CoinGuid;
-  //         return item;
-  //       });
-  //     }
-  //     setLocalMarkets(locals);
-  //   }
-  // }, [isFocused]);
+  }, [authenticated]);
 
   useEffect(() => {
     return navigation.addListener("tabPress", (e) => flatListRef.current?.scrollTop());
   }, [navigation]);
 
-  // const onDeleteLocal = () => {
-  //   LocalStorage.removeItem("marketsLocal");
-  //   setLocalMarkets([]);
-  // };
+  const keyExtractor = useCallback((item) => `$market-${item.gd}`, []);
 
   const handleRefresh = () => {
     const FavSort = LocalStorage.getObject("FavSort");
@@ -199,11 +159,6 @@ const Market = (props) => {
     }
   };
 
-
-  // const onFocus = () => setShowTypes(false);
-
-  // const onBlur = () => setShowTypes(true);
-
   const onEndReached = () => {
     if (allAvailable.length <= showData.length) {
       setMoreLoading(false);
@@ -216,13 +171,13 @@ const Market = (props) => {
     }, 1500);
   };
 
-
   const onOpen = (event, gestureState, swipeable) => {
     if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
       currentlyOpenSwipeable.recenter();
     }
     currentlyOpenSwipeable = swipeable;
   };
+
   const onClose = () => currentlyOpenSwipeable = null;
 
   const [scrollEnabled, handleScroll] = useState(true);
@@ -266,6 +221,7 @@ const Market = (props) => {
 
   const handleMarketSelect = () => {
     ModalProvider.show(() => <MarketSelectDetail
+      activeTypeP={activeType}
       shouldFocus={true}
       handleSelect={handleCoinSelected} />, true);
   };
@@ -282,7 +238,7 @@ const Market = (props) => {
         style={styles(activeTheme).rR}>
         {
           loadings.includes(index) ?
-            <ActivityIndicator style={styles(activeTheme).icon} color={activeTheme.appWhite} /> :
+            <ActivityIndicator style={styles(activeTheme).icon} size={"small"} color={activeTheme.appWhite} /> :
             <TinyImage parent={"rest/"} name={item.if ? "fav-active" : "fav"} style={styles(activeTheme).icon} />
         }
       </TouchableOpacity>,
@@ -291,19 +247,12 @@ const Market = (props) => {
     onRightButtonsCloseRelease={onClose}
   >
     <PureItem
-      {
-        ...{
-          item,
-          activeType,
-          // searchText,
-          index,
-        }
-      }
-
+      {...{
+        item, activeType, index,
+      }}
     />
   </Swipeable>;
 
-  const keyExtractor = useCallback((item) => `$market-${item.gd}`, []);
 
   return (
     <>
@@ -326,26 +275,7 @@ const Market = (props) => {
 
         </View>
 
-        <View style={{ paddingHorizontal: PADDING_H }}>
-          {/*<View style={styles(activeTheme).searchContainer}>*/}
-          {/*  <View style={styles(activeTheme).searchIcon}>*/}
-          {/*    <TinyImage parent={"rest/"} name={"search"} style={styles(activeTheme).icon} />*/}
-          {/*  </View>*/}
-
-          {/*<TextInput*/}
-          {/*  keyboardAppearance={"dark"}*/}
-          {/*  style={styles(activeTheme).input}*/}
-          {/*  value={searchText}*/}
-          {/*  onChangeText={(text) => (setSearchText(text.toUpperCase()))}*/}
-          {/*  placeholder={getLang(language, "SEARCH")}*/}
-          {/*  autoFocus={false}*/}
-          {/*  autoCorrect={false}*/}
-          {/*  autoComplete={"off"}*/}
-          {/*  autoCapitalize={"characters"}*/}
-          {/*  keyboardType={"email-address"}*/}
-          {/*  placeholderTextColor={activeTheme.secondaryText}*/}
-          {/*/>*/}
-
+        <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H }}>
 
           <Pressable
             onPress={handleMarketSelect}
@@ -359,16 +289,6 @@ const Market = (props) => {
           </Pressable>
 
 
-          {/*{*/}
-          {/*  searchText ?*/}
-          {/*    <Pressable onPress={() => setSearchText("")}>*/}
-          {/*      <View style={styles(activeTheme).searchIcon}>*/}
-          {/*        <TinyImage parent={"rest/"} name={"dismiss"} style={styles(activeTheme).icon2} />*/}
-          {/*      </View>*/}
-          {/*    </Pressable> : null*/}
-          {/*}*/}
-
-          {/*</View>*/}
         </View>
 
         <>
@@ -392,7 +312,7 @@ const Market = (props) => {
               data={showData}
               showFooter={moreLoading}
               keyExtractor={keyExtractor}
-              itemHeight={LIST_ITEM_HEIGHT}
+              itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
               renderItem={marketItem}
               onEndReached={onEndReached}
               emptyMessage={getLang(language, activeType === "FAVORITE" ? "NO_FAV_FOUND" : "NO_MARKET_FOUND")}
@@ -404,17 +324,14 @@ const Market = (props) => {
 
       </View>
 
-
       {
-        activeType === "FAVORITE" && <EditButton
+        activeType === "FAVORITE"  && <EditButton
           onPress={() => navigation.navigate("FavSort", {
             handleRefresh,
           })}
         />
       }
-
     </>
-
   );
 };
 
@@ -429,8 +346,8 @@ const styles = props => StyleSheet.create({
   searchContainer2: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: PADDING_H,
-    paddingVertical: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_H,
   },
   passiveText: {
     color: "rgb(112,122,129)",
@@ -442,11 +359,11 @@ const styles = props => StyleSheet.create({
     width: 40,
     borderRadius: 20,
     position: "absolute",
-    right: PADDING_H * 2,
-    bottom: PADDING_H * 2,
+    right: DIMENSIONS.PADDING_H * 2,
+    bottom: DIMENSIONS.PADDING_H * 2,
     alignItems: "center",
     justifyContent: "center",
-    padding: PADDING_H,
+    padding: DIMENSIONS.PADDING_H,
     backgroundColor: props.darkBackground,
     borderWidth: 1,
     borderColor: props.appWhite,
@@ -481,7 +398,7 @@ const styles = props => StyleSheet.create({
     height: 36,
     backgroundColor: props.darkBackground,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
     alignItems: "center",
     width: "100%",
     flexDirection: "row",
@@ -490,7 +407,7 @@ const styles = props => StyleSheet.create({
   searchIcon: { paddingHorizontal: 10 },
   txt: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.appWhite,
   },
   dismissButtonContainer: {
@@ -513,7 +430,7 @@ const styles = props => StyleSheet.create({
   },
   rR: {
     justifyContent: "center",
-    height: LIST_ITEM_HEIGHT,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
     paddingLeft: 20,
     backgroundColor: "transparent",
   },

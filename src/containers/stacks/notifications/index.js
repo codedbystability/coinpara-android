@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import { View, FlatList, Linking } from "react-native";
 import userServices from "../../../services/user-services";
 import { useSelector } from "react-redux";
-import UserLogListItem from "../../../components/user-log-list-item";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { LIST_MARGIN_T, PADDING_H, PADDING_V, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
-import EmptyContainer from "../../../components/empty-container";
+import UserLogListItem from "../../../components/page-components/user-log-list-item";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
-import AnimatedTab from "../../../components/animated-tab";
-import SwipeAbleItem from "../../../components/swipe-list/components/item";
-import Loading from "../../../components/loading";
-import FloatingAction from "../../../components/floating-action";
+import AnimatedTab from "../../../components/page-components/animated-tab";
+import SwipeAbleItem from "../../../components/page-components/swipe-list/components/item";
+import FloatingAction from "../../../components/page-components/floating-action";
+import Linking from "../../../providers/Linking";
+import CustomList from "../../../components/page-components/custom-list";
 
 const refRow = [];
 let prevOpenedRow;
@@ -26,9 +25,7 @@ const Notifications = (props) => {
   const { activeLanguage } = useSelector(state => state.languageReducer);
 
   const [notifications, setNotifications] = useState([]);
-  const [isFetching, setIsFetching] = useState(true);
   const [announcements, setAnnouncements] = useState([]);
-
   const [activeHeaderKey, setActiveHeaderKey] = useState("notifications");
   const [selectedItem, setSelectedItem] = useState({});
 
@@ -39,11 +36,16 @@ const Notifications = (props) => {
   }, [props.route]);
 
   useEffect(() => {
-    // setIsFetching(true);
     if (activeLanguage && activeLanguage.Id) {
       activeHeaderKey === "announcements" ? fetchAnnouncements() : fetchNotifications();
     }
   }, [activeHeaderKey, activeLanguage]);
+
+  useEffect(() => {
+    if (activeHeaderKey === "notifications" && selectedItem.Guid) {
+      showActionSheet();
+    }
+  }, [selectedItem]);
 
   const closeAll = () => prevOpenedRow && prevOpenedRow.close();
 
@@ -58,23 +60,19 @@ const Notifications = (props) => {
   };
 
   const fetchNotifications = () => {
-    setIsFetching(true);
 
     userServices.getNotifications().then((response) => {
       if (response && response.IsSuccess) {
         setNotifications(response.Data);
-        setIsFetching(false);
       }
     });
   };
 
   const fetchAnnouncements = () => {
-    setIsFetching(true);
 
     userServices.getAnnouncements(activeLanguage.Id).then((response) => {
       if (response.IsSuccess) {
         setAnnouncements(response.Data);
-        setIsFetching(false);
       }
     });
   };
@@ -107,21 +105,15 @@ const Notifications = (props) => {
 
   const handleAnnouncementDetail = (item) => {
     if (item.Link) {
-      Linking.openURL(item.Link).then(r => null);
+      // Linkin
+      Linking.openURL(item.Link);
+      // Linking.openURL(item.Link).then(r => null);
     }
   };
 
-  const onItemPressed = (item) => {
-    activeHeaderKey === "announcements" && handleAnnouncementDetail(item);
-  };
+  const onItemPressed = (item) => activeHeaderKey === "announcements" && handleAnnouncementDetail(item);
 
-  useEffect(() => {
-    if (activeHeaderKey === "notifications" && selectedItem.Guid) {
-      showActionSheet();
-    }
-  }, [selectedItem]);
   const onItemDeleted = (item) => setSelectedItem(item);
-
 
   const data = activeHeaderKey === "notifications" ? notifications : announcements;
 
@@ -136,57 +128,46 @@ const Notifications = (props) => {
           title: getLang(language, "NOTIFICATIONS"),
         }}
       />
-      <View style={styles.container}>
-
-        <View style={{ paddingHorizontal: PADDING_H }}>
 
 
+      <CustomList
+        contentStyle={{
+          paddingHorizontal: DIMENSIONS.PADDING_H,
+        }}
+        borderGray={"transparent"}
+        data={activeHeaderKey === "notifications" ? notifications : announcements}
+        showFooter={false}
+        keyExtractor={item => activeHeaderKey === "notifications" ? item.Guid : item.TimeStamp}
+        itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
+        renderItem={({ item, index }) =>
+          <SwipeAbleItem {...{ item }}
+                         style={{ marginVertical: DIMENSIONS.LIST_MARGIN_T }}
+                         onSwipe={onItemDeleted}
+                         swipeAble={activeHeaderKey === "notifications"}
+                         Layout={() => <UserLogListItem
+                           index={index}
+                           ref={ref => refRow[index] = ref}
+                           item={item} onItemPressed={onItemPressed}
+                           closeRow={closeRow}
+                           showDelete={activeHeaderKey === "notifications"}
+                           titleKey={"Title"}
+                           descKey={activeHeaderKey === "notifications" ? "Description" : "Details"}
+                           dateKey={"TimeStamp"}
+                         />}
+          />
+        }
+        onEndReached={null}
+        ListHeaderComponent={
           <AnimatedTab {...{
             activeKey: activeHeaderKey,
             headers: headers,
             width: `50%`,
             onChange: handleSetHeader,
           }} />
-        </View>
-
-        {
-          isFetching ? <Loading /> : data.length <= 0 ? <View style={{
-              width: SCREEN_WIDTH,
-              paddingTop: (SCREEN_HEIGHT / 4) - 20,
-            }}>
-              <EmptyContainer
-                icon={"fav-empty"}
-                text={getLang(language, activeHeaderKey === "notifications" ? "NO_NOTIFICATION_FOUND" : "NO_ANNOUNCEMENT_FOUND")} />
-            </View> :
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.wrapper}
-              data={data}
-              renderItem={({ item, index }) =>
-                <SwipeAbleItem {...{ item }}
-                               style={{ marginVertical: LIST_MARGIN_T  }}
-                               onSwipe={onItemDeleted}
-                               swipeAble={activeHeaderKey === "notifications"}
-                               Layout={() => <UserLogListItem
-                                 index={index}
-                                 ref={ref => refRow[index] = ref}
-                                 item={item} onItemPressed={onItemPressed}
-                                 closeRow={closeRow}
-                                 showDelete={activeHeaderKey === "notifications"}
-                                 titleKey={"Title"}
-                                 descKey={activeHeaderKey === "notifications" ? "Description" : "Details"}
-                                 dateKey={"TimeStamp"}
-                               />}
-                />
-              }
-              keyExtractor={item => activeHeaderKey === "notifications" ? item.Guid : item.TimeStamp}
-            />
-
-
         }
-
-
-      </View>
+        iconKey={"fav-empty"}
+        emptyMessage={getLang(language, activeHeaderKey === "notifications" ? "NO_NOTIFICATION_FOUND" : "NO_ANNOUNCEMENT_FOUND")}
+      />
       <FloatingAction />
 
     </>
@@ -194,17 +175,5 @@ const Notifications = (props) => {
   );
 };
 const NotificationsScreen = styledHigherOrderComponents(Notifications);
-export default NotificationsScreen;
+export default React.memo(NotificationsScreen);
 
-const styles = {
-  wrapper: {
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
-  },
-  container: {
-    flex: 1,
-    paddingVertical: 20,
-  },
-
-
-};

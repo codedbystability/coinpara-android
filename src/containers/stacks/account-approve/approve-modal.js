@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import GovernmentIdStep from "./goverment-id";
 import SelfieImage from "./selfie-image";
 import SelfieVideo from "./selfie-video";
@@ -8,8 +8,7 @@ import AddressImage from "./address-image";
 import { isIphoneX } from "../../../../utils/devices";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import { PADDING_H, SCREEN_HEIGHT } from "../../../../utils/dimensions";
-import DropdownAlert from "../../../components/shell-components/DropdownAlert/DropdownAlert";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const ApproveModal = (props) => {
 
@@ -110,7 +109,7 @@ const ApproveModal = (props) => {
   return (
     <View style={{
       flex: 1,
-      paddingTop: PADDING_H,
+      paddingTop: DIMENSIONS.PADDING_H,
       backgroundColor: activeTheme.darkBackground,
     }}>
       {
@@ -128,7 +127,7 @@ export default ApproveModal;
 const styles = (props) => StyleSheet.create({
   wrapper: {
     zIndex: 99,
-    height: SCREEN_HEIGHT - 60 - 40,
+    height: DIMENSIONS.SCREEN_HEIGHT - 100,
   },
 
   header: {

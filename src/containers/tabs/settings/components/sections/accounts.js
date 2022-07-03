@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from "react";
-import NavigationListItem from "../../../../../components/navigation-list-item";
-import { LIST_ITEM_HEIGHT } from "../../../../../../utils/dimensions";
-import StillLogo from "../../../../../components/still-logo";
+import React, { useCallback } from "react";
+import NavigationListItem from "../../../../../components/page-components/navigation-list-item";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
+import StillLogo from "../../../../../components/page-components/still-logo";
 import { View } from "react-native";
 
 const AUTH_ITEMS = [
@@ -73,15 +73,6 @@ const AUTH_ITEMS = [
     activePages: ["SettingsSystem"],
 
   },
-  {
-    id: 6,
-    key: "ABOUT_US",
-    type: "navigation",
-    page: "AboutInner",
-    image: "settings",
-    activePages: ["About"],
-
-  },
 
   {
     id: 8,
@@ -110,6 +101,15 @@ const AUTH_ITEMS = [
     activePages: ["SupportCenterInner"],
   },
   {
+    id: 6,
+    key: "ABOUT_US",
+    type: "navigation",
+    page: "AboutInner",
+    image: "settings",
+    activePages: ["About"],
+
+  },
+  {
     id: 9,
     key: "VIDEO_MANAGEMENT",
     type: "modal",
@@ -126,6 +126,7 @@ const AUTH_ITEMS = [
     image: "support",
     activePages: [],
   },
+
 
 ];
 const NON_AUTH_ITEMS = [
@@ -166,16 +167,7 @@ const NON_AUTH_ITEMS = [
     activePages: ["SettingsSystem"],
 
   },
-  {
-    id: 6,
-    key: "ABOUT_US",
-    type: "navigation",
-    page: "AboutInner",
-    image: "settings",
-    name: "",
-    activePages: ["About"],
 
-  },
 
   {
     id: 28,
@@ -203,8 +195,15 @@ const NON_AUTH_ITEMS = [
     image: "support",
     activePages: [],
 
-
-
+  },
+  {
+    id: 6,
+    key: "ABOUT_US",
+    type: "navigation",
+    page: "AboutInner",
+    image: "settings",
+    name: "",
+    activePages: ["About"],
   },
 ];
 
@@ -216,7 +215,7 @@ const AccountsSection = ({ authenticated, currentRouteName }) => {
     <View
 
       keyExtractor={keyExtractor}
-      itemHeight={LIST_ITEM_HEIGHT}
+      itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
       renderItem={({ item }) => <NavigationListItem key={item.id} item={item} />}
       onEndReached={null}
     >

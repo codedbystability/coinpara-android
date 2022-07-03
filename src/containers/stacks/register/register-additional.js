@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import FormPhoneInput from "../../../components/phone-input";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import FormPhoneInput from "../../../components/page-components/phone-input";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { navigationRef } from "../../../providers/RootNavigation";
-import { INPUT_HEIGHT, NORMAL_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { normalizeInput } from "../../../helpers/math-helper";
 import { handleTcRegex, handleTcValid, phoneInputRegex } from "../../../helpers/string-helper";
-import CountrySelectInput from "../../../components/country-select";
+import CountrySelectInput from "./components/country-select-input";
 import ModalProvider from "../../../providers/ModalProvider";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import moment from "moment";
 import TinyImage from "../../../tiny-image";
 import DatePicker from "react-native-date-picker";
@@ -141,16 +142,6 @@ const RegisterAdditional = (props) => {
     const num = phoneNumber.replace(/\s/g, "").replace(/-/g, "").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
     const validPhone = activeCountry.dial_code.substring(1) + num;
 
-    return console.log({
-      identityNumber,
-      nationality: activeCountry.code,
-      name,
-      lastname,
-      phoneNumber: validPhone,
-      email,
-      refCode,
-      birthdate: moment(birthDate).format("DD-MM-YYYY") + "T00:00:00",
-    });
     return navigationRef.current.navigate("RegisterPassword", {
       identityNumber,
       nationality: activeCountry.code,
@@ -159,7 +150,7 @@ const RegisterAdditional = (props) => {
       phoneNumber: validPhone,
       email,
       refCode,
-      birthdate: moment(birthDate).format("DD-MM-YYYY") + "T00:00:00",
+      birthdate: moment(birthDate).format("YYYY-MM-DD") + "T00:00:00",
     });
 
 
@@ -313,6 +304,13 @@ const RegisterAdditional = (props) => {
       </KeyboardAvoidingView>
 
 
+      <InputAccessory
+        handleStep={handleStep}
+        stepAble={true}
+        mailProviders={[]}
+        onPress={null}
+      />
+
       <DatePicker
         modal
         mode={"date"}
@@ -369,16 +367,16 @@ const styles = (props) => StyleSheet.create({
   inputWrapper: {
     width: "100%",
     justifyContent: "center",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   description: {
     fontFamily: "CircularStd-Book",
     color: props.changeRed,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     // lineHeight: 23,
     marginTop: -2,
-    paddingLeft: PADDING_H,
+    paddingLeft: DIMENSIONS.PADDING_H,
   },
 
   buttonWrapper: {
@@ -416,18 +414,18 @@ const styles = (props) => StyleSheet.create({
 
   inp1: {
     width: "100%",
-    height: INPUT_HEIGHT,
+    height: DIMENSIONS.INPUT_HEIGHT,
     borderColor: props.borderGray,
     borderWidth: 1,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flexDirection: "row",
   },
   dte: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
 });

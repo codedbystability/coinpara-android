@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../../../helpers/array-helper";
-import {
-  LIST_MARGIN_T, PADDING_BV,
-  PADDING_H, PADDING_V,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import userServices from "../../../../services/user-services";
@@ -104,10 +101,10 @@ const styles = (props, fontSizes, active) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: PADDING_BV / 2,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_BV / 2,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderRadius: 8,
-    marginTop: LIST_MARGIN_T,
+    marginTop: DIMENSIONS.LIST_MARGIN_T,
     backgroundColor: active ? props.darkBackground : "transparent",
   },
   leftWrapper: {

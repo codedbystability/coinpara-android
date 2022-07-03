@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import {
@@ -9,11 +9,15 @@ import {
   PADDING_H,
   TITLE_FONTSIZE,
 } from "../../../../utils/dimensions";
-import CustomList from "../../../components/custom-list";
-import NavigationListItem from "../../../components/navigation-list-item";
+import CustomList from "../../../components/page-components/custom-list";
+import NavigationListItem from "../../../components/page-components/navigation-list-item";
+import TinyImage from "../../../tiny-image";
+import generalServices from "../../../services/general-services";
+import FloatingAction from "../../../components/page-components/floating-action";
 import { navigationRef } from "../../../providers/RootNavigation";
 import ModalProvider from "../../../providers/ModalProvider";
-import NativeInput from "../../../components/native-input";
+import NativeInput from "../../../components/page-components/native-input";
+import InputAccessory from "../../../components/page-components/input-accessory";
 
 
 const SupportCenterFilter = ({ data }) => {
@@ -77,6 +81,7 @@ const SupportCenterFilter = ({ data }) => {
         onEndReached={null}
       />
 
+      <InputAccessory />
     </>
   );
 

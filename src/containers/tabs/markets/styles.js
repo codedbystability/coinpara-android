@@ -1,12 +1,5 @@
 import { StyleSheet } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE,
-  LIST_ITEM_HEIGHT,
-  NORMAL_FONTSIZE,
-  NORMAL_IMAGE,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const styles = (props, fontSizes) => StyleSheet.create({
   rightActionEvenWrapper: {
@@ -22,15 +15,15 @@ const styles = (props, fontSizes) => StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: props.borderGray,
     flexDirection: "row",
-    paddingHorizontal: PADDING_H / 2,
-    height: LIST_ITEM_HEIGHT,
+    paddingHorizontal: DIMENSIONS.PADDING_H / 2,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
   },
   oddContainer: {
     width: "100%",
     backgroundColor: "transparent",
     flexDirection: "row",
-    paddingHorizontal: PADDING_H,
-    height: LIST_ITEM_HEIGHT,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
   },
   leftWrapper: {
     height: "100%",
@@ -47,14 +40,13 @@ const styles = (props, fontSizes) => StyleSheet.create({
     justifyContent: "space-around",
   },
   image: {
-    width: NORMAL_IMAGE,
-    height: NORMAL_IMAGE,
+    width: DIMENSIONS.NORMAL_IMAGE,
+    height: DIMENSIONS.NORMAL_IMAGE,
   },
   title: {
     color: props.appWhite,
-    fontSize: fontSizes?.TITLE_FONTSIZE ,
+    fontSize: fontSizes?.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Bold",
-
   },
   description: {
     color: props.secondaryText,

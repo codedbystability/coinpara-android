@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
-import NavigationListItem from "../../../../../components/navigation-list-item";
+import NavigationListItem from "../../../../../components/page-components/navigation-list-item";
 import Passcode from "../passcode";
-import CustomList from "../../../../../components/custom-list";
-import { LIST_ITEM_HEIGHT, PADDING_H } from "../../../../../../utils/dimensions";
-import FloatingAction from "../../../../../components/floating-action";
+import CustomList from "../../../../../components/page-components/custom-list";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
+import FloatingAction from "../../../../../components/page-components/floating-action";
 
 const items = [
 
@@ -40,11 +40,11 @@ const SecuritySection = () => {
     <>
 
       <CustomList
-        borderGray={'transparent'}
+        borderGray={"transparent"}
         data={items}
         showFooter={true}
         keyExtractor={keyExtractor}
-        itemHeight={LIST_ITEM_HEIGHT}
+        itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
         renderItem={({ item }) => <NavigationListItem key={item.id} item={item} />}
         onEndReached={null}
         ListFooterComponent={<Passcode />}

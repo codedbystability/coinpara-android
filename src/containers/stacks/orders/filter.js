@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { getLang } from "../../../helpers/array-helper";
-import RadioOptions from "../../../components/radio-options";
 import TinyImage from "../../../tiny-image";
-import {
-  BIG_TITLE_FONTSIZE, INPUT_HEIGHT, NORMAL_FONTSIZE,
-  PADDING_H,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import DatePicker from "react-native-date-picker";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
 import moment from "moment";
 import ModalProvider from "../../../providers/ModalProvider";
-import MarketSelect from "../../../components/market-select";
 import { replaceAll } from "../../../helpers/string-helper";
-import DynamicImage from "../../../components/dynamic-image";
-import AnimatedTab from "../../../components/animated-tab";
-import MarketSelectDetail from "../../../components/market-select-detail";
+import DynamicImage from "../../../components/page-components/dynamic-image";
+import AnimatedTab from "../../../components/page-components/animated-tab";
+import MarketSelectDetail from "../../../components/page-components/market-select-detail";
 
 
 const directionOptions = [
@@ -317,14 +311,14 @@ const styles = (props) => StyleSheet.create({
   },
   headerText: {
     color: props.appWhite,
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     padding: 26,
     textAlign: "center",
   },
   headerText2: {
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     textAlign: "left",
   },
@@ -339,12 +333,12 @@ const styles = (props) => StyleSheet.create({
     height: "auto",
     marginTop: "auto",
     backgroundColor: props.darkBackground,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderTopColor: props.actionColor,
     borderTopWidth: 12,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    paddingBottom: PADDING_H * 2,
+    paddingBottom: DIMENSIONS.PADDING_H * 2,
 
 
   },
@@ -352,39 +346,39 @@ const styles = (props) => StyleSheet.create({
   dismissButton: {
     fontFamily: "CircularStd-Bold",
     position: "absolute",
-    top: PADDING_H,
-    right: PADDING_H,
+    top: DIMENSIONS.PADDING_H,
+    right: DIMENSIONS.PADDING_H,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999999,
-    padding: PADDING_H * 1.4,
+    padding: DIMENSIONS.PADDING_H * 1.4,
   },
   inp1: {
     width: "49%",
-    height: INPUT_HEIGHT / 1.2,
+    height: DIMENSIONS.INPUT_HEIGHT / 1.2,
     borderColor: props.borderGray,
     borderWidth: 1,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flexDirection: "row",
   },
   inp2: {
     width: "100%",
-    height: INPUT_HEIGHT / 1.2,
+    height: DIMENSIONS.INPUT_HEIGHT / 1.2,
     borderColor: props.borderGray,
     borderWidth: 1,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     flexDirection: "row",
   },
   dte: {
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   icon: {
     width: 14,
@@ -398,20 +392,20 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingVertical: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_H,
   },
   clearV: {
-    paddingVertical: PADDING_H * 2,
+    paddingVertical: DIMENSIONS.PADDING_H * 2,
   },
   clearT: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.changeRed,
     fontFamily: "CircularStd-Book",
     textAlign: "center",
   },
   image: {
-    width: INPUT_HEIGHT / 2,
-    height: INPUT_HEIGHT / 2,
+    width: DIMENSIONS.INPUT_HEIGHT / 2,
+    height: DIMENSIONS.INPUT_HEIGHT / 2,
     marginRight: 8,
   },
 });

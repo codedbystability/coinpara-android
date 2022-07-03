@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { StyleSheet, Switch, Text, View } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE, LIST_MARGIN_T,
-  NORMAL_FONTSIZE,
-  PADDING_H, PADDING_V,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { getLang } from "../../../../helpers/array-helper";
 import LocalStorage from "../../../../providers/LocalStorage";
 import ActionSheetComProvider from "../../../../providers/ActionSheetComProvider";
@@ -91,12 +87,12 @@ export default BuySellApprove;
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    marginTop: LIST_MARGIN_T ,
+    marginTop: DIMENSIONS.LIST_MARGIN_T,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderRadius: 8,
     backgroundColor: props.darkBackground,
     borderWidth: 1,
@@ -130,7 +126,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     marginTop: 2,
     marginBottom: 16,
     fontSize: fontSizes?.NORMAL_FONTSIZE - 2,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   icon: {

@@ -1,13 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text, Pressable, FlatList } from "react-native";
-import {
-  MARGIN_T,
-  NORMAL_FONTSIZE,
-  NORMAL_IMAGE,
-  PADDING_H,
-  SCREEN_WIDTH, SQUARE_IMAGE,
-  SQUARE_ITEM_HEIGHT, TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import TinyImage from "../../../tiny-image";
@@ -112,18 +105,18 @@ export default WalletActionTab;
 
 const styles = (props) => StyleSheet.create({
   wrapper: {
-    paddingHorizontal: PADDING_H,
-    marginTop: MARGIN_T,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    marginTop: DIMENSIONS.MARGIN_T,
   },
   innerWrapper: {
     width: "100%",
-    height: SQUARE_ITEM_HEIGHT + 5,
+    height: DIMENSIONS.SQUARE_ITEM_HEIGHT + 5,
   },
 
   shadow: {},
   image: {
-    width: NORMAL_IMAGE - 2,
-    height: NORMAL_IMAGE - 2,
+    width: DIMENSIONS.NORMAL_IMAGE - 2,
+    height: DIMENSIONS.NORMAL_IMAGE - 2,
   },
   iconW: {
     position: "absolute",
@@ -145,7 +138,7 @@ const styles = (props) => StyleSheet.create({
   },
   text: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE - 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
     textAlign: "center",
     color: props.appWhite,
   },
@@ -153,8 +146,8 @@ const styles = (props) => StyleSheet.create({
 
   item: {
     // backgroundColor: props.darkBackground,
-    width: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 2))) / 5,
-    height: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 6))) / 5,
+    width: (DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2 + (DIMENSIONS.PADDING_H * 2))) / 5,
+    height: (DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2 + (DIMENSIONS.PADDING_H * 6))) / 5,
     alignItems: "center",
     justifyContent: "space-around",
     marginRight: 4,
@@ -165,7 +158,7 @@ const styles = (props) => StyleSheet.create({
     // borderColor: props.borderGray,
   },
   annWrapper: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     marginTop: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -177,7 +170,7 @@ const styles = (props) => StyleSheet.create({
   },
   annIcon: { marginRight: 4, width: "10%" },
   txtA: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     width: "99%",

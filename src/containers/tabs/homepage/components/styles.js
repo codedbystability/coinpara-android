@@ -1,17 +1,10 @@
-import { Dimensions, StyleSheet } from "react-native";
-import {
-  BIG_TITLE_FONTSIZE, LIST_ITEM_HEIGHT, MARGIN_T,
-  NORMAL_FONTSIZE,
-  PADDING_H, PADDING_V, SCREEN_WIDTH,
-  SQUARE_IMAGE,
-  SQUARE_ITEM_HEIGHT,
-  TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
+import { StyleSheet } from "react-native";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     height: 120,
-    // marginBottom: MARGIN_T / 2,
+    // marginBottom: DIMENSIONS.MARGIN_T / 2,
   },
   headerContainer: {
     width: "100%",
@@ -19,20 +12,20 @@ const styles = (props, fontSizes) => StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 0,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   nameText: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
-    paddingRight: PADDING_H,
+    paddingRight: DIMENSIONS.PADDING_H,
     textAlign: "right",
   },
   infoTab: {
     width: "100%",
     height: 100,
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
 
   infoTabContainer: {
@@ -46,8 +39,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     // backgroundColor: 'red',
     borderRadius: 8,
     // paddingHorizontal: 16,
-    paddingHorizontal: PADDING_H,
-    paddingVertical: PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
     // paddingVertical: 8,
     borderWidth: 1,
     borderColor: props.borderGray,
@@ -72,8 +65,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
   // SHORTCUTS
   container: {
     alignItems: "center",
-    // paddingHorizontal: PADDING_H,
-    marginTop: MARGIN_T / 2,
+    // paddingHorizontal: DIMENSIONS.PADDING_H,
+    marginTop: DIMENSIONS.MARGIN_T / 2,
   },
   shortcutWrapper: {
     flexDirection: "row",
@@ -86,7 +79,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
   },
   list: {
@@ -102,8 +95,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     // backgroundColor: "red",
   },
   item: {
-    width: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 2))) / 5,
-    height: (SCREEN_WIDTH - (PADDING_H * 2 + (PADDING_H * 6))) / 5,
+    width: (DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2 + (DIMENSIONS.PADDING_H * 2))) / 5,
+    height: (DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2 + (DIMENSIONS.PADDING_H * 6))) / 5,
     // paddingVertical: 4,
     alignItems: "center",
     justifyContent: "space-around",
@@ -113,8 +106,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     paddingHorizontal: 2,
   },
   image: {
-    width: SQUARE_IMAGE,
-    height: SQUARE_IMAGE,
+    width: DIMENSIONS.SQUARE_IMAGE,
+    height: DIMENSIONS.SQUARE_IMAGE,
     marginBottom: 10,
   },
   text: {
@@ -136,7 +129,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     // shadowOpacity: 1,
   },
   annWrapper: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     marginTop: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -148,7 +141,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   annIcon: { marginRight: 4, width: "10%" },
   txtA: {
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
     width: "99%",

@@ -2,7 +2,6 @@ import React from "react";
 import { Pressable, Switch, Text, TextInput, View } from "react-native";
 import styles from "./styles";
 import { getLang } from "../../../helpers/array-helper";
-import { PADDING_H } from "../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import TinyImage from "../../../tiny-image";
 import HapticProvider from "../../../providers/HapticProvider";
@@ -25,9 +24,6 @@ const WalletListHeader = ({
     handleSortAction(type);
     HapticProvider.trigger();
   };
-  // const onDeleteLocals = () => {
-  //   Alert.alert("delete");
-  // };
   return (
     <>
       <View style={{ flex: 1, backgroundColor: activeTheme.backgroundApp }}>
@@ -116,7 +112,7 @@ const WalletListHeader = ({
                 onPress={() => handleSortActionOn("EstimatedTRY")}>
                 <Text style={[styles(activeTheme, fontSizes).sheetSortTitle,
                   sortObj.type === "EstimatedTRY" ? { color: activeTheme.appWhite } : {},
-                ]}>TRY-USDT-BTC</Text>
+                ]}>TRY - USDT</Text>
               </Pressable>
 
 

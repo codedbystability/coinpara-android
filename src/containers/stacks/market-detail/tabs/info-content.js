@@ -1,12 +1,7 @@
 import React, { Fragment } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import DynamicImage from "../../../../components/dynamic-image";
-import {
-  BIG_TITLE_FONTSIZE,
-  NORMAL_FONTSIZE,
-  PADDING_H, PADDING_V,
-  TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
+import DynamicImage from "../../../../components/page-components/dynamic-image";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../../helpers/array-helper";
 import { items, secondItems, thirdItems } from "./constants";
@@ -37,9 +32,8 @@ const InfoContent = (props) => {
           <Text
             style={[styles.priceText, styles(activeTheme).price]}>
             {
-              item.is24 ? "%" : ""
+              item.is24 ? "%" + info[item.key].toFixed(4) : formattedNumber(info[item.key], "USD", 3, true)
             }
-            {formattedNumber(info[item.key], "USD", 3)}
           </Text>
         </View>
 
@@ -60,11 +54,18 @@ const InfoContent = (props) => {
       <View style={styles(activeTheme).wrapper}>
 
         <DynamicImage market={market.to} style={{ marginRight: 10, width: 30, height: 30 }} />
+        <View>
 
-        <Text style={styles(activeTheme).bigTitle}>
-          <Text>{info.Symbol} </Text>
-          {getLang(language, "STATISTICS")}
-        </Text>
+          <Text style={styles(activeTheme).bigTitle}>
+            <Text>{info.Symbol}  </Text>
+            {getLang(language, "STATISTICS")}
+          </Text>
+          <Text style={styles(activeTheme).txt}>
+            {info.FullName}
+          </Text>
+        </View>
+
+
       </View>
 
       <ScrollView
@@ -100,11 +101,15 @@ export default InfoContent;
 const styles = (props) => StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: PADDING_V,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
-  wrapper: { flexDirection: "row", alignItems: "center" },
+  wrapper: {
+    paddingBottom: DIMENSIONS.PADDING_H,
+    flexDirection: "row", alignItems: "center",
+  },
   bigTitle: { fontFamily: "CircularStd-Bold", fontSize: 18, color: props.appWhite },
+  txt: { fontFamily: "CircularStd-Book", fontSize: 16, color: props.secondaryText },
   titleContainer: {
     width: "100%",
     flexDirection: "row",
@@ -133,7 +138,7 @@ const styles = (props) => StyleSheet.create({
 
   section: {
     fontFamily: "CircularStd-Bold",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     letterSpacing: 0.93,
     color: props.appWhite,
   },
@@ -156,7 +161,7 @@ const styles = (props) => StyleSheet.create({
     textAlign: "left",
     color: props.secondaryText,
     marginRight: 6,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Bold",
   },
   marker: {
@@ -169,7 +174,7 @@ const styles = (props) => StyleSheet.create({
   },
   marketText: {
     fontFamily: "Helvetica",
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: "#fff",
   },
   itemRight: {
@@ -179,7 +184,7 @@ const styles = (props) => StyleSheet.create({
   price: {
     textAlign: "right",
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
 
 });

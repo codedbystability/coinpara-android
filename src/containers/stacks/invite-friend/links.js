@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import userServices from "../../../services/user-services";
 import { useSelector } from "react-redux";
-import { INPUT_HEIGHT, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import Clipboard from "@react-native-community/clipboard";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
@@ -113,7 +113,7 @@ const ReferralLinks = () => {
         paddingHorizontal: 20,
       }}>
         {
-          loading ? <View style={{ paddingVertical: PADDING_H * 2 }}>
+          loading ? <View style={{ paddingVertical: DIMENSIONS.PADDING_H * 2 }}>
             <ActivityIndicator />
           </View> : data.length >= 1 ? data.map(item => (
               <Pressable
@@ -128,7 +128,7 @@ const ReferralLinks = () => {
                 <Text style={[styles(activeTheme).tabText, { textAlign: "right" }]}>% {item.FriendPercentage}</Text>
               </Pressable>
             )) :
-            <View style={{ paddingVertical: PADDING_H * 4, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ paddingVertical: DIMENSIONS.PADDING_H * 4, alignItems: "center", justifyContent: "center" }}>
               <TinyImage parent={"rest/"} name={"empty-face"} style={styles(activeTheme).icon} />
             </View>
         }
@@ -149,8 +149,8 @@ const styles = (props) => StyleSheet.create({
     paddingVertical: 20,
   },
   container: {
-    paddingHorizontal: PADDING_H,
-    height: INPUT_HEIGHT,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    height: DIMENSIONS.INPUT_HEIGHT,
     width: "100%",
     backgroundColor: "rgba(255,255,255,0.03)",
     flexDirection: "row",
@@ -172,7 +172,7 @@ const styles = (props) => StyleSheet.create({
 
   text: {
     color: props.secondaryText,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
   },
 
@@ -182,7 +182,7 @@ const styles = (props) => StyleSheet.create({
 
   tabTitle: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     width: "33%",
     color: props.secondaryText,
 
@@ -190,7 +190,7 @@ const styles = (props) => StyleSheet.create({
 
   tabText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     letterSpacing: 0,
     color: props.secondaryText,
     textAlign: "center",

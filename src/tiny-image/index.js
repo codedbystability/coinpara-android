@@ -15,7 +15,7 @@ const TinyImage = props => {
   return <FastImage
     source={{
       uri: source + activeThemeKey + "/" + parent + name + ".png",
-      priority: FastImage.priority.normal,
+      priority: FastImage.priority.high,
       cache: FastImage.cacheControl.immutable,
     }}
     {...rest}

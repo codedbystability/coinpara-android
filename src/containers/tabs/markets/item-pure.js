@@ -1,13 +1,9 @@
 import React from "react";
-import {  Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-import DynamicImage from "../../../components/dynamic-image";
+import DynamicImage from "../../../components/page-components/dynamic-image";
 import styles from "./styles";
-import marketServices from "../../../services/market-services";
-import { setIsFavorite } from "../../../actions/market-actions";
 import { connect } from "react-redux";
-import DropdownAlert from "../../../providers/DropdownAlert";
-import { getLang } from "../../../helpers/array-helper";
 import MarketChart from "./chart";
 import { formatMoney, nFormatter } from "../../../helpers/math-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
@@ -78,59 +74,65 @@ class ListItemPure extends React.PureComponent {
     const {
       item, index, activeTheme, fontSizes, swipeAble = true,
     } = this.props;
-
     return (
       <View
         key={index}
         style={{ backgroundColor: index % 2 !== 0 ? activeTheme.darkBackground : activeTheme.backgroundApp }}>
-          <Pressable
-            style={({ pressed }) => [styles(activeTheme).oddContainer, {
-              backgroundColor: pressed ? activeTheme.borderGray : index % 2 !== 0 ? activeTheme.darkBackground : "transparent",
-            }]}
-            onPress={this.handleDetailNavigation}>
+        <Pressable
+          style={({ pressed }) => [styles(activeTheme).oddContainer, {
+            backgroundColor: pressed ? activeTheme.borderGray : index % 2 !== 0 ? activeTheme.darkBackground : "transparent",
+          }]}
+          onPress={this.handleDetailNavigation}>
 
-            <View style={styles(activeTheme).leftWrapper}>
-              <View style={styles(activeTheme).leftWrapperContainer}>
-                {
-                  item && item.in && <View style={styles(activeTheme).newWrapper}>
+          <View style={styles(activeTheme).leftWrapper}>
+            <View style={styles(activeTheme).leftWrapperContainer}>
+              {
+                item && item.in && <View style={styles(activeTheme).newWrapper}>
 
-                  </View>
-                }
-                <DynamicImage style={styles(activeTheme).image} market={item.to} />
-              </View>
-              <View>
-                <Text style={styles(activeTheme, fontSizes).title}
-                      adjustsFontSizeToFit={true}>{item.to}/{item.fs}</Text>
-
-                <Text style={styles(activeTheme, fontSizes).description}>{nFormatter(item.vd, 4)}</Text>
-              </View>
-
-            </View>
-
-            <View style={styles(activeTheme).middleWrapper}>
-              <MarketChart market={item} />
-            </View>
-
-            <View
-              style={styles(activeTheme).rightWrapper}>
-
-              <Text numberOfLines={1} style={[styles(activeTheme, fontSizes).title, { textAlign: "right" }]}>
-                {
-                  formatMoney(item.pr, item.fdp)
-                }
-              </Text>
-
-              <Text numberOfLines={1}
-                    style={item.cp < 0 ? styles(activeTheme, fontSizes).negative : styles(activeTheme, fontSizes).positive}>
-                {/*{*/}
-                {/*  item.cd.toFixed(2)*/}
-                {/*}*/}
-                % {
-                item.cp.toFixed(2)
+                </View>
               }
-              </Text>
+              <DynamicImage style={styles(activeTheme).image} market={item.to} />
             </View>
-          </Pressable>
+            <View>
+              <Text style={styles(activeTheme, fontSizes).title}
+                    adjustsFontSizeToFit={true}>{item.to}
+
+                <Text style={{
+                  color: activeTheme.secondaryText,
+                  fontFamily: "CircularStd-Book",
+                  fontSize: fontSizes.NORMAL_FONTSIZE,
+                }}> /{item.fs}</Text>
+              </Text>
+
+              <Text style={styles(activeTheme, fontSizes).description}>{nFormatter(item.vd, 4)}</Text>
+            </View>
+
+          </View>
+
+          <View style={styles(activeTheme).middleWrapper}>
+            <MarketChart market={item} />
+          </View>
+
+          <View
+            style={styles(activeTheme).rightWrapper}>
+
+            <Text numberOfLines={1} style={[styles(activeTheme, fontSizes).title, { textAlign: "right" }]}>
+              {
+                formatMoney(item.pr, item.fdp)
+              }
+            </Text>
+
+            <Text numberOfLines={1}
+                  style={item.cp < 0 ? styles(activeTheme, fontSizes).negative : styles(activeTheme, fontSizes).positive}>
+              {/*{*/}
+              {/*  item.cd.toFixed(2)*/}
+              {/*}*/}
+              % {
+              item.cp.toFixed(2)
+            }
+            </Text>
+          </View>
+        </Pressable>
       </View>
 
     );

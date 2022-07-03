@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import InfoCard from "../../../components/info-card";
-import FeeTotal from "../../../components/fee-total";
-import FormInput from "../../../components/form-input";
-import PercentageSelect from "../../../components/percentage-select";
-import CustomButton from "../../../components/button";
+import InfoCard from "../../../components/page-components/info-card";
+import FeeTotal from "../../../components/page-components/fee-total";
+import FormInput from "../../../components/page-components/form-input";
+import PercentageSelect from "../../../components/page-components/percentage-select";
+import CustomButton from "../../../components/page-components/button";
 import BankSelect from "../bank-select";
-import SelectBankInput from "../../../components/select-bank-input";
+import SelectBankInput from "../../../components/page-components/select-bank-input";
 import { useSelector } from "react-redux";
 import { formatMoney, formattedNumber } from "../../../helpers/math-helper";
 import { getLang } from "../../../helpers/array-helper";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import transferServices from "../../../services/transfer-services";
-import BankHistory from "./bank-history";
-import Validation from "../../../components/validation";
+import Index from "./bank-history-select";
+import Validation from "../../../components/page-components/validation";
 import ModalProvider from "../../../providers/ModalProvider";
-import {
-  BIG_TITLE_FONTSIZE, HEADER_HEIGHT,
-  LABEL_HEIGHT,
-  NORMAL_FONTSIZE,
-  PADDING_H,
-} from "../../../../utils/dimensions";
-import {  replaceAll } from "../../../helpers/string-helper";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import { replaceAll } from "../../../helpers/string-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import HapticProvider from "../../../providers/HapticProvider";
-import Loading from "../../../components/loading";
+import Loading from "../../../components/page-components/loading";
 import userServices from "../../../services/user-services";
 
 const percentages = [
@@ -198,9 +194,6 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
             />
 
 
-
-
-
             <FormInput returnKey={"done"} autoComplete={"off"}
                        placeholder={"AMOUNT"}
                        value={amount.toString()} keyboardType={"numeric"}
@@ -218,7 +211,7 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
             <FeeTotal fee={formatMoney(amount ? wallet.wf : 0, 2) + " TRY"}
                       amount={formatMoney(amount && amount !== "" ? amount - wallet.wf : 0, 2)} />
 
-            <BankHistory handleSelect={handleBankHistorySelected} />
+            <Index handleSelect={handleBankHistorySelected} />
 
 
           </KeyboardAwareScrollView>
@@ -263,6 +256,12 @@ const WithdrawTryScreen = ({ wallet, showModal, handleComplete, validUser = null
                   onResult={onResult}
       />
 
+      <InputAccessory
+        handleStep={null}
+        stepAble={false}
+        mailProviders={[]}
+        onPress={null}
+      />
     </>
 
   );
@@ -273,14 +272,14 @@ export default WithdrawTryScreen;
 
 const styles = props => StyleSheet.create({
   scroll: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     // flex: 1,
     paddingBottom: 100,
   },
   wrapper: {
     width: "100%",
     alignItems: "flex-end",
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   buttonWrapper: {
     position: "absolute",
@@ -288,19 +287,19 @@ const styles = props => StyleSheet.create({
     width: "100%",
   },
   title: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
   },
   desc: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
 
   },
   nonValid: {
     flex: 1,
-    top: HEADER_HEIGHT + LABEL_HEIGHT + (PADDING_H * 2),
+    top: DIMENSIONS.HEADER_HEIGHT + DIMENSIONS.LABEL_HEIGHT + (DIMENSIONS.PADDING_H * 2),
     left: 0,
     position: "absolute",
     height: "100%",

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import NImage from "../components/image/index.tsx";
+import NImage from "../components/page-components/image/index.tsx";
 
 
 const AppStateLayout = ({ show }) => {

@@ -10,10 +10,10 @@ import * as React from "react";
 import { View, ScrollView } from "react-native";
 import TradeSelectItem from "./select-item";
 import { useState } from "react";
-import SearchInput from "../../../components/search-input";
+import SearchInput from "../../../components/page-components/search-input";
 import { useDispatch } from "react-redux";
 import { filterMarketsByText } from "../../../actions/market-actions";
-import { SCREEN_HEIGHT } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const TradeSelectContainer = (props) => {
 
@@ -61,7 +61,7 @@ const styles = {
   wrapper: {
     width: "100%",
     paddingHorizontal: 20,
-    height: SCREEN_HEIGHT / 1.8,
+    height: DIMENSIONS.SCREEN_HEIGHT / 1.8,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",

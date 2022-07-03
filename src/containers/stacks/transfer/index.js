@@ -4,21 +4,21 @@ import DepositBtcScreen from "../deposit-btc";
 import DepositTryScreen from "../deposit-try";
 import WithdrawBtcScreen from "../withdraw-btc";
 import WithdrawTryScreen from "../withdraw-try";
-import MarketSelect from "../../../components/market-select";
+import MarketSelect from "../../../components/page-components/market-select";
 import { useSelector } from "react-redux";
-import LoadingScreen from "../../../components/loading";
+import LoadingScreen from "../../../components/page-components/loading";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import transferServices from "../../../services/transfer-services";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import ModalProvider from "../../../providers/ModalProvider";
-import AnimatedTab from "../../../components/animated-tab";
-import { HEADER_HEIGHT, PADDING_H } from "../../../../utils/dimensions";
+import AnimatedTab from "../../../components/page-components/animated-tab";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { isIphoneX } from "../../../../utils/devices";
 import userServices from "../../../services/user-services";
 import { useIsFocused } from "@react-navigation/native";
 import TinyImage from "../../../tiny-image";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 
 
 const transactionTypes = [
@@ -182,7 +182,7 @@ const TransferContainer = (props) => {
         <Pressable onPress={() => props.navigation.goBack()} activeOpacity={1}
                    style={styles(activeTheme).backButtonContainer}>
 
-          <TinyImage parent={"rest/"} name={"c-left"} style={styles(activeTheme).icon} />
+          <TinyImage parent={"rest/"} name={"c-left"} style={styles(activeTheme).iconB} />
 
         </Pressable>
 
@@ -199,8 +199,8 @@ const TransferContainer = (props) => {
       </View>
 
       <View>
-        <View style={{ paddingHorizontal: PADDING_H }}>
-          <View style={{ paddingVertical: PADDING_H }}>
+        <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H }}>
+          <View style={{ paddingVertical: DIMENSIONS.PADDING_H }}>
             <AnimatedTab {...{
               activeKey: transactionType,
               headers: transactionTypes,
@@ -215,7 +215,7 @@ const TransferContainer = (props) => {
         getDynamicContent()
       }
 
-      <FloatingAction isButton={true}/>
+      <FloatingAction isButton={true} />
 
 
     </>
@@ -228,18 +228,17 @@ export default TransferScreen;
 const styles = (props) => StyleSheet.create({
   container: {
     width: "100%",
-    height: HEADER_HEIGHT,
+    height: DIMENSIONS.HEADER_HEIGHT,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: PADDING_H,
-    paddingTop: isIphoneX ? 24 : 6,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingTop: isIphoneX ? 26 : 8,
     zIndex: 999999,
     flexDirection: "row",
   },
   backButtonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
+    paddingVertical: 4,
+    paddingRight: DIMENSIONS.PADDING_H * 2,
   },
   title: {
     fontFamily: "CircularStd-Book",
@@ -255,11 +254,16 @@ const styles = (props) => StyleSheet.create({
   },
   coinName: {
     fontFamily: "CircularStd-Bold",
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
     marginHorizontal: 8,
   },
   icon: {
     width: 18,
     height: 18,
+  },
+  iconB: {
+    width: 20,
+    height: 20,
   },
 });

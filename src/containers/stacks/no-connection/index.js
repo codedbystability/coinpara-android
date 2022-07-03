@@ -2,7 +2,7 @@ import React from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { MIDDLE_IMAGE, NORMAL_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
-import NImage from "../../../components/image/index.tsx";
+import NImage from "../../../components/page-components/image/index.tsx";
 import NoWifi from "../../../../assets/no-wifi.png";
 
 const NoConnection = props => {

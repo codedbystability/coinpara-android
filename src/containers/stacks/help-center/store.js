@@ -2,29 +2,24 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   FlatList, Image,
-  KeyboardAvoidingView, Linking,
-  Pressable, ScrollView,
+  Linking,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import {
-  INPUT_HEIGHT,
-  MARGIN_T, NORMAL_FONTSIZE,
-  PADDING_H, SCREEN_WIDTH,
-  TITLE_FONTSIZE,
-} from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import TinyImage from "../../../tiny-image";
-import SelectInput from "../../../components/select-input";
+import SelectInput from "../../../components/page-components/select-input";
 import generalServices from "../../../services/general-services";
-import FormInput from "../../../components/form-input";
-import CustomButton from "../../../components/button";
+import FormInput from "../../../components/page-components/form-input";
+import CustomButton from "../../../components/page-components/button";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ActionSheetComProvider from "../../../providers/ActionSheetComProvider";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
@@ -33,7 +28,7 @@ import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { apiPostWithTokenAndImage } from "../../../services/fetch-instance";
 import Loading from "../../../providers/Loading";
-import FloatingAction from "../../../components/floating-action";
+import FloatingAction from "../../../components/page-components/floating-action";
 import { navigationRef } from "../../../providers/RootNavigation";
 import { useRoute } from "@react-navigation/native";
 
@@ -65,7 +60,6 @@ const StoreHelpRequest = props => {
   const getCategories = () => {
     generalServices.getSupportCategories(activeLanguage.Id).then((response) => {
       if (response && response.IsSuccess) {
-        // setCatOptions(response.Data.map(itm => itm.Name));
         setCatOptions(response.Data);
       }
     });
@@ -101,6 +95,7 @@ const StoreHelpRequest = props => {
     }
 
   };
+
   const takePicture = () => {
     // if (type === "selfie-video") {
     //   return ModalProvider.show(<CameraModalize
@@ -242,19 +237,19 @@ const StoreHelpRequest = props => {
         type: "image/jpeg",
         name: "photo.jpg",
       });
-      apiPostWithTokenAndImage("https://apiv2.coinpara.com/api/HelpDesk/attachments", formData).then((response) => {
-        if (response && response.IsSuccess) {
-          validatedA.push(response);
-        }
+      apiPostWithTokenAndImage("https://apiv2.coinpara.com/api/HelpDesk/attachments", formData)
+        .then((response) => {
+          if (response && response.IsSuccess) {
+            validatedA.push(response.Data);
 
-        if (i === images.length - 1) {
-          storeInstance(validatedA);
-        }
-      });
+            if (i === images.length - 1) {
+              setTimeout(() => storeInstance(validatedA), 500);
+            }
+          }
+        });
     });
 
   };
-
 
   const storeInstance = img => {
     const instance = {
@@ -277,7 +272,7 @@ const StoreHelpRequest = props => {
 
         DropdownAlert.show("success", getLang(language, "SUCCESS"), getLang(language, "SUPPORT_REQUEST_CREATED"));
 
-        navigationRef.current.goBack()
+        navigationRef.current.goBack();
         route.params?.getSupportRequests();
       }
     });
@@ -293,37 +288,23 @@ const StoreHelpRequest = props => {
         options={{ title: getLang(language, "SUPPORT_REQUEST_FORM") }}
       />
 
-
-      {/*<KeyboardAvoidingView*/}
-
-      {/*  behavior={"padding"}*/}
-      {/*  style={{*/}
-      {/*    flex: 1, paddingTop: MARGIN_T * 2, paddingHorizontal: PADDING_H,*/}
-      {/*    backgroundColor: "red",*/}
-      {/*    paddingBottom: MARGIN_T * 10,*/}
-      {/*  }}>*/}
-
       <KeyboardAwareScrollView
         extraScrollHeight={100}
         enableAutomaticScroll={true}
         showsVerticalScrollIndicator={false}
-        style={{
-          flex: 1,
-          paddingTop: MARGIN_T,
-          paddingHorizontal: PADDING_H,
-          paddingBottom: 100,
-          // paddingBottom: MARGIN_T * 10,
-        }}>
+        style={styles(activeTheme).w11}>
 
 
         <SelectInput
           title={getLang(language, "CATEGORY")}
+          optionTitle={getLang(language, "PLEASE_SELECT_CATEGORY")}
           options={[...catOptions.map(itm => itm.Name), getLang(language, "CANCEL")]}
           selectedOption={activeCategory.Name || ""}
           onSelect={(item) => onSelect(item, "cat")}
         />
 
         <SelectInput
+          optionTitle={getLang(language, "PLEASE_SELECT_DEPARTMENT")}
           title={getLang(language, "DEPARTMENT")}
           options={[...depOptions.map(itm => itm.Title), getLang(language, "CANCEL")]}
           selectedOption={activeDepartment.Title || ""}
@@ -332,6 +313,7 @@ const StoreHelpRequest = props => {
 
 
         <SelectInput
+          optionTitle={getLang(language, "PLEASE_SELECT_PRIORITY")}
           title={getLang(language, "PRIORITY")}
           options={[...priorityOptions.map(itm => itm.Name), getLang(language, "CANCEL")]}
           selectedOption={activePriority.Name || ""}
@@ -376,8 +358,8 @@ const StoreHelpRequest = props => {
                 return (
                   <View style={{
 
-                    width: SCREEN_WIDTH / 4,
-                    height: SCREEN_WIDTH / 6,
+                    width: DIMENSIONS.SCREEN_WIDTH / 4,
+                    height: DIMENSIONS.SCREEN_WIDTH / 6,
                     alignItems: "center",
                     justifyContent: "center",
                     marginRight: 8,
@@ -408,25 +390,9 @@ const StoreHelpRequest = props => {
         <TouchableOpacity
           onPress={askUpload}
           activeOpacity={.8}
-          style={{
-            height: INPUT_HEIGHT,
-            width: "100%",
-            backgroundColor: activeTheme.backgroundApp,
-            marginVertical: 8,
-            flexDirection: "row",
-            borderWidth: 1,
-            borderColor: activeTheme.borderGray,
-            borderRadius: 4,
-          }}>
+          style={styles(activeTheme).t11}>
 
-          <View style={{
-            height: "100%",
-            width: "14%",
-            backgroundColor: activeTheme.actionColor,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 4,
-          }}>
+          <View style={styles(activeTheme).t12}>
 
             <TinyImage parent={"rest/"} name={"upload"}
                        style={styles(activeTheme).icon} />
@@ -435,18 +401,9 @@ const StoreHelpRequest = props => {
           </View>
 
 
-          <View style={{
-            height: "100%",
-            width: "86%",
-            justifyContent: "center",
-            paddingHorizontal: PADDING_H,
-          }}>
+          <View style={styles(activeTheme).v1}>
 
-            <Text style={{
-              fontFamily: "CircularStd-Book",
-              fontSize: NORMAL_FONTSIZE,
-              color: activeTheme.secondaryText,
-            }}>{getLang(language, "UPLOAD_YOUR_PHOTO")}</Text>
+            <Text style={styles(activeTheme).tt1}>{getLang(language, "UPLOAD_YOUR_PHOTO")}</Text>
 
           </View>
         </TouchableOpacity>
@@ -460,6 +417,8 @@ const StoreHelpRequest = props => {
                       backgroundColor: activeTheme.actionColor,
                     }} />
 
+      <InputAccessory />
+
       <FloatingAction isButton={true} />
 
     </>
@@ -470,7 +429,6 @@ const StoreHelpRequest = props => {
 
 
 const StoreHelpRequestScreen = styledHigherOrderComponents(StoreHelpRequest);
-// const StoreHelpRequestScreen = StoreHelpRequest;
 export default StoreHelpRequestScreen;
 
 
@@ -478,6 +436,12 @@ const styles = (props) => StyleSheet.create({
   wrapper: {
     width: "100%",
     paddingVertical: 10,
+  },
+  w11: {
+    flex: 1,
+    paddingTop: DIMENSIONS.MARGIN_T,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+    paddingBottom: 100,
   },
   left: { flexDirection: "row", justifyContent: "space-between" },
   title: {
@@ -529,18 +493,18 @@ const styles = (props) => StyleSheet.create({
     // height: 80,
     marginVertical: 6,
     borderRadius: 8,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 8,
   },
   id: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: NORMAL_FONTSIZE - 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
   },
   msg: {
     fontFamily: "CircularStd-Book",
     color: props.appWhite,
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
 
   },
   img1: {
@@ -549,30 +513,30 @@ const styles = (props) => StyleSheet.create({
     marginBottom: 8,
   },
   t1: {
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
   },
   l1: {
-    paddingTop: PADDING_H,
-    paddingBottom: PADDING_H * 4,
-    paddingHorizontal: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
+    paddingBottom: DIMENSIONS.PADDING_H * 4,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   d1: {
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
-    fontSize: NORMAL_FONTSIZE - 2,
-    marginTop: PADDING_H,
-    marginBottom: PADDING_H * 2,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 2,
+    marginTop: DIMENSIONS.PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H * 2,
   },
   t2: {
     fontFamily: "CircularStd-Bold",
     color: props.appWhite,
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
   },
   mInput: {
-    padding: PADDING_H,
-    paddingTop: PADDING_H,
+    padding: DIMENSIONS.PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
     paddingVertical: 12,
     marginVertical: 8,
     width: "100%",
@@ -582,7 +546,7 @@ const styles = (props) => StyleSheet.create({
     borderColor: props.borderGray,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
   },
 
   image: {
@@ -594,7 +558,7 @@ const styles = (props) => StyleSheet.create({
   },
 
   size: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     fontFamily: "CircularStd-Bold",
     color: "#fff",
     position: "absolute",
@@ -602,5 +566,34 @@ const styles = (props) => StyleSheet.create({
   dismissButton: {
     width: "100%",
     alignItems: "center",
+  },
+  t11: {
+    height: DIMENSIONS.INPUT_HEIGHT,
+    width: "100%",
+    backgroundColor: props.backgroundApp,
+    marginVertical: 8,
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: props.borderGray,
+    borderRadius: 4,
+  },
+  t12: {
+    height: "100%",
+    width: "14%",
+    backgroundColor: props.actionColor,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 4,
+  },
+  v1: {
+    height: "100%",
+    width: "86%",
+    justifyContent: "center",
+    paddingHorizontal: DIMENSIONS.PADDING_H,
+  },
+  tt1: {
+    fontFamily: "CircularStd-Book",
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
+    color: props.secondaryText,
   },
 });

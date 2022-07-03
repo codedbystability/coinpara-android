@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { BIG_TITLE_FONTSIZE, PADDING_BV, PADDING_H } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import TinyImage from "../../../tiny-image";
@@ -82,16 +82,16 @@ export default ReferralAccounts;
 const styles = (props) => StyleSheet.create({
 
   wrapper: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   title: {
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE + 6,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 6,
     letterSpacing: 0,
     color: props.appWhite,
   },
   container: {
-    paddingTop: PADDING_BV,
+    paddingTop: DIMENSIONS.PADDING_BV,
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
@@ -101,19 +101,19 @@ const styles = (props) => StyleSheet.create({
     borderRadius: 8,
     height: 80,
     width: "48%",
-    padding: PADDING_H,
+    padding: DIMENSIONS.PADDING_H,
     justifyContent: "space-around",
     marginBottom: 10,
     backgroundColor: props.darkBackground,
   },
   valueText: {
     color: props.appWhite,
-    fontSize: BIG_TITLE_FONTSIZE + 4,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 4,
     fontFamily: "CircularStd-Bold",
   },
 
   desc: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     fontFamily: "CircularStd-Book",
     color: props.secondaryText,
   },

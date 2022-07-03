@@ -2,13 +2,7 @@ import * as React from "react";
 import { StyleSheet, View, Pressable, Modal, Text, Keyboard } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import ModalizeHeader from "../modalize/modalize-header";
-import {
-  BIG_TITLE_FONTSIZE,
-  MARGIN_T,
-  PADDING_H,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-} from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { isIphoneX } from "../../../../../utils/devices";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -16,15 +10,15 @@ import { formatMoney } from "../../../../helpers/math-helper";
 import { limitInputs, marketAmountInputs, marketTotalInputs, percentages, stopInputs } from "../modalize/constants";
 import marketServices from "../../../../services/market-services";
 import ModalizeInputs from "../modalize/modalize-inputs";
-import NeedAuthentication from "../../../../components/need-authentication";
+import NeedAuthentication from "../../../../components/page-components/need-authentication";
 import DropdownAlert from "../../../../providers/DropdownAlert";
 import { getLang } from "../../../../helpers/array-helper";
 import ModalizeBottom from "../modalize/modalize-bottom";
-import CustomButton from "../../../../components/button";
+import CustomButton from "../../../../components/page-components/button";
 import LocalStorage from "../../../../providers/LocalStorage";
 import ActionSheetComProvider from "../../../../providers/ActionSheetComProvider";
-import AnimatedTab from "../../../../components/animated-tab";
-import CustomCheckbox from "../../../../components/custom-checkbox";
+import AnimatedTab from "../../../../components/page-components/animated-tab";
+import CustomCheckbox from "../../../../components/page-components/custom-checkbox";
 import { actionTabs, modalProps, tradeTypes } from "../constants";
 import { replaceAll } from "../../../../helpers/string-helper";
 import TinyImage from "../../../../tiny-image";
@@ -32,7 +26,6 @@ import HapticProvider from "../../../../providers/HapticProvider";
 
 
 const AnimatedSheet = (props) => {
-// const AnimatedSheet = forwardRef((props, ref) => {
   const { selectedOrder, selectedType, marketInfo, market, getLastTickerParent } = props;
 
   const [commissionRate, setCommissionRate] = useState(null);
@@ -473,10 +466,10 @@ const AnimatedSheet = (props) => {
             style={[styles(activeTheme).tabWrapper, {
               flex: 1,
               backgroundColor: activeTheme.backgroundApp,
-              height: !authenticated ? SCREEN_HEIGHT * .6 : isIphoneX ? SCREEN_HEIGHT * .7 : SCREEN_HEIGHT * .8,
+              height: !authenticated ? DIMENSIONS.SCREEN_HEIGHT * .6 : isIphoneX ? DIMENSIONS.SCREEN_HEIGHT * .7 : DIMENSIONS.SCREEN_HEIGHT * .8,
             }]}>
 
-            <View style={{ paddingHorizontal: PADDING_H }}>
+            <View style={{ paddingHorizontal: DIMENSIONS.PADDING_H }}>
               <AnimatedTab {...{
                 filled: true,
                 activeKey: activeActionTab,
@@ -535,7 +528,7 @@ const AnimatedSheet = (props) => {
         : <View style={[styles(activeTheme).tabWrapper, {
           flex: 1,
           backgroundColor: activeTheme.backgroundApp,
-          height: !authenticated ? SCREEN_HEIGHT * .6 : isIphoneX ? SCREEN_HEIGHT * .8 : SCREEN_HEIGHT * .8,
+          height: !authenticated ? DIMENSIONS.SCREEN_HEIGHT * .6 : isIphoneX ? DIMENSIONS.SCREEN_HEIGHT * .8 : DIMENSIONS.SCREEN_HEIGHT * .8,
         }]}>
           <NeedAuthentication
             isMinimal={true}
@@ -844,7 +837,7 @@ const AnimatedSheet = (props) => {
     }
   };
 
-  const snap0 = !authenticated ? SCREEN_HEIGHT * .6 : isIphoneX ? SCREEN_HEIGHT * .75 : SCREEN_HEIGHT * .85;
+  const snap0 = !authenticated ? DIMENSIONS.SCREEN_HEIGHT * .6 : isIphoneX ? DIMENSIONS.SCREEN_HEIGHT * .75 : DIMENSIONS.SCREEN_HEIGHT * .85;
   const snap1 = isIphoneX ? 80 : 70;
 
   return (
@@ -886,7 +879,7 @@ const AnimatedSheet = (props) => {
                   flexDirection: "row",
                   width: "100%",
                   justifyContent: "space-between",
-                  marginTop: MARGIN_T,
+                  marginTop: DIMENSIONS.MARGIN_T,
 
                 }}>
                   <CustomButton text={getLang(language, "CANCEL")} isSecondary={true}
@@ -978,7 +971,7 @@ const styles = (props) => StyleSheet.create({
     backgroundColor: props.backgroundApp,
     borderRadius: 20,
     paddingVertical: 35,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     alignItems: "center",
     shadow: {
       // shadowColor: props.borderGray,
@@ -992,7 +985,7 @@ const styles = (props) => StyleSheet.create({
     },
     borderWidth: 1,
     borderColor: props.borderGray,
-    width: SCREEN_WIDTH - (PADDING_H * 2),
+    width: DIMENSIONS.SCREEN_WIDTH - (DIMENSIONS.PADDING_H * 2),
   },
   button: {
     width: "48%",
@@ -1005,7 +998,7 @@ const styles = (props) => StyleSheet.create({
     borderRadius: 10,
   },
   btnTxt: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.buttonWhite,
     fontFamily: "CircularStd-Bold",
   },
@@ -1024,7 +1017,7 @@ const styles = (props) => StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     color: props.appWhite,
-    fontSize: BIG_TITLE_FONTSIZE + 2,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE + 2,
     fontFamily: "CircularStd-Bold",
   },
 
@@ -1032,13 +1025,13 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row", justifyContent: "space-between", width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: props.borderGray,
-    paddingBottom: PADDING_H,
-    marginBottom: PADDING_H,
+    paddingBottom: DIMENSIONS.PADDING_H,
+    marginBottom: DIMENSIONS.PADDING_H,
   },
   txt: {
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
   },
   icon: {
     width: 14,

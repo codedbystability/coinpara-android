@@ -2,7 +2,7 @@ import React, { useEffect,  useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import HistoryContentTabs from "./history-content-tabs";
 import HistoryContent from "./history-content";
-import { PADDING_H, PADDING_V } from "../../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 
 
@@ -15,7 +15,7 @@ const HistoryContentIndex = ({ history,tdp,fdp }) => {
   }, [history]);
 
   return (
-    <View style={{ flex: 1, paddingVertical: PADDING_V, paddingHorizontal: PADDING_H}}>
+    <View style={{ flex: 1, paddingVertical: DIMENSIONS.PADDING_V, paddingHorizontal: DIMENSIONS.PADDING_H}}>
 
       {
         loading ? <ActivityIndicator color={activeTheme.secondaryText}/> : <>

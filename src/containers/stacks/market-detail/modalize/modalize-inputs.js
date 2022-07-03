@@ -1,18 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import PercentageSelect from "../../../../components/percentage-select";
-import {
-  MODALIZE_INPUT,
-  NORMAL_FONTSIZE,
-  PADDING_H,
-  PADDING_V, TITLE_FONTSIZE,
-} from "../../../../../utils/dimensions";
+import PercentageSelect from "../../../../components/page-components/percentage-select";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { formatMoney } from "../../../../helpers/math-helper";
 import { getLang } from "../../../../helpers/array-helper";
 import { useSelector } from "react-redux";
 import { isIphoneX } from "../../../../../utils/devices";
 import { percentages } from "./constants";
-import AnimatedTab from "../../../../components/animated-tab";
+import AnimatedTab from "../../../../components/page-components/animated-tab";
 import * as Animatable from "react-native-animatable";
 import TinyImage from "../../../../tiny-image";
 
@@ -56,8 +51,8 @@ const ModalizeInputs = (props) => {
     <View
       style={{
         flex: .7,
-        paddingHorizontal: PADDING_H,
-        paddingVertical: PADDING_V,
+        paddingHorizontal: DIMENSIONS.PADDING_H,
+        paddingVertical: DIMENSIONS.PADDING_V,
         justifyContent: "space-between",
       }}>
 
@@ -202,14 +197,13 @@ const ModalizeInputs = (props) => {
 
 };
 
-export default ModalizeInputs;
+export default React.memo(ModalizeInputs);
 
 
 const styles = (props) => StyleSheet.create({
   container: {
-    // flex: 1,
     marginTop: 6,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   infoWrapper: {
     width: "100%",
@@ -221,7 +215,7 @@ const styles = (props) => StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: isIphoneX ? 8 : 4,
-    height: MODALIZE_INPUT,
+    height: DIMENSIONS.MODALIZE_INPUT,
     marginBottom: 0,
 
 
@@ -238,28 +232,23 @@ const styles = (props) => StyleSheet.create({
 
   inputLabel: {
     width: "30%",
-    height: MODALIZE_INPUT,
+    height: DIMENSIONS.MODALIZE_INPUT,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
   },
   textInput: {
     paddingHorizontal: 10,
-    // height: 40,
     width: "70%",
-    // textAlign: "auto",
     color: props.appWhite,
     overflow: "hidden",
     flexWrap: "wrap",
-    // flex: 1,
-    // flexDirection: "row",
-    // backgroundColor: "orange",
     flexShrink: 1,
-    fontSize: TITLE_FONTSIZE - 1,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 1,
   },
   inputSecondLabel: {
     width: "15%",
-    height: MODALIZE_INPUT,
+    height: DIMENSIONS.MODALIZE_INPUT,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -270,8 +259,6 @@ const styles = (props) => StyleSheet.create({
   },
   buttonContainer: {
     width: "50%",
-    // height: "100%",
-    // paddingVertical: PADDING_V,
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 4,
@@ -289,15 +276,14 @@ const styles = (props) => StyleSheet.create({
   },
   descText: {
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     lineHeight: 24,
     color: props.secondaryText,
 
   },
   itemContainer: {
-    // flex: 1,
     marginTop: 6,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   icon: {
     width: 18,

@@ -9,25 +9,25 @@ class FcmServices {
 
   checkPermission = (onRegister, onNotification, onOpenNotification) => {
     messaging().hasPermission()
-        .then(enabled => {
-          enabled ? this.registerAppWithFCM(onRegister, onNotification, onOpenNotification) :
-              this.requestPermission(onRegister, onNotification, onOpenNotification);
-        }).catch(error => this.requestPermission(onRegister, onNotification, onOpenNotification));
+      .then(enabled => {
+        enabled ? this.registerAppWithFCM(onRegister, onNotification, onOpenNotification) :
+          this.requestPermission(onRegister, onNotification, onOpenNotification);
+      }).catch(error => this.requestPermission(onRegister, onNotification, onOpenNotification));
   };
 
   getToken = async (onRegister, onNotification, onOpenNotification) => {
     let fcmToken = LocalStorage.getItem("FCM_TOKEN");
     if (!fcmToken) {
       messaging().getToken()
-          .then(fcmToken => {
-            if (fcmToken) {
-              this.setToken(fcmToken);
-              this.createNotificationListeners(onNotification, onOpenNotification);
-              onRegister(fcmToken);
-            } else {
-              console.log("[FCMService] User does not have a device token");
-            }
-          }).catch(error => console.log("[FCMService] getToken rejected ", `FCm token get error${error}`));
+        .then(fcmToken => {
+          if (fcmToken) {
+            this.setToken(fcmToken);
+            this.createNotificationListeners(onNotification, onOpenNotification);
+            onRegister(fcmToken);
+          } else {
+            console.log("[FCMService] User does not have a device token");
+          }
+        }).catch(error => console.log("[FCMService] getToken rejected ", `FCm token get error${error}`));
     } else {
       this.createNotificationListeners(onNotification, onOpenNotification);
       onRegister(fcmToken);
@@ -48,9 +48,9 @@ class FcmServices {
 
   deletedToken = async () => {
     await messaging().deleteToken()
-        .catch(error => {
-          // console.log("Delected token error ", error)
-        });
+      .catch(error => {
+        // console.log("Delected token error ", error)
+      });
   };
 
   createNotificationListeners = (onNotification, onOpenNotification) => {
@@ -69,14 +69,14 @@ class FcmServices {
 
     // when the application is opened form a quit state
     messaging()
-        .getInitialNotification()
-        .then(remoteMessage => {
-              // console.log('[FCMService] getInitialNotification Notification caused app to open from quit state:', remoteMessage);
-              if (remoteMessage) {
-                onOpenNotification(remoteMessage.data);
-              }
-            },
-        );
+      .getInitialNotification()
+      .then(remoteMessage => {
+          // console.log('[FCMService] getInitialNotification Notification caused app to open from quit state:', remoteMessage);
+          if (remoteMessage) {
+            onOpenNotification(remoteMessage.data);
+          }
+        },
+      );
 
     // Foreground state messages
     this.messageListener = messaging().onMessage(async remoteMessage => {

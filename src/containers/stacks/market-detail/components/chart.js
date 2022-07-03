@@ -5,7 +5,7 @@ import {
   View,
 } from "react-native";
 import WebView from "react-native-webview";
-import { SCREEN_WIDTH } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { rgbaToHex } from "../../../../helpers/color-helper";
 import { useSelector } from "react-redux";
 
@@ -54,8 +54,8 @@ const MarketDetailChart = ({
       + "&txtColor=" + rgbaToHex(activeTheme.appWhite)
       + "&upCandleColor=" + rgbaToHex(colors.green)
       + "&downCandleColor=" + rgbaToHex(colors.red)
-      + "&volumeRed=" + rgbaToHex(colors.green)
-      + "&volumeGreen=" + rgbaToHex(colors.red)
+      + "&volumeRed=" + rgbaToHex(colors.red)
+      + "&volumeGreen=" + rgbaToHex(colors.green)
       + "&vLineColor=" + lineColor
       + "&hLineColor=" + lineColor
       + "&priceBorderColor=" + lineColor
@@ -126,7 +126,7 @@ const styles = (props) => StyleSheet.create({
     backgroundColor: "transparent",
   },
   webview: {
-    height: "100%", width: SCREEN_WIDTH, flex: 1, backgroundColor: "transparent",
+    height: "100%", width: DIMENSIONS.SCREEN_WIDTH, flex: 1, backgroundColor: "transparent",
   },
 
   webviewF: {

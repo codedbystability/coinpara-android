@@ -4,7 +4,7 @@ import { setActionSheetRef } from "../../../providers/ActionSheetComProvider";
 import { Text, TouchableOpacity, View, Pressable, Animated, ScrollView } from "react-native";
 import styles from "./ActionSheetComp.styles";
 import * as Animatable from "react-native-animatable";
-import DynamicImage from "../../dynamic-image";
+import DynamicImage from "../../page-components/dynamic-image";
 
 const fake = {
   title: "",

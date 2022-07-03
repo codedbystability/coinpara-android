@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
 import { ScrollView, Text, View } from "react-native";
 import TransactionDescriptions from "../transaction-descriptions";
-import Loading from "../../../components/loading";
+import Loading from "../../../components/page-components/loading";
 import Clipboard from "@react-native-community/clipboard";
 import { useSelector } from "react-redux";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import { getLang } from "../../../helpers/array-helper";
 import { formatMoney } from "../../../helpers/math-helper";
 import moment from "moment";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { BIG_TITLE_FONTSIZE, PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
-import FloatingAction from "../../../components/floating-action";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import FloatingAction from "../../../components/page-components/floating-action";
 import OrderCard from "../orders/order-card";
 import TinyImage from "../../../tiny-image";
 
@@ -52,7 +52,7 @@ const OrderDetail = (props) => {
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ flex: 1, paddingHorizontal: PADDING_H }}
+        style={{ flex: 1, paddingHorizontal: DIMENSIONS.PADDING_H }}
         contentContainerStyle={{
           paddingBottom: 120,
         }}
@@ -73,7 +73,7 @@ const OrderDetail = (props) => {
 
 
           <Text style={{
-            fontSize: TITLE_FONTSIZE,
+            fontSize: DIMENSIONS.TITLE_FONTSIZE,
             color: order.fa <= 0 ? activeTheme.changeGreen : activeTheme.secondaryText,
             fontFamily: "CircularStd-Book",
           }}>
@@ -112,7 +112,7 @@ const OrderDetail = (props) => {
         <View>
 
           <Text style={{
-            fontSize: BIG_TITLE_FONTSIZE,
+            fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
             color: activeTheme.actionColor,
             marginTop: 36,
           }}>{getLang(language, "TRADE_DETAIL")}</Text>

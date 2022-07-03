@@ -196,7 +196,6 @@ const globalReducer = (state = GlobalStates, action) => {
       };
 
     case GLOBAL_CONSTANTS.SET_LANGUAGE:
-      console.log(GLOBAL_CONSTANTS.SET_LANGUAGE);
       const languageC = [];
       if (action.data && action.data.length >= 1) {
         action.data.map(item => languageC[item.key] = item.value);
@@ -207,16 +206,21 @@ const globalReducer = (state = GlobalStates, action) => {
       };
 
     case GLOBAL_CONSTANTS.SET_LANGUAGE_KEYS:
-      console.log(GLOBAL_CONSTANTS.SET_LANGUAGE_KEYS);
       const languageC2 = [];
       if (action.data && action.data.length >= 1) {
         action.data.map(item => languageC2[item.key] = item.value);
       }
       return {
         ...state,
-        language: languageC2
+        language: languageC2,
       };
 
+
+    case GLOBAL_CONSTANTS.SET_ICON_COLOR:
+      return {
+        ...state,
+        iconColor: action.data,
+      };
 
     case GLOBAL_CONSTANTS.SET_ACTIVE_THEME:
       return {
@@ -239,7 +243,6 @@ const globalReducer = (state = GlobalStates, action) => {
       };
 
     case GLOBAL_CONSTANTS.UPDATE_LANGUAGE:
-      console.log(GLOBAL_CONSTANTS.UPDATE_LANGUAGE);
       const languageU = [];
       action.data.map(item => languageU[item.key] = item.value);
       return {

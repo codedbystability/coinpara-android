@@ -3,10 +3,10 @@ import { Pressable, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import styles from "./styles";
 import { navigationRef } from "../../../../providers/RootNavigation";
-import WalletTotal from "../../../../components/wallet-total";
+import WalletTotal from "../../../../components/page-components/wallet-total";
 import { getLang } from "../../../../helpers/array-helper";
 import TinyImage from "../../../../tiny-image";
-import { PADDING_H } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useNavigation } from "@react-navigation/native";
 
 
@@ -44,7 +44,7 @@ const AuthHeader = ({ refreshing }) => {
         <Pressable
           onPress={() => handleNavigation("AccountInformation")}
           style={{
-            paddingVertical: PADDING_H,
+            paddingVertical: DIMENSIONS.PADDING_H,
             flexDirection: "row",
             alignItems: "center",
           }}>

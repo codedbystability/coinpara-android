@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
 import TinyImage from "../../../tiny-image";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
-import { PADDING_H, TITLE_FONTSIZE } from "../../../../utils/dimensions";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 16,
-    paddingHorizontal: PADDING_H ,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingVertical: 4,
     // width: 80,
   },
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 
   historyText: {
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE,
     color: "#ffffff",
   },
 });

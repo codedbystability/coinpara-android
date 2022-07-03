@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { StyleSheet, Text, View } from "react-native";
-import Checkbox from "../../../../components/checkbox";
-import { LIST_MARGIN_T, PADDING_H, PADDING_V } from "../../../../../utils/dimensions";
+import Checkbox from "../../../../components/page-components/checkbox";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { getLang } from "../../../../helpers/array-helper";
 import TinyImage from "../../../../tiny-image";
 
@@ -41,12 +41,12 @@ export default LanguageItem;
 const styles = (props, fontSizes) => StyleSheet.create({
   wrapper: {
     width: "100%",
-    marginTop: LIST_MARGIN_T,
+    marginTop: DIMENSIONS.LIST_MARGIN_T,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: PADDING_V / 1.4,
-    paddingHorizontal: PADDING_H,
+    paddingVertical: DIMENSIONS.PADDING_V / 1.4,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     borderRadius: 8,
     // backgroundColor: props.darkBackground,
     // borderWidth: 1,

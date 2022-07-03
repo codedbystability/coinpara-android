@@ -1,33 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import InfoCard from "../../../components/info-card";
-import FormInput from "../../../components/form-input";
-import PercentageSelect from "../../../components/percentage-select";
-import CustomButton from "../../../components/button";
+import { StyleSheet, Text, View } from "react-native";
+import InfoCard from "../../../components/page-components/info-card";
+import FormInput from "../../../components/page-components/form-input";
+import PercentageSelect from "../../../components/page-components/percentage-select";
+import CustomButton from "../../../components/page-components/button";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import BigInput from "../../../components/big-input";
+import BigInput from "../../../components/page-components/big-input";
 import Clipboard from "@react-native-community/clipboard";
 import DropdownAlert from "../../../providers/DropdownAlert";
 import ScanScreen from "../sqan-qr";
 import transferServices from "../../../services/transfer-services";
-import Networks from "../../../components/networks";
+import Networks from "../../../components/page-components/networks";
 import walletServices from "../../../services/wallet-services";
-import {
-  BIG_TITLE_FONTSIZE,
-  HEADER_HEIGHT,
-  LABEL_HEIGHT,
-  NORMAL_FONTSIZE,
-  PADDING_H,
-} from "../../../../utils/dimensions";
-import Validation from "../../../components/validation";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import Validation from "../../../components/page-components/validation";
 import ModalProvider from "../../../providers/ModalProvider";
 import { replaceAll } from "../../../helpers/string-helper";
 import { navigationRef } from "../../../providers/RootNavigation";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import TransactionDescriptions from "../transaction-descriptions";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { formattedNumber } from "../../../helpers/math-helper";
-import Loading from "../../../components/loading";
+import Loading from "../../../components/page-components/loading";
 import userServices from "../../../services/user-services";
 
 const percentages = [
@@ -90,9 +85,10 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
             setActiveNetwork(actives[0].Id);
             setActiveNetworkName(actives[0].CoinNetwork);
             const dt = actives[0].DestinationTag;
-            if (dt) {
-              const memoIndex = dt.indexOf("memoId=");
-              const tagIndex = dt.indexOf("dt=");
+            const isHardCode = ["EOS", "XRP", "XLM"].includes(actives[0].CoinNetwork);
+            if (dt || isHardCode) {
+              const memoIndex = actives[0].CoinNetwork === "EOS" ? 1 : dt ? dt.indexOf("memoId=") : null;
+              const tagIndex = actives[0].CoinNetwork === "XRP" || actives[0].CoinNetwork === "XLM" ? 1 : dt ? dt.indexOf("dt=") : null;
               if (memoIndex !== -1) {
                 setIsMeMo(true);
               } else if (tagIndex !== -1) {
@@ -128,6 +124,7 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
   const handleValidationNav = () => navigationRef.current.navigate("AccountApprove");
 
   const handleContinue = () => {
+
 
     if (isMemo && !memoValue) {
       return DropdownAlert.show("info", getLang(language, "INFO"), getLang(language, "PLEASE_ENTER_MEMO_VALUE"));
@@ -216,18 +213,6 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
       return;
     }
     setShowValidation(false);
-
-
-    // const btcInstance = {
-    //   "ToWalletAddress": transferInstance.ToWalletAddress,
-    //   "Amount": transferInstance.amount,
-    //   "CoinGuid": transferInstance.CoinGuid,
-    //   "DestinationTag": isMemo ? isMemo : isTag ? isTag : "",
-    //   "TransferSecret": "",
-    //   "NetworkId": activeNetwork,
-    // };
-
-    // return console.log("btcInstance - ", btcInstance);
 
     return handleComplete(transferInstance);
   };
@@ -364,6 +349,12 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
       />
 
 
+      <InputAccessory
+        handleStep={null}
+        stepAble={false}
+        mailProviders={[]}
+        onPress={null}
+      />
     </>
   );
 
@@ -372,10 +363,9 @@ const WithdrawBtcScreen = ({ wallet, showModal, handleComplete, validUser = null
 
 export default WithdrawBtcScreen;
 
-
 const styles = props => StyleSheet.create({
   scroll: {
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
     paddingBottom: 100,
     // flex: 1,
   },
@@ -390,19 +380,19 @@ const styles = props => StyleSheet.create({
     width: "100%",
   },
   title: {
-    fontSize: BIG_TITLE_FONTSIZE,
+    fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE,
     color: props.appWhite,
     fontFamily: "CircularStd-Bold",
   },
   warn: {
-    fontSize: NORMAL_FONTSIZE - 1,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE - 1,
     color: props.changeRed,
     fontFamily: "CircularStd-Book",
-    paddingLeft: PADDING_H * 2,
+    paddingLeft: DIMENSIONS.PADDING_H * 2,
     marginTop: -4,
   },
   desc: {
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     color: props.secondaryText,
     fontFamily: "CircularStd-Book",
 
@@ -410,7 +400,7 @@ const styles = props => StyleSheet.create({
 
   nonValid: {
     flex: 1,
-    top: HEADER_HEIGHT + LABEL_HEIGHT + (PADDING_H * 2),
+    top: DIMENSIONS.HEADER_HEIGHT + DIMENSIONS.LABEL_HEIGHT + (DIMENSIONS.PADDING_H * 2),
     left: 0,
     position: "absolute",
     height: "100%",

@@ -1,27 +1,28 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, FlatList, Pressable, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import NeedAuthentication from "../../../components/need-authentication";
+import NeedAuthentication from "../../../components/page-components/need-authentication";
 import WalletHeader from "./wallet-header";
 import WalletActionTab from "./action-tab";
-import MarketSelect from "../../../components/market-select";
+import MarketSelect from "../../../components/page-components/market-select";
 import styles from "./styles";
 import WalletListHeader from "./list-header";
 import { navigationRef } from "../../../providers/RootNavigation";
-import WalletTotal from "../../../components/wallet-total";
+import WalletTotal from "../../../components/page-components/wallet-total";
 import ModalProvider from "../../../providers/ModalProvider";
 import { getTRYMarket, selectSortByMarket } from "../../../selectors/wallet-selector";
 import HapticProvider from "../../../providers/HapticProvider";
-import { LIST_ITEM_HEIGHT, NORMAL_FONTSIZE, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { useIsFocused } from "@react-navigation/native";
 import LocalStorage from "../../../providers/LocalStorage";
 import { getLang } from "../../../helpers/array-helper";
-import CustomList from "../../../components/custom-list";
+import CustomList from "../../../components/page-components/custom-list";
 import WalletBottomSheetItem from "./modalize-item";
 import store from "../../../reducers/createReducers";
 import PureItem from "../markets/item-pure";
-import EmptyContainer from "../../../components/empty-container";
-import PulseAnimation from "../../../components/pulse";
+import EmptyContainer from "../../../components/page-components/empty-container";
+import PulseAnimation from "../../../components/page-components/pulse";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import Swipeable from "react-native-swipeable";
 import TinyImage from "../../../tiny-image";
 import DropdownAlert from "../../../providers/DropdownAlert";
@@ -267,11 +268,12 @@ const WalletScreen = (props) => {
 
 
       <Swipeable
-
+        style={{
+          backgroundColor: "transparent",
+        }}
         onSwipeStart={() => handleScroll(false)}
         onSwipeRelease={() => handleScroll(true)}
-
-        leftActionActivationDistance={SCREEN_WIDTH / 2}
+        leftActionActivationDistance={DIMENSIONS.SCREEN_WIDTH / 2}
         leftContent={(
           <View style={[styles(activeTheme).left, {
             backgroundColor: leftActionActivated ? activeTheme.actionColor : activeTheme.inActiveListBg,
@@ -285,7 +287,7 @@ const WalletScreen = (props) => {
               <View style={{ flexDirection: "row" }}>
 
                 <Text style={{
-                  fontSize: NORMAL_FONTSIZE,
+                  fontSize: DIMENSIONS.NORMAL_FONTSIZE,
                   color: activeTheme.appWhite,
                   fontFamily: "CircularStd-Book",
                   marginRight: 10,
@@ -299,8 +301,6 @@ const WalletScreen = (props) => {
         onLeftActionActivate={() => handleLeftAction(item, true)}
         onLeftActionDeactivate={() => setLeftActionActivated(false)}
         onLeftActionComplete={() => setToggle(!toggle)}
-
-
         rightButtonWidth={80}
         rightButtons={[
           <TouchableOpacity
@@ -502,7 +502,7 @@ const WalletScreen = (props) => {
           scrollEnabled={currentlyOpenSwipeable === null}
           borderGray={activeTheme.borderGray}
           contentStyle={{
-            minHeight: SCREEN_HEIGHT,
+            minHeight: DIMENSIONS.SCREEN_HEIGHT,
             backgroundColor: activeTheme.backgroundApp,
           }}
           style={{ backgroundColor: activeTheme.backgroundApp }}
@@ -524,12 +524,22 @@ const WalletScreen = (props) => {
           }
           data={[0].concat(dummyWallets)}
           keyExtractor={keyExtractor}
-          itemHeight={LIST_ITEM_HEIGHT}
+          itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT}
           renderItem={renderWalletItem}
           onEndReached={onEndReached}
         />
       </View>
 
+
+      <InputAccessory
+        tabBarShown={true}
+        isAddition={false}
+        stepAble={false}
+        mailProviders={localWallets}
+        isDelete={localWallets.length >= 1}
+        onDelete={onDeleteLocals}
+        onPress={setSearchText}
+      />
     </View>
   );
 };

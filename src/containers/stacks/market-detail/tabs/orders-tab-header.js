@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { PADDING_V, TITLE_FONTSIZE } from "../../../../../utils/dimensions";
+import { DIMENSIONS } from "../../../../../utils/dimensions";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../../helpers/array-helper";
 
@@ -58,7 +58,7 @@ const styles = (props) => StyleSheet.create({
   title: {
     textAlign: "left",
     fontFamily: "CircularStd-Book",
-    fontSize: TITLE_FONTSIZE - 2,
+    fontSize: DIMENSIONS.TITLE_FONTSIZE - 2,
     color: props.appWhite,
     paddingHorizontal: 6,
   },

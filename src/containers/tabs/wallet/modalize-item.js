@@ -1,11 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import DynamicImage from "../../../components/dynamic-image";
-import {
-  BIG_TITLE_FONTSIZE,
-  LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
-  NORMAL_IMAGE, PADDING_H,
-} from "../../../../utils/dimensions";
+import DynamicImage from "../../../components/page-components/dynamic-image";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 import { formatMoney, formattedNumber, nFormatter } from "../../../helpers/math-helper";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
@@ -62,7 +58,7 @@ const WalletBottomSheetItem = (props) => {
           </View>
         </View>
         <View style={[styles(activeTheme).centerContainer, { alignItems: "flex-end" }]}>
-          <Text style={[styles(activeTheme, fontSizes).price, { fontSize: BIG_TITLE_FONTSIZE }]}>
+          <Text style={[styles(activeTheme, fontSizes).price, { fontSize: DIMENSIONS.BIG_TITLE_FONTSIZE }]}>
             {
               isBalanceHidden ? getHiddenText(formattedNumber(wallet.wb, wallet.cd).length) : `${formatMoney(wallet.wb, wallet.dp)}`
             }
@@ -92,13 +88,13 @@ const WalletBottomSheetItem = (props) => {
           </Text>
 
 
-          <Text style={[styles(activeTheme, fontSizes).price, {
-            color: activeTheme.inActiveListBg,
-          }]}>
-            {
-              isBalanceHidden ? getHiddenText(8) + " ₿" : ` ≈ ${wallet.EstimatedBTC ? formatMoney(wallet.EstimatedBTC, 8) : "0.00"} ₿`
-            }
-          </Text>
+          {/*<Text style={[styles(activeTheme, fontSizes).price, {*/}
+          {/*  color: activeTheme.inActiveListBg,*/}
+          {/*}]}>*/}
+          {/*  {*/}
+          {/*    isBalanceHidden ? getHiddenText(8) + " ₿" : ` ≈ ${wallet.EstimatedBTC ? formatMoney(wallet.EstimatedBTC, 8) : "0.00"} ₿`*/}
+          {/*  }*/}
+          {/*</Text>*/}
 
 
         </View>
@@ -116,8 +112,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
   itemContainer: {
     alignItems: "center",
     justifyContent: "center",
-    height: LIST_ITEM_HEIGHT,
-    paddingHorizontal: PADDING_H,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   itemLeftContainer: {
     width: "20%",
@@ -125,8 +121,8 @@ const styles = (props, fontSizes) => StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: NORMAL_IMAGE,
-    height: NORMAL_IMAGE,
+    width: DIMENSIONS.NORMAL_IMAGE,
+    height: DIMENSIONS.NORMAL_IMAGE,
     marginRight: 12,
   },
   marketTitle: {
@@ -162,7 +158,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
     width: "40%",
     alignItems: "flex-end",
     justifyContent: "center",
-    paddingRight: PADDING_H,
+    paddingRight: DIMENSIONS.PADDING_H,
 
   },
 
@@ -201,7 +197,7 @@ const styles = (props, fontSizes) => StyleSheet.create({
   },
   buttonWrap: {
     width: "33%",
-    height: LIST_ITEM_HEIGHT,
+    height: DIMENSIONS.LIST_ITEM_HEIGHT,
     backgroundColor: props.yesGreen,
     alignItems: "center",
     justifyContent: "space-around",

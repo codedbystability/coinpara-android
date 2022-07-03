@@ -9,17 +9,15 @@ import {
   View,
 } from "react-native";
 import styledHigherOrderComponents from "../../../hocs/styledHigherOrderComponents";
-import TabNavigationHeader from "../../../components/tab-navigation-header";
+import TabNavigationHeader from "../../../components/page-components/tab-navigation-header";
 import { getLang } from "../../../helpers/array-helper";
 import { useSelector } from "react-redux";
-import {
-  LIST_ITEM_HEIGHT, NORMAL_FONTSIZE,
-  PADDING_H, SCREEN_WIDTH,
-} from "../../../../utils/dimensions";
-import CustomList from "../../../components/custom-list";
+import { DIMENSIONS } from "../../../../utils/dimensions";
+import CustomList from "../../../components/page-components/custom-list";
 import TinyImage from "../../../tiny-image";
 import generalServices from "../../../services/general-services";
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/page-components/button";
+import InputAccessory from "../../../components/page-components/input-accessory";
 import moment from "moment";
 
 
@@ -68,12 +66,12 @@ const HelpCenterDetail = props => {
 
 
   const renderRequestItemAdmin = (item) => {
-    console.log(item)
+    console.log(item);
     return (
 
       <View style={{
         flexDirection: "row",
-        paddingVertical: PADDING_H,
+        paddingVertical: DIMENSIONS.PADDING_H,
 
       }}>
         <View style={{
@@ -92,20 +90,20 @@ const HelpCenterDetail = props => {
           width: "90%",
           backgroundColor: activeTheme.darkBackground,
           borderRadius: 8,
-          paddingBottom: PADDING_H * 2,
-          paddingTop: PADDING_H ,
-          paddingHorizontal: PADDING_H,
+          paddingBottom: DIMENSIONS.PADDING_H * 2,
+          paddingTop: DIMENSIONS.PADDING_H,
+          paddingHorizontal: DIMENSIONS.PADDING_H,
         }}>
           <Text style={{
             fontFamily: "CircularStd-Book",
-            fontSize: NORMAL_FONTSIZE,
+            fontSize: DIMENSIONS.NORMAL_FONTSIZE,
             color: activeTheme.appWhite,
           }}>{item.Message || item.HelpMessage}</Text>
 
           {
             item.Attachments && item.Attachments.length >= 1 ? <ScrollView
               contentContainerStyle={{
-                paddingTop: PADDING_H,
+                paddingTop: DIMENSIONS.PADDING_H,
               }}
 
               horizontal={true}>
@@ -120,7 +118,7 @@ const HelpCenterDetail = props => {
                          style={{
                            height: 60,
                            width: 60,
-                           marginRight: PADDING_H,
+                           marginRight: DIMENSIONS.PADDING_H,
                            borderRadius: 8,
                            borderWidth: 1,
                            borderColor: activeTheme.appWhite,
@@ -133,10 +131,10 @@ const HelpCenterDetail = props => {
 
           <Text style={{
             position: "absolute",
-            right: PADDING_H,
+            right: DIMENSIONS.PADDING_H,
             bottom: 4,
             fontFamily: "CircularStd-Book",
-            fontSize: NORMAL_FONTSIZE,
+            fontSize: DIMENSIONS.NORMAL_FONTSIZE,
             color: activeTheme.secondaryText,
 
           }}>
@@ -153,28 +151,28 @@ const HelpCenterDetail = props => {
   const renderRequestItemUser = (item) => {
     return (
       <View style={{
-        // height: LIST_ITEM_HEIGHT * 2,
+        // height: DIMENSIONS.LIST_ITEM_HEIGHT * 2,
         flexDirection: "row",
-        paddingVertical: PADDING_H,
+        paddingVertical: DIMENSIONS.PADDING_H,
       }}>
         <View style={{
           width: "90%",
           backgroundColor: activeTheme.darkBackground,
           borderRadius: 8,
-          paddingBottom: PADDING_H * 2,
-          paddingTop: PADDING_H ,
-          paddingHorizontal: PADDING_H,
+          paddingBottom: DIMENSIONS.PADDING_H * 2,
+          paddingTop: DIMENSIONS.PADDING_H,
+          paddingHorizontal: DIMENSIONS.PADDING_H,
         }}>
           <Text style={{
             fontFamily: "CircularStd-Book",
-            fontSize: NORMAL_FONTSIZE,
+            fontSize: DIMENSIONS.NORMAL_FONTSIZE,
             color: activeTheme.appWhite,
           }}>{item.Message || item.HelpMessage}</Text>
 
           {
             item.Attachments && item.Attachments.length >= 1 ? <ScrollView
               contentContainerStyle={{
-                paddingTop: PADDING_H,
+                paddingTop: DIMENSIONS.PADDING_H,
               }}
 
               horizontal={true}>
@@ -189,7 +187,7 @@ const HelpCenterDetail = props => {
                          style={{
                            height: 60,
                            width: 60,
-                           marginRight: PADDING_H,
+                           marginRight: DIMENSIONS.PADDING_H,
                            borderRadius: 8,
                            borderWidth: 1,
                            borderColor: activeTheme.appWhite,
@@ -202,10 +200,10 @@ const HelpCenterDetail = props => {
 
           <Text style={{
             position: "absolute",
-            right: PADDING_H,
+            right: DIMENSIONS.PADDING_H,
             bottom: 4,
             fontFamily: "CircularStd-Book",
-            fontSize: NORMAL_FONTSIZE,
+            fontSize: DIMENSIONS.NORMAL_FONTSIZE,
             color: activeTheme.secondaryText,
 
           }}>
@@ -281,7 +279,7 @@ const HelpCenterDetail = props => {
           borderGray={"transparent"}
           data={loading ? [] : messages}
           keyExtractor={keyExtractor}
-          itemHeight={LIST_ITEM_HEIGHT * 2}
+          itemHeight={DIMENSIONS.LIST_ITEM_HEIGHT * 2}
           renderItem={({ item }) => item.ReplyType === 0 ? renderRequestItemAdmin(item) : renderRequestItemUser(item)}
           onEndReached={null}
           iconKey={"empty-orders"}
@@ -292,7 +290,7 @@ const HelpCenterDetail = props => {
         {
           showText ?
             <View style={{
-              padding: PADDING_H,
+              padding: DIMENSIONS.PADDING_H,
               paddingBottom: 80,
             }}>
               <TextInput
@@ -317,7 +315,7 @@ const HelpCenterDetail = props => {
                             isRadius={true}
                             onPress={handleInsert}
                             style={{
-                              marginTop: PADDING_H,
+                              marginTop: DIMENSIONS.PADDING_H,
                               backgroundColor: activeTheme.actionColor,
                             }} />
             </View> : null
@@ -334,6 +332,7 @@ const HelpCenterDetail = props => {
                         style={{
                           backgroundColor: showText ? activeTheme.borderGray : activeTheme.actionColor,
                         }} />
+          <InputAccessory />
         </> : null
       }
 
@@ -381,7 +380,7 @@ const HelpCenterDetail = props => {
 
 const HelpCenterDetailScreen = styledHigherOrderComponents(HelpCenterDetail);
 export default HelpCenterDetailScreen;
-const ww = SCREEN_WIDTH * 0.2;
+const ww = DIMENSIONS.SCREEN_WIDTH * 0.2;
 
 
 const styles = (props) => StyleSheet.create({
@@ -394,9 +393,9 @@ const styles = (props) => StyleSheet.create({
     height: 24,
   },
   l1: {
-    paddingTop: PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
     paddingBottom: 120,
-    paddingHorizontal: PADDING_H,
+    paddingHorizontal: DIMENSIONS.PADDING_H,
   },
   container: {
     flex: 1,
@@ -453,8 +452,8 @@ const styles = (props) => StyleSheet.create({
     fontSize: 18,
   },
   img: {
-    width: SCREEN_WIDTH - PADDING_H * 2,
-    height: SCREEN_WIDTH / 1.4,
+    width: DIMENSIONS.SCREEN_WIDTH - DIMENSIONS.PADDING_H * 2,
+    height: DIMENSIONS.SCREEN_WIDTH / 1.4,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: props.appWhite,
@@ -468,14 +467,14 @@ const styles = (props) => StyleSheet.create({
     width: ww,
     height: ww,
     borderRadius: ww / 2,
-    left: SCREEN_WIDTH / 2 - ww / 2,
+    left: DIMENSIONS.SCREEN_WIDTH / 2 - ww / 2,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 999999,
   },
   mInput: {
-    padding: PADDING_H,
-    paddingTop: PADDING_H,
+    padding: DIMENSIONS.PADDING_H,
+    paddingTop: DIMENSIONS.PADDING_H,
     paddingVertical: 12,
     marginVertical: 8,
     width: "100%",
@@ -485,7 +484,7 @@ const styles = (props) => StyleSheet.create({
     borderColor: props.borderGray,
     color: props.appWhite,
     fontFamily: "CircularStd-Book",
-    fontSize: NORMAL_FONTSIZE,
+    fontSize: DIMENSIONS.NORMAL_FONTSIZE,
     backgroundColor: props.darkBackground,
   },
 

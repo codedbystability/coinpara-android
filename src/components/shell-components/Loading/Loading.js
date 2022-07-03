@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ActivityIndicator, Animated } from "react-native";
 import styles from "./Loading.styles";
-import PulseAnimation from "../../pulse";
+import PulseAnimation from "../../page-components/pulse";
 
 const Loading = () => {
   const [isShowLoading, setIsShowLoading] = useState(false);

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
-import Loading from "../components/loading";
+import Loading from "../components/page-components/loading";
 
 
 const styledHigherOrderComponents = WrappedComponent => props => {

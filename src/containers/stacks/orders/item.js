@@ -1,16 +1,16 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { NORMAL_FONTSIZE, TITLE_FONTSIZE } from "../../../../utils/dimensions";
 import { formatMoney } from "../../../helpers/math-helper";
 import { useSelector } from "react-redux";
 import { getLang } from "../../../helpers/array-helper";
 import moment from "moment";
 import { navigationRef } from "../../../providers/RootNavigation";
+import { DIMENSIONS } from "../../../../utils/dimensions";
 
 const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
   // TODO width + type / 0-1
   const { activeTheme, fontSizes, language } = useSelector(state => state.globalReducer);
-  const itemWidth = parseInt((item.fa * 100) / item.am);
+  const itemWidth = parseInt((item.eam * 100) / item.am);
 
   const handleNavigation = () => {
     navigationRef.current.navigate("OrderDetail", {
@@ -28,7 +28,7 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
 
           <View style={styles(activeTheme).inner2}>
             <View style={styles(activeTheme).content}>
-              <Text style={[styles(activeTheme, fontSizes).title, { width: "30%" }]}>{item.cf}/{item.ct}</Text>
+              <Text style={[styles(activeTheme, fontSizes).title, { width: "30%" }]}>{item.ct}/{item.cf}</Text>
               <Text style={[styles(activeTheme, fontSizes).priceTitle, { width: "30%" }]}>
                 <Text style={styles(activeTheme, fontSizes).description}>{getLang(language, "PRICE")}: </Text>
                 {formatMoney(item.ov, item.fdp)}
@@ -49,8 +49,9 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
               <Text style={[styles(activeTheme, fontSizes).priceTitle]}>
                 <Text style={styles(activeTheme, fontSizes).description}>{getLang(language, "AMOUNT")}: </Text>
                 {/*{item.fa}*/}
-                {formatMoney(item.fa, item.tdp)}
+                {formatMoney(item.eam, item.tdp)}
               </Text>
+
               <Text style={styles(activeTheme, fontSizes).description}>
                 <Text style={styles(activeTheme, fontSizes).description}> / </Text>
                 {formatMoney(item.am, item.tdp)}
@@ -65,20 +66,36 @@ const OrderItem = ({ item, cancelAble, handleCancel = null }) => {
           <View style={styles(activeTheme).limitWrap}>
 
 
-            <Text
-              style={[styles(activeTheme, fontSizes).positive, { color: item.di === 1 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
-              {
-                item.ty === 1 ? getLang(language, "MARKET_ORDER") :
-                  getLang(language, item.di === 1 ? "BUY_LIMIT" : "SELL_LIMIT")
-              }
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}>
+
+              <Text
+                style={[styles(activeTheme, fontSizes).positive, { color: item.di === 1 ? activeTheme.changeGreen : activeTheme.changeRed }]}>
+                {
+                  item.ty === 1 ? getLang(language, "MARKET_ORDER") :
+                    getLang(language, item.di === 1 ? "BUY_LIMIT" : "SELL_LIMIT")
+                }
+
+
+              </Text>
 
               {
-                item.ty !== 1 && <Text>
-                  %{itemWidth}
-                </Text>
+                //it.ty === 1 && %itemWidth
               }
 
-            </Text>
+              <Text style={{
+                paddingLeft: DIMENSIONS.PADDING_H,
+                fontSize: fontSizes.NORMAL_FONTSIZE,
+                color: activeTheme.secondaryText,
+              }}>
+                {
+                  itemWidth
+                }%
+              </Text>
+
+            </View>
 
             <View style={{
               alignItems: "center",
