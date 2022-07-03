@@ -1,7 +1,7 @@
 {
   "name": "coinpara",
   "version": "3.2.2",
-  "build": "48",
+  "build": "51",
   "fetchTime": "1652682520",
   "private": true,
   "scripts": {
